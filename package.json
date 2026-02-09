@@ -1,0 +1,31 @@
+{
+  "name": "customgpt-claude-triple-verification",
+  "version": "1.0.0",
+  "description": "Triple verification plugin for Claude Code — blocks placeholder code, security vulnerabilities, and ensures output quality before every operation.",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "test": "node --test tests/",
+    "test:cycle1": "node --test tests/test-cycle1.mjs",
+    "test:cycle2": "node --test tests/test-cycle2.mjs",
+    "test:audit": "node --test tests/test-audit.mjs",
+    "test:config": "node --test tests/test-config.mjs",
+    "verify": "node install/verify.mjs"
+  },
+  "keywords": [
+    "claude-code",
+    "verification",
+    "code-quality",
+    "security",
+    "audit",
+    "customgpt"
+  ],
+  "author": "CustomGPT.ai",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/customgpt-ai/customgpt-claude-triple-verification"
+  }
+}
