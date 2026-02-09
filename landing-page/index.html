@@ -620,45 +620,48 @@ nav {
   margin-bottom: 0.5rem;
 }
 
-.code-block {
+.code-block-wrapper {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+
+.code-block {
+  flex: 1;
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 0.85rem 0.85rem 0.85rem 1.1rem;
-  overflow-x: auto;
-  position: relative;
+  padding: 0.85rem 1.1rem;
+  min-width: 0;
 }
 
 .code-block code {
   font-family: var(--font-mono);
   font-size: 0.78rem;
   color: var(--purple);
-  flex: 1;
-  white-space: nowrap;
+  display: block;
+  word-break: break-all;
+  line-height: 1.5;
   user-select: all;
 }
 
 .copy-btn {
-  width: 34px;
-  height: 34px;
+  width: 42px;
+  min-width: 42px;
   border: 1px solid var(--border);
-  background: var(--bg-light);
+  background: var(--bg);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: all 0.25s ease;
   flex-shrink: 0;
-  position: relative;
 }
 
 .copy-btn svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   stroke: var(--text-dim);
   transition: all 0.25s ease;
 }
@@ -666,7 +669,6 @@ nav {
 .copy-btn:hover {
   background: linear-gradient(135deg, var(--magenta-dim), rgba(123, 47, 190, 0.15));
   border-color: var(--magenta-glow);
-  transform: scale(1.05);
 }
 
 .copy-btn:hover svg {
@@ -1037,8 +1039,10 @@ footer a:hover { text-decoration: underline; }
               <div class="step-number">1</div>
               <div class="step-content">
                 <div class="step-label">Add the marketplace</div>
-                <div class="code-block">
-                  <code>/plugin marketplace add kirollosatef/customgpt-claude-triple-verification</code>
+                <div class="code-block-wrapper">
+                  <div class="code-block">
+                    <code>/plugin marketplace add kirollosatef/customgpt-claude-triple-verification</code>
+                  </div>
                   <button class="copy-btn" onclick="copyCode(this)" title="Copy to clipboard">
                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M5 11H3.5A1.5 1.5 0 012 9.5v-7A1.5 1.5 0 013.5 1h7A1.5 1.5 0 0112 2.5V5"/></svg>
                   </button>
@@ -1049,8 +1053,10 @@ footer a:hover { text-decoration: underline; }
               <div class="step-number">2</div>
               <div class="step-content">
                 <div class="step-label">Install the plugin</div>
-                <div class="code-block">
-                  <code>/plugin install customgpt-claude-triple-verification@kirollosatef-customgpt-claude-triple-verification</code>
+                <div class="code-block-wrapper">
+                  <div class="code-block">
+                    <code>/plugin install customgpt-claude-triple-verification@kirollosatef-customgpt-claude-triple-verification</code>
+                  </div>
                   <button class="copy-btn" onclick="copyCode(this)" title="Copy to clipboard">
                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M5 11H3.5A1.5 1.5 0 012 9.5v-7A1.5 1.5 0 013.5 1h7A1.5 1.5 0 0112 2.5V5"/></svg>
                   </button>
@@ -1061,8 +1067,10 @@ footer a:hover { text-decoration: underline; }
               <div class="step-number">3</div>
               <div class="step-content">
                 <div class="step-label">Test it out</div>
-                <div class="code-block">
-                  <code>claude "Create a Python file with a TODO comment"</code>
+                <div class="code-block-wrapper">
+                  <div class="code-block">
+                    <code>claude "Create a Python file with a TODO comment"</code>
+                  </div>
                   <button class="copy-btn" onclick="copyCode(this)" title="Copy to clipboard">
                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M5 11H3.5A1.5 1.5 0 012 9.5v-7A1.5 1.5 0 013.5 1h7A1.5 1.5 0 0112 2.5V5"/></svg>
                   </button>
@@ -1082,8 +1090,10 @@ footer a:hover { text-decoration: underline; }
               <div class="step-number">1</div>
               <div class="step-content">
                 <div class="step-label">Run the installer</div>
-                <div class="code-block">
-                  <code>npx @customgpt/claude-triple-verification</code>
+                <div class="code-block-wrapper">
+                  <div class="code-block">
+                    <code>npx @customgpt/claude-triple-verification</code>
+                  </div>
                   <button class="copy-btn" onclick="copyCode(this)" title="Copy to clipboard">
                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M5 11H3.5A1.5 1.5 0 012 9.5v-7A1.5 1.5 0 013.5 1h7A1.5 1.5 0 0112 2.5V5"/></svg>
                   </button>
@@ -1103,8 +1113,10 @@ footer a:hover { text-decoration: underline; }
               <div class="step-number">1</div>
               <div class="step-content">
                 <div class="step-label">Clone the repository</div>
-                <div class="code-block">
-                  <code>git clone https://github.com/kirollosatef/customgpt-claude-triple-verification.git</code>
+                <div class="code-block-wrapper">
+                  <div class="code-block">
+                    <code>git clone https://github.com/kirollosatef/customgpt-claude-triple-verification.git</code>
+                  </div>
                   <button class="copy-btn" onclick="copyCode(this)" title="Copy to clipboard">
                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M5 11H3.5A1.5 1.5 0 012 9.5v-7A1.5 1.5 0 013.5 1h7A1.5 1.5 0 0112 2.5V5"/></svg>
                   </button>
@@ -1117,15 +1129,19 @@ footer a:hover { text-decoration: underline; }
                 <div class="step-label">Run the installer</div>
                 <div class="code-block-group">
                   <div class="code-block-label">Windows</div>
-                  <div class="code-block">
-                    <code>.\install\install.ps1</code>
+                  <div class="code-block-wrapper">
+                    <div class="code-block">
+                      <code>.\install\install.ps1</code>
+                    </div>
                     <button class="copy-btn" onclick="copyCode(this)" title="Copy to clipboard">
                       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M5 11H3.5A1.5 1.5 0 012 9.5v-7A1.5 1.5 0 013.5 1h7A1.5 1.5 0 0112 2.5V5"/></svg>
                     </button>
                   </div>
                   <div class="code-block-label">macOS / Linux</div>
-                  <div class="code-block">
-                    <code>bash install/install.sh</code>
+                  <div class="code-block-wrapper">
+                    <div class="code-block">
+                      <code>bash install/install.sh</code>
+                    </div>
                     <button class="copy-btn" onclick="copyCode(this)" title="Copy to clipboard">
                       <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M5 11H3.5A1.5 1.5 0 012 9.5v-7A1.5 1.5 0 013.5 1h7A1.5 1.5 0 0112 2.5V5"/></svg>
                     </button>
@@ -1137,8 +1153,10 @@ footer a:hover { text-decoration: underline; }
               <div class="step-number">3</div>
               <div class="step-content">
                 <div class="step-label">Verify installation</div>
-                <div class="code-block">
-                  <code>node install/verify.mjs</code>
+                <div class="code-block-wrapper">
+                  <div class="code-block">
+                    <code>node install/verify.mjs</code>
+                  </div>
                   <button class="copy-btn" onclick="copyCode(this)" title="Copy to clipboard">
                     <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="5" width="9" height="9" rx="1"/><path d="M5 11H3.5A1.5 1.5 0 012 9.5v-7A1.5 1.5 0 013.5 1h7A1.5 1.5 0 0112 2.5V5"/></svg>
                   </button>
@@ -1257,7 +1275,8 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 // Copy to clipboard
 function copyCode(btn) {
-  const code = btn.parentElement.querySelector('code').textContent;
+  const wrapper = btn.closest('.code-block-wrapper');
+  const code = wrapper.querySelector('code').textContent;
   navigator.clipboard.writeText(code).then(() => {
     btn.classList.add('copied');
     btn.innerHTML = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 8 6 11 13 4"/></svg>';
