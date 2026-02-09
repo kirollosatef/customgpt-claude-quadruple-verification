@@ -513,49 +513,60 @@ nav {
 
 .tab-buttons {
   display: flex;
-  gap: 0;
-  margin-bottom: 0;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  background: var(--bg-light);
+  padding: 0.35rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
 }
 
 .tab-btn {
   flex: 1;
-  padding: 0.8rem 1.2rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  padding: 0.65rem 1rem;
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 600;
   color: var(--text-dim);
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-bottom: none;
+  background: transparent;
+  border: none;
   cursor: pointer;
   transition: all 0.3s;
-  border-radius: 8px 8px 0 0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
 }
 
-.tab-btn:first-child { border-right: none; }
-.tab-btn:last-child { border-left: none; }
+.tab-btn .tab-icon {
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.tab-btn .tab-icon svg {
+  width: 16px;
+  height: 16px;
+}
 
 .tab-btn.active {
   color: var(--purple);
-  background: var(--bg-light);
-  border-color: var(--border);
-  border-top: 2px solid var(--magenta);
-  border-bottom: 1px solid var(--bg-light);
+  background: var(--bg);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
 }
 
 .tab-btn:not(.active):hover {
   color: var(--text);
-  background: #F3EDFC;
+  background: rgba(255,255,255,0.5);
 }
 
 .tab-panels {
   background: var(--bg-light);
   border: 1px solid var(--border);
-  border-top: none;
   padding: 1.8rem;
-  border-radius: 0 0 12px 12px;
+  border-radius: 12px;
 }
 
 .tab-panel {
@@ -709,8 +720,9 @@ footer a:hover { text-decoration: underline; }
   }
 
   .tab-btn {
-    flex: 1 1 45%;
-    border: 1px solid var(--border);
+    flex: 1 1 auto;
+    font-size: 0.72rem;
+    padding: 0.55rem 0.8rem;
   }
 }
 </style>
@@ -838,59 +850,56 @@ footer a:hover { text-decoration: underline; }
   <div class="container">
     <div class="section-header reveal">
       <div class="section-tag">Setup</div>
-      <h2>Install in 60 Seconds</h2>
+      <h2>Install in One Command</h2>
     </div>
     <div class="tabs-container reveal">
       <div class="tab-buttons">
-        <button class="tab-btn active" data-tab="windows">Windows</button>
-        <button class="tab-btn" data-tab="macos">macOS</button>
-        <button class="tab-btn" data-tab="linux">Linux</button>
-        <button class="tab-btn" data-tab="wsl">WSL</button>
+        <button class="tab-btn active" data-tab="marketplace">
+          <span class="tab-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1v10M4 8l4 4 4-4M2 14h12"/></svg></span>
+          Marketplace
+        </button>
+        <button class="tab-btn" data-tab="npx">
+          <span class="tab-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 6 8 2 12 6"/><line x1="8" y1="2" x2="8" y2="10"/><path d="M3 10v3a1 1 0 001 1h8a1 1 0 001-1v-3"/></svg></span>
+          npx
+        </button>
+        <button class="tab-btn" data-tab="manual">
+          <span class="tab-icon"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M5 6h6M5 8.5h4"/></svg></span>
+          Manual
+        </button>
       </div>
       <div class="tab-panels">
-        <div class="tab-panel active" id="tab-windows">
-          <span class="comment"># Clone the plugin</span>
-          <span class="cmd">git clone https://github.com/customgpt-ai/customgpt-claude-triple-verification.git</span>
+        <div class="tab-panel active" id="tab-marketplace">
+          <span class="comment"># Inside Claude Code, run:</span>
+          <span class="cmd">/install kirollosatef/customgpt-claude-triple-verification</span>
+          <br>
+          <span class="comment"># That's it. Auto-updates every session.</span>
+          <br>
+          <span class="comment"># Test it &mdash; ask Claude to write a TODO:</span>
+          <span class="cmd">claude "Create a Python file with a TODO comment"</span>
+          <span class="comment"># &rarr; BLOCKED by Cycle 1</span>
+        </div>
+        <div class="tab-panel" id="tab-npx">
+          <span class="comment"># Run from any terminal:</span>
+          <span class="cmd">npx @customgpt/claude-triple-verification</span>
+          <br>
+          <span class="comment"># Copies plugin to ~/.claude/plugins/</span>
+          <span class="comment"># Runs smoke test automatically</span>
+          <br>
+          <span class="comment"># For auto-updates, use the marketplace method instead.</span>
+        </div>
+        <div class="tab-panel" id="tab-manual">
+          <span class="comment"># Clone and install manually</span>
+          <span class="cmd">git clone https://github.com/kirollosatef/customgpt-claude-triple-verification.git</span>
           <span class="cmd">cd customgpt-claude-triple-verification</span>
           <br>
-          <span class="comment"># Run the installer</span>
+          <span class="comment"># Windows:</span>
           <span class="cmd">.\install\install.ps1</span>
           <br>
-          <span class="comment"># Verify it works</span>
-          <span class="cmd">node install\verify.mjs</span>
-        </div>
-        <div class="tab-panel" id="tab-macos">
-          <span class="comment"># Clone the plugin</span>
-          <span class="cmd">git clone https://github.com/customgpt-ai/customgpt-claude-triple-verification.git</span>
-          <span class="cmd">cd customgpt-claude-triple-verification</span>
-          <br>
-          <span class="comment"># Run the installer</span>
+          <span class="comment"># macOS / Linux:</span>
           <span class="cmd">bash install/install.sh</span>
           <br>
-          <span class="comment"># Verify it works</span>
+          <span class="comment"># Verify:</span>
           <span class="cmd">node install/verify.mjs</span>
-        </div>
-        <div class="tab-panel" id="tab-linux">
-          <span class="comment"># Clone the plugin</span>
-          <span class="cmd">git clone https://github.com/customgpt-ai/customgpt-claude-triple-verification.git</span>
-          <span class="cmd">cd customgpt-claude-triple-verification</span>
-          <br>
-          <span class="comment"># Run the installer</span>
-          <span class="cmd">bash install/install.sh</span>
-          <br>
-          <span class="comment"># Verify it works</span>
-          <span class="cmd">node install/verify.mjs</span>
-        </div>
-        <div class="tab-panel" id="tab-wsl">
-          <span class="comment"># Note: Claude Code on Windows runs natively.</span>
-          <span class="comment"># Only use this if running Claude Code inside WSL.</span>
-          <br>
-          <span class="comment"># Clone the plugin</span>
-          <span class="cmd">git clone https://github.com/customgpt-ai/customgpt-claude-triple-verification.git</span>
-          <span class="cmd">cd customgpt-claude-triple-verification</span>
-          <br>
-          <span class="comment"># Run the installer (will warn about WSL)</span>
-          <span class="cmd">bash install/install.sh</span>
         </div>
       </div>
     </div>
@@ -941,6 +950,24 @@ footer a:hover { text-decoration: underline; }
         </div>
         <div class="faq-a">
           <div class="faq-a-inner">Yes. All MCP tool inputs (any tool prefixed with <code>mcp__</code>) are verified through Cycle 2 security rules. URL inputs are checked for HTTPS, and all string values are scanned.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          How do updates work?
+          <span class="chevron">&#x25BC;</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">Marketplace installs auto-update every session &mdash; push to the repo and everyone gets it. npx gets the latest on each run. Manual installs require <code>git pull</code>.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          How do I roll this out to my team?
+          <span class="chevron">&#x25BC;</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">Commit a <code>.claude/settings.json</code> file to your repo with <code>{"plugins": ["kirollosatef/customgpt-claude-triple-verification"]}</code>. When team members open the project, they'll be prompted to install automatically.</div>
         </div>
       </div>
     </div>
