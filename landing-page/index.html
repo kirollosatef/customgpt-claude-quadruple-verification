@@ -765,29 +765,39 @@ nav {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 0.75rem;
 }
 
 .faq-item {
   background: var(--bg);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  transition: border-color 0.3s;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
-.faq-item:hover { border-color: var(--magenta-dim); }
+.faq-item:hover {
+  border-color: var(--magenta-dim);
+  box-shadow: 0 4px 20px rgba(233, 48, 255, 0.08);
+}
+
+.faq-item.open {
+  border-color: var(--magenta-glow);
+  box-shadow: 0 8px 30px rgba(233, 48, 255, 0.12);
+}
 
 .faq-q {
-  padding: 1.3rem 1.5rem;
-  font-family: var(--font-mono);
-  font-size: 0.85rem;
-  font-weight: 500;
+  padding: 1.4rem 1.6rem;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
   color: var(--text);
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   transition: background 0.3s;
   user-select: none;
 }
@@ -795,37 +805,191 @@ nav {
 .faq-q:hover { background: var(--bg-light); }
 
 .faq-q .chevron {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-light);
+  border-radius: 50%;
   color: var(--magenta);
-  font-size: 1.2rem;
-  transition: transform 0.3s;
+  font-size: 0.8rem;
+  transition: all 0.3s;
+  flex-shrink: 0;
 }
 
-.faq-item.open .chevron { transform: rotate(180deg); }
+.faq-item.open .chevron {
+  transform: rotate(180deg);
+  background: linear-gradient(135deg, var(--magenta), var(--purple));
+  color: #fff;
+}
 
 .faq-a {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s;
+  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .faq-item.open .faq-a {
-  max-height: 200px;
+  max-height: 300px;
 }
 
 .faq-a-inner {
-  padding: 0 1.5rem 1.3rem;
+  padding: 0 1.6rem 1.5rem;
   font-size: 0.9rem;
   color: var(--text-dim);
-  line-height: 1.6;
+  line-height: 1.7;
+  border-top: 1px solid var(--border);
+  margin-top: 0;
+  padding-top: 1.2rem;
 }
 
 .faq-a-inner code {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--purple);
   background: var(--bg-light);
-  padding: 0.15rem 0.4rem;
-  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+}
+
+/* ── Examples Section ── */
+.examples {
+  padding: 6rem 0 8rem;
+  background: var(--bg-light);
+}
+
+.examples-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.example-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+
+.example-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.1);
+}
+
+.example-header {
+  padding: 1.2rem 1.4rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.example-cycle {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.example-card:nth-child(1) .example-cycle { background: linear-gradient(135deg, #3B82F6, #1D4ED8); }
+.example-card:nth-child(2) .example-cycle { background: linear-gradient(135deg, #EF4444, #B91C1C); }
+.example-card:nth-child(3) .example-cycle { background: linear-gradient(135deg, #10B981, #047857); }
+
+.example-title {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.example-subtitle {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-top: 0.15rem;
+}
+
+.example-code {
+  padding: 1.2rem 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.7;
+  background: #1a1a2e;
+  color: #e2e8f0;
+  min-height: 140px;
+  position: relative;
+  overflow: hidden;
+}
+
+.example-code .line {
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.example-card.animate .example-code .line {
+  animation: code-line-in 0.4s forwards;
+}
+
+.example-card.animate .example-code .line:nth-child(1) { animation-delay: 0.1s; }
+.example-card.animate .example-code .line:nth-child(2) { animation-delay: 0.2s; }
+.example-card.animate .example-code .line:nth-child(3) { animation-delay: 0.3s; }
+.example-card.animate .example-code .line:nth-child(4) { animation-delay: 0.4s; }
+.example-card.animate .example-code .line:nth-child(5) { animation-delay: 0.5s; }
+.example-card.animate .example-code .line:nth-child(6) { animation-delay: 0.6s; }
+
+@keyframes code-line-in {
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.example-code .comment { color: #6b7280; }
+.example-code .keyword { color: #c084fc; }
+.example-code .string { color: #4ade80; }
+.example-code .function { color: #60a5fa; }
+.example-code .bad { color: #f87171; background: rgba(248, 113, 113, 0.15); padding: 0 0.3rem; border-radius: 3px; }
+
+.example-result {
+  padding: 1rem 1.4rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.example-result.blocked {
+  background: rgba(239, 68, 68, 0.06);
+  color: #DC2626;
+}
+
+.example-result.blocked svg {
+  width: 16px;
+  height: 16px;
+  stroke: #DC2626;
+}
+
+.example-result .rule {
+  color: var(--text-dim);
+  margin-left: auto;
+  font-size: 0.7rem;
+}
+
+@media (max-width: 900px) {
+  .examples-grid {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+  }
 }
 
 /* ── Footer ── */
@@ -1238,6 +1402,89 @@ footer a:hover { text-decoration: underline; }
   </div>
 </section>
 
+<!-- Examples Section -->
+<section class="examples" id="examples">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Real Examples</div>
+      <h2>See What Gets Blocked</h2>
+    </div>
+    <div class="examples-grid">
+      <!-- Cycle 1 Example -->
+      <div class="example-card reveal reveal-delay-1">
+        <div class="example-header">
+          <div class="example-cycle">C1</div>
+          <div>
+            <div class="example-title">Code Quality</div>
+            <div class="example-subtitle">Placeholder detection</div>
+          </div>
+        </div>
+        <div class="example-code">
+          <div class="line"><span class="keyword">def</span> <span class="function">calculate_tax</span>(amount):</div>
+          <div class="line">    <span class="comment"># <span class="bad">TODO: implement tax logic</span></span></div>
+          <div class="line">    <span class="keyword">pass</span></div>
+          <div class="line"></div>
+          <div class="line"><span class="keyword">def</span> <span class="function">get_discount</span>(user):</div>
+          <div class="line">    <span class="keyword">raise</span> <span class="bad">NotImplementedError</span></div>
+        </div>
+        <div class="example-result blocked">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"/><path d="M5 5l6 6M11 5l-6 6"/></svg>
+          BLOCKED
+          <span class="rule">no-todo, no-empty-pass</span>
+        </div>
+      </div>
+
+      <!-- Cycle 2 Example -->
+      <div class="example-card reveal reveal-delay-2">
+        <div class="example-header">
+          <div class="example-cycle">C2</div>
+          <div>
+            <div class="example-title">Security</div>
+            <div class="example-subtitle">Vulnerability detection</div>
+          </div>
+        </div>
+        <div class="example-code">
+          <div class="line"><span class="keyword">const</span> apiKey = <span class="bad">"sk-abc123..."</span>;</div>
+          <div class="line"></div>
+          <div class="line"><span class="keyword">const</span> result = <span class="bad">eval</span>(userInput);</div>
+          <div class="line"></div>
+          <div class="line">element.<span class="bad">innerHTML</span> = data;</div>
+          <div class="line"></div>
+        </div>
+        <div class="example-result blocked">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"/><path d="M5 5l6 6M11 5l-6 6"/></svg>
+          BLOCKED
+          <span class="rule">no-secrets, no-eval, no-xss</span>
+        </div>
+      </div>
+
+      <!-- Cycle 3 Example -->
+      <div class="example-card reveal reveal-delay-3">
+        <div class="example-header">
+          <div class="example-cycle">C3</div>
+          <div>
+            <div class="example-title">Output Quality</div>
+            <div class="example-subtitle">AI self-review</div>
+          </div>
+        </div>
+        <div class="example-code">
+          <div class="line"><span class="comment">// Before completing response:</span></div>
+          <div class="line"><span class="keyword">✓</span> Completeness check</div>
+          <div class="line"><span class="keyword">✓</span> Quality verification</div>
+          <div class="line"><span class="keyword">✓</span> Correctness validation</div>
+          <div class="line"><span class="keyword">✓</span> Security review</div>
+          <div class="line"><span class="keyword">✓</span> Test coverage check</div>
+        </div>
+        <div class="example-result blocked" style="background: rgba(16, 185, 129, 0.06); color: #047857;">
+          <svg viewBox="0 0 16 16" fill="none" stroke="#047857" stroke-width="2"><circle cx="8" cy="8" r="6"/><path d="M5 8l2 2 4-4"/></svg>
+          VERIFIED
+          <span class="rule">5-point review passed</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- Footer -->
 <footer>
   <a href="https://customgpt.ai" target="_blank" rel="noopener" style="display:inline-block;margin-bottom:1rem;">
@@ -1267,11 +1514,16 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add('visible');
+      // Trigger animation for example cards
+      if (entry.target.classList.contains('example-card')) {
+        setTimeout(() => entry.target.classList.add('animate'), 300);
+      }
     }
   });
 }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+document.querySelectorAll('.example-card').forEach(el => observer.observe(el));
 
 // Copy to clipboard
 function copyCode(btn) {
