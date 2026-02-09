@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CustomGPT Triple Verification — Claude Code Plugin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --magenta: #E930FF;
+  --magenta-dim: #E930FF22;
+  --magenta-glow: #E930FF55;
+  --purple: #7B2FBE;
+  --coral: #E8562A;
+  --bg: #FFFFFF;
+  --bg-light: #F9F5FF;
+  --bg-mid: #F0E6FF;
+  --surface: #F5F0FF;
+  --border: #E8DFF2;
+  --text: #1A1A2E;
+  --text-dim: #6B7280;
+  --red: #FF3B5C;
+  --green: #16A34A;
+  --amber: #D97706;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-display);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── Subtle gradient overlay ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 60%, #FFE0F020 80%, #FFD0F040 100%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ── Grid background ── */
+.grid-bg {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--cyan-dim) 1px, transparent 1px),
+    linear-gradient(90deg, var(--cyan-dim) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.04;
+  pointer-events: none;
+}
+
+/* ── Scanline effect ── */
+.scanlines {
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.03) 2px,
+    rgba(0,0,0,0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* ── Utility ── */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* ── Navigation ── */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 1.2rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(180deg, var(--navy) 0%, transparent 100%);
+  backdrop-filter: blur(12px);
+}
+
+.nav-brand {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--cyan);
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.nav-brand .dot {
+  width: 8px;
+  height: 8px;
+  background: var(--cyan);
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+  box-shadow: 0 0 8px var(--cyan-glow);
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-decoration: none;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+
+.nav-links a:hover { color: var(--cyan); }
+
+/* ── Hero ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-top: 6rem;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--cyan);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  opacity: 0;
+  animation: fade-up 0.8s 0.2s forwards;
+}
+
+.hero-label::before {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: var(--cyan);
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 700;
+  line-height: 1.05;
+  color: #fff;
+  max-width: 800px;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: fade-up 0.8s 0.4s forwards;
+}
+
+.hero h1 .accent {
+  background: linear-gradient(135deg, var(--cyan) 0%, #00FF88 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-tagline {
+  font-size: 1.15rem;
+  color: var(--text-dim);
+  max-width: 580px;
+  line-height: 1.7;
+  margin-bottom: 2.5rem;
+  opacity: 0;
+  animation: fade-up 0.8s 0.6s forwards;
+}
+
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--navy);
+  background: var(--cyan);
+  padding: 0.9rem 2rem;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: 0.05em;
+  transition: all 0.3s;
+  opacity: 0;
+  animation: fade-up 0.8s 0.8s forwards;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
+  transform: translateX(-100%);
+  transition: transform 0.6s;
+}
+
+.hero-cta:hover::before { transform: translateX(100%); }
+.hero-cta:hover {
+  box-shadow: 0 0 30px var(--cyan-glow), 0 0 60px var(--cyan-dim);
+  transform: translateY(-2px);
+}
+
+.hero-cta svg { width: 16px; height: 16px; }
+
+/* Hero glow orb */
+.hero-glow {
+  position: absolute;
+  right: -10%;
+  top: 20%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--cyan-dim) 0%, transparent 70%);
+  filter: blur(80px);
+  pointer-events: none;
+  animation: glow-drift 8s ease-in-out infinite;
+}
+
+@keyframes glow-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-30px, 20px) scale(1.1); }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Section headings ── */
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-tag {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--cyan);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+}
+
+.section-tag::before, .section-tag::after {
+  content: '';
+  width: 30px;
+  height: 1px;
+  background: var(--cyan-dim);
+}
+
+.section-header h2 {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 700;
+  color: #fff;
+}
+
+/* ── Cycles section ── */
+.cycles {
+  padding: 8rem 0;
+  position: relative;
+}
+
+.cycles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.cycle-card {
+  background: linear-gradient(135deg, var(--surface) 0%, var(--navy-light) 100%);
+  border: 1px solid var(--cyan-dim);
+  padding: 2.5rem 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cycle-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  transform: scaleX(0);
+  transition: transform 0.4s;
+}
+
+.cycle-card:hover::before { transform: scaleX(1); }
+
+.cycle-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--cyan-glow);
+  box-shadow: 0 20px 60px -20px var(--cyan-dim);
+}
+
+.cycle-number {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--cyan);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.cycle-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+  color: var(--cyan);
+}
+
+.cycle-icon svg {
+  width: 32px;
+  height: 32px;
+  stroke: var(--cyan);
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.cycle-card h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.8rem;
+}
+
+.cycle-card p {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+/* ── Terminal demo ── */
+.demo {
+  padding: 6rem 0 8rem;
+}
+
+.terminal {
+  max-width: 720px;
+  margin: 0 auto;
+  background: #070D18;
+  border: 1px solid var(--navy-mid);
+  overflow: hidden;
+  box-shadow: 0 40px 80px -20px rgba(0,0,0,0.6);
+}
+
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.2rem;
+  background: var(--navy-light);
+  border-bottom: 1px solid var(--navy-mid);
+}
+
+.terminal-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.terminal-dot:nth-child(1) { background: #FF5F57; }
+.terminal-dot:nth-child(2) { background: #FFBD2E; }
+.terminal-dot:nth-child(3) { background: #28CA42; }
+
+.terminal-title {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-right: 2rem;
+}
+
+.terminal-body {
+  padding: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.8;
+}
+
+.term-prompt {
+  color: var(--green);
+}
+
+.term-command {
+  color: #fff;
+}
+
+.term-blocked {
+  color: var(--red);
+  display: block;
+  margin-top: 1rem;
+}
+
+.term-rule {
+  color: var(--amber);
+  display: block;
+  margin-top: 0.6rem;
+}
+
+.term-message {
+  color: var(--text-dim);
+  display: block;
+}
+
+.term-fix {
+  color: var(--text);
+  display: block;
+  margin-top: 0.8rem;
+}
+
+.term-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 16px;
+  background: var(--cyan);
+  margin-left: 4px;
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* Typing animation */
+.term-line {
+  opacity: 0;
+  animation: type-in 0.3s forwards;
+}
+.term-line:nth-child(1) { animation-delay: 0.3s; }
+.term-line:nth-child(2) { animation-delay: 1s; }
+.term-line:nth-child(3) { animation-delay: 1.6s; }
+.term-line:nth-child(4) { animation-delay: 2s; }
+.term-line:nth-child(5) { animation-delay: 2.4s; }
+.term-line:nth-child(6) { animation-delay: 2.8s; }
+
+@keyframes type-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Install section ── */
+.install {
+  padding: 6rem 0 8rem;
+}
+
+.tabs-container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.tab-buttons {
+  display: flex;
+  gap: 0;
+  margin-bottom: 0;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 0.8rem 1.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: var(--navy-light);
+  border: 1px solid var(--navy-mid);
+  border-bottom: none;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.tab-btn:first-child { border-right: none; }
+.tab-btn:last-child { border-left: none; }
+
+.tab-btn.active {
+  color: var(--cyan);
+  background: #070D18;
+  border-color: var(--navy-mid);
+  border-top: 2px solid var(--cyan);
+}
+
+.tab-btn:not(.active):hover {
+  color: var(--text);
+  background: var(--surface);
+}
+
+.tab-panels {
+  background: #070D18;
+  border: 1px solid var(--navy-mid);
+  border-top: none;
+  padding: 1.8rem;
+}
+
+.tab-panel {
+  display: none;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.9;
+  color: var(--text);
+}
+
+.tab-panel.active { display: block; }
+
+.tab-panel .cmd {
+  color: var(--green);
+  display: block;
+  margin: 0.3rem 0;
+}
+
+.tab-panel .comment {
+  color: var(--text-dim);
+  display: block;
+}
+
+/* ── FAQ ── */
+.faq {
+  padding: 6rem 0 8rem;
+}
+
+.faq-grid {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.faq-item {
+  background: var(--surface);
+  border: 1px solid var(--navy-mid);
+  overflow: hidden;
+  transition: border-color 0.3s;
+}
+
+.faq-item:hover { border-color: var(--cyan-dim); }
+
+.faq-q {
+  padding: 1.3rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.3s;
+  user-select: none;
+}
+
+.faq-q:hover { background: var(--navy-light); }
+
+.faq-q .chevron {
+  color: var(--cyan);
+  font-size: 1.2rem;
+  transition: transform 0.3s;
+}
+
+.faq-item.open .chevron { transform: rotate(180deg); }
+
+.faq-a {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s;
+}
+
+.faq-item.open .faq-a {
+  max-height: 200px;
+}
+
+.faq-a-inner {
+  padding: 0 1.5rem 1.3rem;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+}
+
+.faq-a-inner code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--cyan);
+  background: var(--navy-light);
+  padding: 0.15rem 0.4rem;
+}
+
+/* ── Footer ── */
+footer {
+  padding: 3rem 2rem;
+  text-align: center;
+  border-top: 1px solid var(--navy-mid);
+}
+
+footer p {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+footer a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+
+footer a:hover { text-decoration: underline; }
+
+/* ── Divider ── */
+.divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--navy-mid), transparent);
+}
+
+/* ── Observer animations ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .cycles-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .nav-links { display: none; }
+
+  .tab-buttons {
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    flex: 1 1 45%;
+    border: 1px solid var(--navy-mid);
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="scanlines"></div>
+
+<!-- Navigation -->
+<nav>
+  <div class="nav-brand">
+    <span class="dot"></span>
+    CustomGPT Triple Verification
+  </div>
+  <ul class="nav-links">
+    <li><a href="#cycles">How It Works</a></li>
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#install">Install</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container hero-content">
+    <div class="hero-label">Claude Code Plugin</div>
+    <h1><span class="accent">Triple Verification</span><br>for Claude Code</h1>
+    <p class="hero-tagline">Automatic code quality, security, and output verification on every operation. Zero placeholder code. Zero vulnerabilities. Full auditability.</p>
+    <a href="#install" class="hero-cta">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 1v10M4 8l4 4 4-4M2 14h12"/></svg>
+      Get Started
+    </a>
+  </div>
+  <div class="hero-glow"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Cycles -->
+<section class="cycles" id="cycles">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Three Gates</div>
+      <h2>Every Operation. Triple Checked.</h2>
+    </div>
+    <div class="cycles-grid">
+      <div class="cycle-card reveal reveal-delay-1">
+        <div class="cycle-number">Cycle 01</div>
+        <div class="cycle-icon">
+          <svg viewBox="0 0 32 32"><path d="M16 3L4 9v8c0 7.3 5.1 14.1 12 16 6.9-1.9 12-8.7 12-16V9L16 3z"/><path d="M12 16l3 3 5-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Code Quality</h3>
+        <p>Blocks TODO, placeholder, stub, and incomplete code before it ships. Every write and edit is verified.</p>
+      </div>
+      <div class="cycle-card reveal reveal-delay-2">
+        <div class="cycle-number">Cycle 02</div>
+        <div class="cycle-icon">
+          <svg viewBox="0 0 32 32"><rect x="8" y="14" width="16" height="14" rx="2"/><path d="M12 14V10a4 4 0 018 0v4"/><circle cx="16" cy="21" r="2"/><path d="M16 23v2"/></svg>
+        </div>
+        <h3>Security</h3>
+        <p>Blocks eval(), hardcoded secrets, SQL injection, XSS, and destructive commands across all tool types.</p>
+      </div>
+      <div class="cycle-card reveal reveal-delay-3">
+        <div class="cycle-number">Cycle 03</div>
+        <div class="cycle-icon">
+          <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><path d="M10 16l4 4 8-8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Output Quality</h3>
+        <p>Second AI reviews completeness, correctness, and quality before finishing. Multi-agent verification.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Terminal Demo -->
+<section class="demo" id="demo">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">In Action</div>
+      <h2>See It Block Bad Code</h2>
+    </div>
+    <div class="terminal reveal">
+      <div class="terminal-bar">
+        <span class="terminal-dot"></span>
+        <span class="terminal-dot"></span>
+        <span class="terminal-dot"></span>
+        <span class="terminal-title">claude &mdash; triple-verification</span>
+      </div>
+      <div class="terminal-body">
+        <div class="term-line">
+          <span class="term-prompt">$ </span><span class="term-command">claude "Create a Python function with a TODO"</span>
+        </div>
+        <div class="term-line"><br></div>
+        <div class="term-line">
+          <span class="term-blocked">&#x26D4; Triple Verification BLOCKED this operation:</span>
+        </div>
+        <div class="term-line"><br></div>
+        <div class="term-line">
+          <span class="term-rule">[Cycle 1 &mdash; no-todo]</span>
+          <span class="term-message">Code contains a TODO comment.</span>
+          <span class="term-message">Remove placeholder comments and implement the actual logic.</span>
+        </div>
+        <div class="term-line">
+          <span class="term-fix">Fix these issues and try again.<span class="term-cursor"></span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Install -->
+<section class="install" id="install">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Setup</div>
+      <h2>Install in 60 Seconds</h2>
+    </div>
+    <div class="tabs-container reveal">
+      <div class="tab-buttons">
+        <button class="tab-btn active" data-tab="windows">Windows</button>
+        <button class="tab-btn" data-tab="macos">macOS</button>
+        <button class="tab-btn" data-tab="linux">Linux</button>
+        <button class="tab-btn" data-tab="wsl">WSL</button>
+      </div>
+      <div class="tab-panels">
+        <div class="tab-panel active" id="tab-windows">
+          <span class="comment"># Clone the plugin</span>
+          <span class="cmd">git clone https://github.com/customgpt-ai/customgpt-claude-triple-verification.git</span>
+          <span class="cmd">cd customgpt-claude-triple-verification</span>
+          <br>
+          <span class="comment"># Run the installer</span>
+          <span class="cmd">.\install\install.ps1</span>
+          <br>
+          <span class="comment"># Verify it works</span>
+          <span class="cmd">node install\verify.mjs</span>
+        </div>
+        <div class="tab-panel" id="tab-macos">
+          <span class="comment"># Clone the plugin</span>
+          <span class="cmd">git clone https://github.com/customgpt-ai/customgpt-claude-triple-verification.git</span>
+          <span class="cmd">cd customgpt-claude-triple-verification</span>
+          <br>
+          <span class="comment"># Run the installer</span>
+          <span class="cmd">bash install/install.sh</span>
+          <br>
+          <span class="comment"># Verify it works</span>
+          <span class="cmd">node install/verify.mjs</span>
+        </div>
+        <div class="tab-panel" id="tab-linux">
+          <span class="comment"># Clone the plugin</span>
+          <span class="cmd">git clone https://github.com/customgpt-ai/customgpt-claude-triple-verification.git</span>
+          <span class="cmd">cd customgpt-claude-triple-verification</span>
+          <br>
+          <span class="comment"># Run the installer</span>
+          <span class="cmd">bash install/install.sh</span>
+          <br>
+          <span class="comment"># Verify it works</span>
+          <span class="cmd">node install/verify.mjs</span>
+        </div>
+        <div class="tab-panel" id="tab-wsl">
+          <span class="comment"># Note: Claude Code on Windows runs natively.</span>
+          <span class="comment"># Only use this if running Claude Code inside WSL.</span>
+          <br>
+          <span class="comment"># Clone the plugin</span>
+          <span class="cmd">git clone https://github.com/customgpt-ai/customgpt-claude-triple-verification.git</span>
+          <span class="cmd">cd customgpt-claude-triple-verification</span>
+          <br>
+          <span class="comment"># Run the installer (will warn about WSL)</span>
+          <span class="cmd">bash install/install.sh</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Questions</div>
+      <h2>Frequently Asked</h2>
+    </div>
+    <div class="faq-grid reveal">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          How much latency does this add?
+          <span class="chevron">&#x25BC;</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">&lt;50ms per operation for Cycle 1 + 2 (regex pattern matching). Cycle 3 uses a prompt hook, which adds a second AI review pass before Claude completes its response.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          What about false positives?
+          <span class="chevron">&#x25BC;</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">Rules can be disabled per-project by creating a <code>.claude/triple-verify-config.json</code> file with a <code>disabledRules</code> array. User-level and project-level configs are both supported.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Can I customize the rules?
+          <span class="chevron">&#x25BC;</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">Yes. Configuration merges from three sources: plugin defaults, user-level config at <code>~/.claude/triple-verify-config.json</code>, and project-level config. You can disable any rule or adjust strictness.</div>
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          Does it work with MCP tools?
+          <span class="chevron">&#x25BC;</span>
+        </div>
+        <div class="faq-a">
+          <div class="faq-a-inner">Yes. All MCP tool inputs (any tool prefixed with <code>mcp__</code>) are verified through Cycle 2 security rules. URL inputs are checked for HTTPS, and all string values are scanned.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>Built by <a href="https://customgpt.ai" target="_blank" rel="noopener">CustomGPT.ai</a> &middot; MIT License &middot; 2026</p>
+</footer>
+
+<script>
+// Tab switching
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+// FAQ accordion
+function toggleFaq(el) {
+  el.closest('.faq-item').classList.toggle('open');
+}
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
