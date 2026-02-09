@@ -18,7 +18,7 @@ The plugin supports three install methods:
 
 | Method | Command | Auto-Updates |
 |--------|---------|--------------|
-| **Marketplace** (recommended) | `/install kirollosatef/customgpt-claude-triple-verification` | Yes |
+| **Marketplace** (recommended) | `/plugin marketplace add kirollosatef/customgpt-claude-triple-verification` | Yes |
 | **npx** | `npx @customgpt/claude-triple-verification` | Per-run |
 | **Manual** | `git clone` + install script | No (`git pull`) |
 

@@ -5,7 +5,7 @@ All notable changes to the CustomGPT Triple Verification plugin.
 ## [1.0.1] - 2026-02-09
 
 ### Added
-- Marketplace install support (`/install kirollosatef/customgpt-claude-triple-verification`)
+- Marketplace install support (`/plugin marketplace add kirollosatef/customgpt-claude-triple-verification`)
 - npx installer (`npx @customgpt/claude-triple-verification`)
 - Team rollout template (`docs/team-setup/settings.json`) for auto-prompting employees
 - Auto-updates via marketplace — push to repo, everyone gets it

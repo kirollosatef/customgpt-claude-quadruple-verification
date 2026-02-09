@@ -23,10 +23,11 @@ Three verification cycles run automatically on every Claude Code operation:
 
 ### Option 1: Marketplace (Recommended)
 
-One command inside Claude Code — includes auto-updates:
+Two commands inside Claude Code — includes auto-updates:
 
 ```
-/install kirollosatef/customgpt-claude-triple-verification
+/plugin marketplace add kirollosatef/customgpt-claude-triple-verification
+/plugin install customgpt-claude-triple-verification@kirollosatef-customgpt-claude-triple-verification
 ```
 
 That's it. The plugin auto-updates every session.

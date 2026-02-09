@@ -16,12 +16,13 @@ node --version  # Check current version
 Download from [nodejs.org](https://nodejs.org).
 
 ### Marketplace install not working
-**Symptom:** `/install` command not recognized or plugin not appearing
+**Symptom:** `/plugin` command fails or plugin not appearing
 
 **Fix:**
 1. Make sure you're running the command inside Claude Code (not a regular terminal)
-2. Use the full path: `/install kirollosatef/customgpt-claude-triple-verification`
-3. Check that Claude Code is up to date
+2. Add the marketplace first: `/plugin marketplace add kirollosatef/customgpt-claude-triple-verification`
+3. Then install: `/plugin install customgpt-claude-triple-verification@kirollosatef-customgpt-claude-triple-verification`
+4. Check that Claude Code is up to date
 
 ### npx install fails
 **Symptom:** `npx @customgpt/claude-triple-verification` errors

@@ -83,7 +83,9 @@ try {
     Write-Host "  4. Check audit logs in .claude/triple-verify-audit/" -ForegroundColor White
     Write-Host ""
     Write-Host "For auto-updates, use the marketplace instead:" -ForegroundColor Yellow
-    Write-Host "  In Claude Code: /install kirollosatef/customgpt-claude-triple-verification" -ForegroundColor Cyan
+    Write-Host "  In Claude Code:" -ForegroundColor White
+    Write-Host "    /plugin marketplace add kirollosatef/customgpt-claude-triple-verification" -ForegroundColor Cyan
+    Write-Host "    /plugin install customgpt-claude-triple-verification@kirollosatef-customgpt-claude-triple-verification" -ForegroundColor Cyan
     Write-Host ""
 } catch {
     Write-Host "WARNING: Verification failed, but plugin is installed" -ForegroundColor Yellow

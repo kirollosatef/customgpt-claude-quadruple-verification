@@ -106,7 +106,8 @@ async function main() {
   console.log('  \x1b[1mFor auto-updates, use the marketplace instead:\x1b[0m');
   console.log();
   console.log('    In Claude Code, run:');
-  console.log(`    \x1b[36m/install ${REPO}\x1b[0m`);
+  console.log(`    \x1b[36m/plugin marketplace add ${REPO}\x1b[0m`);
+  console.log(`    \x1b[36m/plugin install ${PLUGIN_NAME}@kirollosatef-customgpt-claude-triple-verification\x1b[0m`);
   console.log();
   console.log('  The marketplace version auto-updates on every session.');
   console.log();
