@@ -860,137 +860,188 @@ nav {
   background: var(--bg-light);
 }
 
-.examples-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.5rem;
-  max-width: 1100px;
+.examples-container {
+  max-width: 800px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
-.example-card {
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 14px;
+.example-terminal {
+  background: #0d1117;
+  border-radius: 12px;
   overflow: hidden;
-  transition: all 0.4s ease;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.25);
 }
 
-.example-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.1);
-}
-
-.example-header {
-  padding: 1.2rem 1.4rem;
-  border-bottom: 1px solid var(--border);
+.example-terminal-bar {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.5rem;
+  padding: 0.8rem 1rem;
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
 }
 
-.example-cycle {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.example-terminal-bar .dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.example-terminal-bar .dot:nth-child(1) { background: #ff5f56; }
+.example-terminal-bar .dot:nth-child(2) { background: #ffbd2e; }
+.example-terminal-bar .dot:nth-child(3) { background: #27c93f; }
+
+.example-terminal-bar .title {
+  flex: 1;
+  text-align: center;
   font-family: var(--font-mono);
   font-size: 0.7rem;
-  font-weight: 700;
-  color: #fff;
+  color: #8b949e;
+  margin-right: 2.5rem;
 }
 
-.example-card:nth-child(1) .example-cycle { background: linear-gradient(135deg, #3B82F6, #1D4ED8); }
-.example-card:nth-child(2) .example-cycle { background: linear-gradient(135deg, #EF4444, #B91C1C); }
-.example-card:nth-child(3) .example-cycle { background: linear-gradient(135deg, #10B981, #047857); }
-
-.example-title {
-  font-family: var(--font-display);
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.example-subtitle {
+.example-terminal-body {
+  padding: 1.5rem;
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--text-dim);
-  margin-top: 0.15rem;
+  font-size: 0.8rem;
+  line-height: 1.8;
+  color: #c9d1d9;
+  min-height: 200px;
 }
 
-.example-code {
-  padding: 1.2rem 1.4rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  line-height: 1.7;
-  background: #1a1a2e;
-  color: #e2e8f0;
-  min-height: 140px;
-  position: relative;
-  overflow: hidden;
-}
-
-.example-code .line {
+.example-line {
   opacity: 0;
-  transform: translateX(-10px);
-}
-
-.example-card.animate .example-code .line {
-  animation: code-line-in 0.4s forwards;
-}
-
-.example-card.animate .example-code .line:nth-child(1) { animation-delay: 0.1s; }
-.example-card.animate .example-code .line:nth-child(2) { animation-delay: 0.2s; }
-.example-card.animate .example-code .line:nth-child(3) { animation-delay: 0.3s; }
-.example-card.animate .example-code .line:nth-child(4) { animation-delay: 0.4s; }
-.example-card.animate .example-code .line:nth-child(5) { animation-delay: 0.5s; }
-.example-card.animate .example-code .line:nth-child(6) { animation-delay: 0.6s; }
-
-@keyframes code-line-in {
-  to { opacity: 1; transform: translateX(0); }
-}
-
-.example-code .comment { color: #6b7280; }
-.example-code .keyword { color: #c084fc; }
-.example-code .string { color: #4ade80; }
-.example-code .function { color: #60a5fa; }
-.example-code .bad { color: #f87171; background: rgba(248, 113, 113, 0.15); padding: 0 0.3rem; border-radius: 3px; }
-
-.example-result {
-  padding: 1rem 1.4rem;
-  border-top: 1px solid var(--border);
   display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.3rem;
 }
 
-.example-result.blocked {
-  background: rgba(239, 68, 68, 0.06);
-  color: #DC2626;
+.example-terminal.animate .example-line {
+  animation: line-appear 0.1s forwards;
 }
 
-.example-result.blocked svg {
-  width: 16px;
-  height: 16px;
-  stroke: #DC2626;
+.example-terminal.animate .example-line:nth-child(1) { animation-delay: 0.3s; }
+.example-terminal.animate .example-line:nth-child(2) { animation-delay: 0.5s; }
+.example-terminal.animate .example-line:nth-child(3) { animation-delay: 1.8s; }
+.example-terminal.animate .example-line:nth-child(4) { animation-delay: 2.0s; }
+.example-terminal.animate .example-line:nth-child(5) { animation-delay: 2.2s; }
+.example-terminal.animate .example-line:nth-child(6) { animation-delay: 2.5s; }
+.example-terminal.animate .example-line:nth-child(7) { animation-delay: 2.8s; }
+.example-terminal.animate .example-line:nth-child(8) { animation-delay: 3.1s; }
+.example-terminal.animate .example-line:nth-child(9) { animation-delay: 3.4s; }
+.example-terminal.animate .example-line:nth-child(10) { animation-delay: 3.7s; }
+
+@keyframes line-appear {
+  to { opacity: 1; }
 }
 
-.example-result .rule {
-  color: var(--text-dim);
-  margin-left: auto;
+.example-line .prompt {
+  color: #7ee787;
+  margin-right: 0.5rem;
+}
+
+.example-line .user-input {
+  color: #c9d1d9;
+}
+
+.example-line .typing-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 15px;
+  background: #58a6ff;
+  margin-left: 2px;
+  animation: cursor-blink 0.8s step-end infinite;
+  vertical-align: text-bottom;
+}
+
+.example-terminal.animate .example-line:nth-child(2) .typing-cursor {
+  animation: cursor-blink 0.8s step-end infinite, cursor-hide 0s 1.7s forwards;
+}
+
+@keyframes cursor-blink {
+  50% { opacity: 0; }
+}
+
+@keyframes cursor-hide {
+  to { display: none; opacity: 0; }
+}
+
+.example-line .generating {
+  color: #8b949e;
+  font-style: italic;
+}
+
+.example-line .generating::after {
+  content: '';
+  animation: dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes dots {
+  0% { content: ''; }
+  25% { content: '.'; }
+  50% { content: '..'; }
+  75% { content: '...'; }
+}
+
+.example-line .blocked-icon {
+  color: #f85149;
+  margin-right: 0.5rem;
+}
+
+.example-line .blocked-text {
+  color: #f85149;
+  font-weight: 600;
+}
+
+.example-line .rule-tag {
+  display: inline-block;
+  background: rgba(248, 81, 73, 0.15);
+  color: #f85149;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
   font-size: 0.7rem;
+  margin-left: 0.5rem;
 }
 
-@media (max-width: 900px) {
-  .examples-grid {
-    grid-template-columns: 1fr;
-    max-width: 500px;
-  }
+.example-line .message {
+  color: #8b949e;
+  margin-left: 1.5rem;
+  display: block;
+  width: 100%;
 }
+
+.example-line .code-snippet {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 0.8rem 1rem;
+  margin: 0.5rem 0 0.5rem 1.5rem;
+  width: calc(100% - 1.5rem);
+}
+
+.example-line .code-snippet .kw { color: #ff7b72; }
+.example-line .code-snippet .fn { color: #d2a8ff; }
+.example-line .code-snippet .cm { color: #8b949e; }
+.example-line .code-snippet .str { color: #a5d6ff; }
+.example-line .code-snippet .bad { color: #f85149; text-decoration: underline wavy; }
+
+.example-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.example-badge.c1 { background: rgba(59, 130, 246, 0.15); color: #58a6ff; }
+.example-badge.c2 { background: rgba(248, 81, 73, 0.15); color: #f85149; }
+.example-badge.c3 { background: rgba(63, 185, 80, 0.15); color: #3fb950; }
 
 /* ── Footer ── */
 footer {
@@ -1406,79 +1457,90 @@ footer a:hover { text-decoration: underline; }
 <section class="examples" id="examples">
   <div class="container">
     <div class="section-header reveal">
-      <div class="section-tag">Real Examples</div>
-      <h2>See What Gets Blocked</h2>
+      <div class="section-tag">Live Demo</div>
+      <h2>Watch It In Action</h2>
     </div>
-    <div class="examples-grid">
-      <!-- Cycle 1 Example -->
-      <div class="example-card reveal reveal-delay-1">
-        <div class="example-header">
-          <div class="example-cycle">C1</div>
-          <div>
-            <div class="example-title">Code Quality</div>
-            <div class="example-subtitle">Placeholder detection</div>
+    <div class="examples-container">
+      <!-- Example 1: Cycle 1 - TODO blocked -->
+      <div class="example-terminal reveal" id="example1">
+        <div class="example-terminal-bar">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="title">claude code — triple verification</span>
+        </div>
+        <div class="example-terminal-body">
+          <div class="example-line">
+            <span class="prompt">$</span>
+            <span class="user-input">claude "Create a Python tax calculator"</span>
           </div>
-        </div>
-        <div class="example-code">
-          <div class="line"><span class="keyword">def</span> <span class="function">calculate_tax</span>(amount):</div>
-          <div class="line">    <span class="comment"># <span class="bad">TODO: implement tax logic</span></span></div>
-          <div class="line">    <span class="keyword">pass</span></div>
-          <div class="line"></div>
-          <div class="line"><span class="keyword">def</span> <span class="function">get_discount</span>(user):</div>
-          <div class="line">    <span class="keyword">raise</span> <span class="bad">NotImplementedError</span></div>
-        </div>
-        <div class="example-result blocked">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"/><path d="M5 5l6 6M11 5l-6 6"/></svg>
-          BLOCKED
-          <span class="rule">no-todo, no-empty-pass</span>
+          <div class="example-line">
+            <span class="generating">Claude is writing code</span><span class="typing-cursor"></span>
+          </div>
+          <div class="example-line">
+            <div class="code-snippet">
+              <div><span class="kw">def</span> <span class="fn">calculate_tax</span>(amount):</div>
+              <div>    <span class="cm"># <span class="bad">TODO: implement tax logic</span></span></div>
+              <div>    <span class="kw">pass</span></div>
+            </div>
+          </div>
+          <div class="example-line">
+            <span class="example-badge c1">CYCLE 1</span>
+          </div>
+          <div class="example-line">
+            <span class="blocked-icon">⛔</span>
+            <span class="blocked-text">Triple Verification BLOCKED this operation</span>
+          </div>
+          <div class="example-line">
+            <span class="message">[no-todo] Code contains a TODO comment</span>
+          </div>
+          <div class="example-line">
+            <span class="message">[no-empty-pass] Python file contains a bare "pass" statement</span>
+          </div>
+          <div class="example-line">
+            <span class="message" style="color: #58a6ff;">→ Claude must fix these issues before proceeding</span>
+          </div>
         </div>
       </div>
 
-      <!-- Cycle 2 Example -->
-      <div class="example-card reveal reveal-delay-2">
-        <div class="example-header">
-          <div class="example-cycle">C2</div>
-          <div>
-            <div class="example-title">Security</div>
-            <div class="example-subtitle">Vulnerability detection</div>
+      <!-- Example 2: Cycle 2 - Security blocked -->
+      <div class="example-terminal reveal" id="example2">
+        <div class="example-terminal-bar">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="title">claude code — triple verification</span>
+        </div>
+        <div class="example-terminal-body">
+          <div class="example-line">
+            <span class="prompt">$</span>
+            <span class="user-input">claude "Add API integration to my app"</span>
           </div>
-        </div>
-        <div class="example-code">
-          <div class="line"><span class="keyword">const</span> apiKey = <span class="bad">"sk-abc123..."</span>;</div>
-          <div class="line"></div>
-          <div class="line"><span class="keyword">const</span> result = <span class="bad">eval</span>(userInput);</div>
-          <div class="line"></div>
-          <div class="line">element.<span class="bad">innerHTML</span> = data;</div>
-          <div class="line"></div>
-        </div>
-        <div class="example-result blocked">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6"/><path d="M5 5l6 6M11 5l-6 6"/></svg>
-          BLOCKED
-          <span class="rule">no-secrets, no-eval, no-xss</span>
-        </div>
-      </div>
-
-      <!-- Cycle 3 Example -->
-      <div class="example-card reveal reveal-delay-3">
-        <div class="example-header">
-          <div class="example-cycle">C3</div>
-          <div>
-            <div class="example-title">Output Quality</div>
-            <div class="example-subtitle">AI self-review</div>
+          <div class="example-line">
+            <span class="generating">Claude is writing code</span><span class="typing-cursor"></span>
           </div>
-        </div>
-        <div class="example-code">
-          <div class="line"><span class="comment">// Before completing response:</span></div>
-          <div class="line"><span class="keyword">✓</span> Completeness check</div>
-          <div class="line"><span class="keyword">✓</span> Quality verification</div>
-          <div class="line"><span class="keyword">✓</span> Correctness validation</div>
-          <div class="line"><span class="keyword">✓</span> Security review</div>
-          <div class="line"><span class="keyword">✓</span> Test coverage check</div>
-        </div>
-        <div class="example-result blocked" style="background: rgba(16, 185, 129, 0.06); color: #047857;">
-          <svg viewBox="0 0 16 16" fill="none" stroke="#047857" stroke-width="2"><circle cx="8" cy="8" r="6"/><path d="M5 8l2 2 4-4"/></svg>
-          VERIFIED
-          <span class="rule">5-point review passed</span>
+          <div class="example-line">
+            <div class="code-snippet">
+              <div><span class="kw">const</span> API_KEY = <span class="bad">"sk-proj-abc123def456"</span>;</div>
+              <div><span class="kw">const</span> data = <span class="bad">eval</span>(response.body);</div>
+            </div>
+          </div>
+          <div class="example-line">
+            <span class="example-badge c2">CYCLE 2</span>
+          </div>
+          <div class="example-line">
+            <span class="blocked-icon">⛔</span>
+            <span class="blocked-text">Triple Verification BLOCKED this operation</span>
+          </div>
+          <div class="example-line">
+            <span class="message">[no-hardcoded-secrets] Hardcoded API key detected</span>
+          </div>
+          <div class="example-line">
+            <span class="message">[no-eval] eval() is a critical security risk</span>
+          </div>
+          <div class="example-line">
+            <span class="message" style="color: #58a6ff;">→ Use environment variables and JSON.parse() instead</span>
+          </div>
         </div>
       </div>
     </div>
@@ -1514,16 +1576,16 @@ const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
       entry.target.classList.add('visible');
-      // Trigger animation for example cards
-      if (entry.target.classList.contains('example-card')) {
-        setTimeout(() => entry.target.classList.add('animate'), 300);
+      // Trigger animation for example terminals
+      if (entry.target.classList.contains('example-terminal')) {
+        setTimeout(() => entry.target.classList.add('animate'), 400);
       }
     }
   });
-}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+}, { threshold: 0.2, rootMargin: '0px 0px -50px 0px' });
 
 document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-document.querySelectorAll('.example-card').forEach(el => observer.observe(el));
+document.querySelectorAll('.example-terminal').forEach(el => observer.observe(el));
 
 // Copy to clipboard
 function copyCode(btn) {
