@@ -1,0 +1,21 @@
+{
+  "name": "customgpt-claude-triple-verification",
+  "version": "1.0.0",
+  "description": "Triple verification for Claude Code — automatically blocks placeholder code, security vulnerabilities, and ensures output quality on every operation. Built by CustomGPT.ai for production teams.",
+  "author": {
+    "name": "CustomGPT.ai",
+    "url": "https://customgpt.ai"
+  },
+  "keywords": [
+    "verification",
+    "security",
+    "code-quality",
+    "audit",
+    "enterprise"
+  ],
+  "engines": {
+    "claude-code": ">=1.0.0",
+    "node": ">=18.0.0"
+  },
+  "hooks": "../hooks/hooks.json"
+}

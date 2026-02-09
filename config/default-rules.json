@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0",
+  "failMode": "open",
+  "disabledRules": [],
+  "cycle1": {
+    "enabled": true,
+    "description": "Code quality verification — blocks TODO, placeholder, stub code"
+  },
+  "cycle2": {
+    "enabled": true,
+    "description": "Security verification — blocks eval, hardcoded secrets, injection patterns"
+  },
+  "cycle3": {
+    "enabled": true,
+    "description": "Output quality verification — second AI reviews completeness and correctness"
+  },
+  "audit": {
+    "enabled": true,
+    "logDir": null,
+    "description": "Full operation audit trail in JSONL format"
+  },
+  "strictness": {
+    "blockOnFirstViolation": false,
+    "reportAllViolations": true
+  }
+}
