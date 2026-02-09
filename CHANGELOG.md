@@ -2,6 +2,29 @@
 
 All notable changes to the CustomGPT Triple Verification plugin.
 
+## [1.0.1] - 2026-02-09
+
+### Added
+- Marketplace install support (`/install kirollosatef/customgpt-claude-triple-verification`)
+- npx installer (`npx @customgpt/claude-triple-verification`)
+- Team rollout template (`docs/team-setup/settings.json`) for auto-prompting employees
+- Auto-updates via marketplace — push to repo, everyone gets it
+- `.claude-plugin/marketplace.json` catalog file
+- `bin/cli.mjs` cross-platform CLI installer
+
+### Changed
+- Restructured `hooks/hooks.json` from flat array to event-keyed format (`PreToolUse`, `PostToolUse`, `Stop`)
+- Updated hook variable from `$CLAUDE_PLUGIN_DIR` to `${CLAUDE_PLUGIN_ROOT}`
+- Fixed `plugin.json` hooks path from `../hooks/hooks.json` to `./hooks/hooks.json`
+- Added `homepage`, `repository`, `license` to `plugin.json`
+- Removed `engines` from `plugin.json` (not in plugin schema)
+- Scoped npm package name to `@customgpt/claude-triple-verification`
+- Added `bin` and `files` fields to `package.json`
+- Fixed repository URL to `kirollosatef/customgpt-claude-triple-verification`
+- Updated README with marketplace/npx/manual install options, team setup, auto-updates
+- Updated landing page install tabs (Marketplace/npx/Manual) and FAQ
+- Updated all docs (ARCHITECTURE, TROUBLESHOOTING) with correct paths and new features
+
 ## [1.0.0] - 2026-02-09
 
 ### Added

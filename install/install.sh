@@ -89,6 +89,9 @@ if node "$TARGET_DIR/install/verify.mjs"; then
     echo "  3. Try: 'Create a Python file with a TODO'"
     echo "  4. Check audit logs in .claude/triple-verify-audit/"
     echo ""
+    echo -e "${YELLOW}For auto-updates, use the marketplace instead:${NC}"
+    echo -e "  In Claude Code: ${CYAN}/install kirollosatef/customgpt-claude-triple-verification${NC}"
+    echo ""
 else
     echo -e "${YELLOW}WARNING: Verification had issues, but plugin is installed${NC}"
 fi

@@ -82,6 +82,9 @@ try {
     Write-Host "  3. Try: 'Create a Python file with a TODO'" -ForegroundColor White
     Write-Host "  4. Check audit logs in .claude/triple-verify-audit/" -ForegroundColor White
     Write-Host ""
+    Write-Host "For auto-updates, use the marketplace instead:" -ForegroundColor Yellow
+    Write-Host "  In Claude Code: /install kirollosatef/customgpt-claude-triple-verification" -ForegroundColor Cyan
+    Write-Host ""
 } catch {
     Write-Host "WARNING: Verification failed, but plugin is installed" -ForegroundColor Yellow
     Write-Host "  Error: $_" -ForegroundColor Gray

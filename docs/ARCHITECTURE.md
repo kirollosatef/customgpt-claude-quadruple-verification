@@ -12,6 +12,18 @@ CustomGPT Triple Verification is a Claude Code plugin that intercepts every tool
 4. **One dispatcher per event** — Hooks run in parallel, so ordering is handled internally
 5. **Cross-OS** — Works on Windows, macOS, Linux, and WSL
 
+## Installation Methods
+
+The plugin supports three install methods:
+
+| Method | Command | Auto-Updates |
+|--------|---------|--------------|
+| **Marketplace** (recommended) | `/install kirollosatef/customgpt-claude-triple-verification` | Yes |
+| **npx** | `npx @customgpt/claude-triple-verification` | Per-run |
+| **Manual** | `git clone` + install script | No (`git pull`) |
+
+For team rollout, commit a `.claude/settings.json` with the plugin reference — team members get prompted to install automatically.
+
 ## Hook Lifecycle
 
 Claude Code provides three hook events:
@@ -21,6 +33,33 @@ Claude Code provides three hook events:
 | `PreToolUse` | Before a tool call executes | Yes (command type) |
 | `PostToolUse` | After a tool call completes | No (command type) |
 | `Stop` | Before Claude finishes responding | Yes (prompt type) |
+
+### Hook Configuration Format
+
+Hooks are defined in `hooks/hooks.json` using an event-keyed structure:
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/pre-tool-gate.mjs\"",
+            "timeout": 10000
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [ ... ],
+    "Stop": [ ... ]
+  }
+}
+```
+
+The `${CLAUDE_PLUGIN_ROOT}` variable is resolved by Claude Code to the plugin's installation directory.
 
 ## Verification Cycles
 
@@ -80,6 +119,11 @@ Logs every operation to a JSONL file for full auditability. Each entry includes:
 ## File Structure
 
 ```
+.claude-plugin/
+├── plugin.json                # Plugin manifest
+└── marketplace.json           # Marketplace catalog
+bin/
+└── cli.mjs                    # npx entry point (installer)
 scripts/
 ├── pre-tool-gate.mjs          # Main dispatcher for PreToolUse
 ├── post-tool-audit.mjs        # Audit logger for PostToolUse
@@ -88,6 +132,20 @@ scripts/
     ├── audit-logger.mjs       # JSONL structured logging
     ├── config-loader.mjs      # Multi-source config merge
     └── utils.mjs              # Stdin reader, helpers
+hooks/
+└── hooks.json                 # Hook configuration (event-keyed)
+config/
+└── default-rules.json         # Default rule settings
+install/
+├── install.ps1                # Windows installer
+├── install.sh                 # macOS/Linux/WSL installer
+└── verify.mjs                 # Post-install smoke test
+docs/
+├── ARCHITECTURE.md            # This file
+├── RULES.md                   # Rule reference with examples
+├── TROUBLESHOOTING.md         # Common issues and fixes
+└── team-setup/
+    └── settings.json          # Template for team rollout
 ```
 
 ## Data Flow

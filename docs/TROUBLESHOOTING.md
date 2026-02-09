@@ -15,6 +15,22 @@ node --version  # Check current version
 ```
 Download from [nodejs.org](https://nodejs.org).
 
+### Marketplace install not working
+**Symptom:** `/install` command not recognized or plugin not appearing
+
+**Fix:**
+1. Make sure you're running the command inside Claude Code (not a regular terminal)
+2. Use the full path: `/install kirollosatef/customgpt-claude-triple-verification`
+3. Check that Claude Code is up to date
+
+### npx install fails
+**Symptom:** `npx @customgpt/claude-triple-verification` errors
+
+**Fix:**
+1. Check Node.js >= 18: `node --version`
+2. Clear npm cache: `npm cache clean --force`
+3. Try with explicit registry: `npx --registry https://registry.npmjs.org @customgpt/claude-triple-verification`
+
 ### WSL vs Windows confusion
 **Symptom:** Plugin installed in WSL but Claude Code runs on Windows (or vice versa)
 
@@ -41,15 +57,19 @@ bash install/install.sh
 **Symptom:** Claude Code doesn't seem to check anything
 
 **Debug steps:**
-1. Verify the plugin is installed:
-   ```bash
-   ls ~/.claude/plugins/customgpt-triple-verification/
+1. Check plugin is installed via marketplace:
    ```
-2. Check hook configuration exists:
-   ```bash
-   cat ~/.claude/plugins/customgpt-triple-verification/hooks/hooks.json
+   /plugins
    ```
-3. Run Claude with debug logging:
+2. Or verify the manual install directory exists:
+   ```bash
+   ls ~/.claude/plugins/customgpt-claude-triple-verification/
+   ```
+3. Check hook configuration exists:
+   ```bash
+   cat ~/.claude/plugins/customgpt-claude-triple-verification/hooks/hooks.json
+   ```
+4. Run Claude with debug logging:
    ```bash
    claude --debug hooks
    ```
@@ -110,7 +130,7 @@ Get-ChildItem ~/.claude/triple-verify-audit/*.jsonl |
 **Debug steps:**
 1. Verify JSON syntax is valid:
    ```bash
-   node -e "console.log(JSON.parse(require('fs').readFileSync('.claude/triple-verify-config.json', 'utf-8')))"
+   node -e "import('node:fs').then(fs => console.log(JSON.parse(fs.readFileSync('.claude/triple-verify-config.json', 'utf-8'))))"
    ```
 2. Check file location — must be at:
    - User: `~/.claude/triple-verify-config.json`
@@ -129,6 +149,18 @@ Run the smoke test to verify rules work:
 ```bash
 node install/verify.mjs
 ```
+
+---
+
+## Update Issues
+
+### Not getting latest version
+**Symptom:** New rules or features aren't appearing
+
+Depends on your install method:
+- **Marketplace:** Auto-updates every session. Restart Claude Code to pick up changes.
+- **npx:** Run `npx @customgpt/claude-triple-verification` again to get the latest.
+- **Manual (git clone):** Run `git pull` in the plugin directory, then re-run the install script.
 
 ---
 
