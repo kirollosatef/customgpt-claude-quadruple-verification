@@ -2,8 +2,8 @@
  * Audit Logger — Writes JSONL structured logs for every tool operation.
  *
  * Log location priority:
- *   1. $PROJECT/.claude/triple-verify-audit/SESSION_ID.jsonl
- *   2. ~/.claude/triple-verify-audit/SESSION_ID.jsonl (fallback)
+ *   1. $PROJECT/.claude/quadruple-verify-audit/SESSION_ID.jsonl
+ *   2. ~/.claude/quadruple-verify-audit/SESSION_ID.jsonl (fallback)
  *
  * Zero dependencies — Node.js built-ins only.
  */
@@ -24,7 +24,7 @@ function getAuditDir(config = {}) {
 
   // Try project-level first
   const projectRoot = findProjectRoot(process.cwd());
-  const projectAuditDir = resolve(projectRoot, '.claude', 'triple-verify-audit');
+  const projectAuditDir = resolve(projectRoot, '.claude', 'quadruple-verify-audit');
 
   // Check if .claude dir exists (or can be created) at project root
   const claudeDir = resolve(projectRoot, '.claude');
@@ -33,7 +33,7 @@ function getAuditDir(config = {}) {
   }
 
   // Fallback to user home
-  return resolve(homedir(), '.claude', 'triple-verify-audit');
+  return resolve(homedir(), '.claude', 'quadruple-verify-audit');
 }
 
 /**
@@ -79,7 +79,7 @@ export function logEntry(entry, config = {}) {
     appendFileSync(logPath, JSON.stringify(record) + '\n', 'utf-8');
   } catch (err) {
     // Audit logging must never block operations
-    process.stderr.write(`[triple-verify] Audit log error: ${err.message}\n`);
+    process.stderr.write(`[quadruple-verify] Audit log error: ${err.message}\n`);
   }
 }
 

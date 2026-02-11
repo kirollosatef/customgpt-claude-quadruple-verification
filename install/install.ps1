@@ -1,11 +1,11 @@
-# CustomGPT Triple Verification — Windows PowerShell Installer
+# CustomGPT Quadruple Verification — Windows PowerShell Installer
 # Usage: .\install.ps1
 
 $ErrorActionPreference = "Stop"
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host " CustomGPT Triple Verification Installer" -ForegroundColor Cyan
+Write-Host " CustomGPT Quadruple Verification Installer" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
@@ -53,7 +53,7 @@ if (-not (Test-Path $pluginsDir)) {
     New-Item -ItemType Directory -Path $pluginsDir -Force | Out-Null
 }
 
-$targetDir = Join-Path $pluginsDir "customgpt-triple-verification"
+$targetDir = Join-Path $pluginsDir "customgpt-quadruple-verification"
 
 # Copy plugin files (or create symlink for development)
 if (Test-Path $targetDir) {
@@ -78,14 +78,14 @@ try {
     Write-Host ""
     Write-Host "Next steps:" -ForegroundColor Cyan
     Write-Host "  1. Open any project with Claude Code" -ForegroundColor White
-    Write-Host "  2. The triple verification hooks are now active" -ForegroundColor White
+    Write-Host "  2. The quadruple verification hooks are now active" -ForegroundColor White
     Write-Host "  3. Try: 'Create a Python file with a TODO'" -ForegroundColor White
-    Write-Host "  4. Check audit logs in .claude/triple-verify-audit/" -ForegroundColor White
+    Write-Host "  4. Check audit logs in .claude/quadruple-verify-audit/" -ForegroundColor White
     Write-Host ""
     Write-Host "For auto-updates, use the marketplace instead:" -ForegroundColor Yellow
     Write-Host "  In Claude Code:" -ForegroundColor White
-    Write-Host "    /plugin marketplace add kirollosatef/customgpt-claude-triple-verification" -ForegroundColor Cyan
-    Write-Host "    /plugin install customgpt-claude-triple-verification@kirollosatef-customgpt-claude-triple-verification" -ForegroundColor Cyan
+    Write-Host "    /plugin marketplace add kirollosatef/customgpt-claude-quadruple-verification" -ForegroundColor Cyan
+    Write-Host "    /plugin install customgpt-claude-quadruple-verification@kirollosatef-customgpt-claude-quadruple-verification" -ForegroundColor Cyan
     Write-Host ""
 } catch {
     Write-Host "WARNING: Verification failed, but plugin is installed" -ForegroundColor Yellow

@@ -2,7 +2,7 @@
 
 ## Overview
 
-CustomGPT Triple Verification is a Claude Code plugin that intercepts every tool operation through the hook system. It runs three verification cycles and an audit logger, all implemented in Node.js with zero npm dependencies.
+CustomGPT Quadruple Verification is a Claude Code plugin that intercepts every tool operation through the hook system. It runs four verification cycles and an audit logger, all implemented in Node.js with zero npm dependencies.
 
 ## Design Principles
 
@@ -18,8 +18,8 @@ The plugin supports three install methods:
 
 | Method | Command | Auto-Updates |
 |--------|---------|--------------|
-| **Marketplace** (recommended) | `/plugin marketplace add kirollosatef/customgpt-claude-triple-verification` | Yes |
-| **npx** | `npx @customgpt/claude-triple-verification` | Per-run |
+| **Marketplace** (recommended) | `/plugin marketplace add kirollosatef/customgpt-claude-quadruple-verification` | Yes |
+| **npx** | `npx @customgpt/claude-quadruple-verification` | Per-run |
 | **Manual** | `git clone` + install script | No (`git pull`) |
 
 For team rollout, commit a `.claude/settings.json` with the plugin reference — team members get prompted to install automatically.
@@ -200,9 +200,9 @@ Stop hook (session end):
 ```
 config/default-rules.json          # Plugin defaults
         ↓ merge
-~/.claude/triple-verify-config.json    # User overrides
+~/.claude/quadruple-verify-config.json    # User overrides
         ↓ merge
-$PROJECT/.claude/triple-verify-config.json  # Project overrides
+$PROJECT/.claude/quadruple-verify-config.json  # Project overrides
         ↓
     Final config
 ```

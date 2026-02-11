@@ -1,5 +1,5 @@
 /**
- * Edge Case & Stress Tests for Triple Verification Plugin.
+ * Edge Case & Stress Tests for Quadruple Verification Plugin.
  * Tests boundary conditions, unusual inputs, cross-cycle interactions,
  * and real-world scenarios that unit tests may miss.
  */

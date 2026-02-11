@@ -1,5 +1,5 @@
 {
   "plugins": [
-    "kirollosatef/customgpt-claude-triple-verification"
+    "kirollosatef/customgpt-claude-quadruple-verification"
   ]
 }

@@ -64,7 +64,7 @@ await failOpen(async () => {
     const reasons = allViolations.map(v =>
       `[Cycle ${v.cycle} - ${v.ruleId}] ${v.message}`
     );
-    const reasonText = `Triple Verification BLOCKED this operation:\n\n${reasons.join('\n\n')}\n\nFix these issues and try again.`;
+    const reasonText = `Quadruple Verification BLOCKED this operation:\n\n${reasons.join('\n\n')}\n\nFix these issues and try again.`;
 
     logPreTool(toolName, 'block', allViolations, { fileExt, context });
     deny(reasonText);

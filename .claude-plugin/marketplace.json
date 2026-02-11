@@ -1,11 +1,11 @@
 {
-  "name": "customgpt-triple-verification",
+  "name": "customgpt-quadruple-verification",
   "owner": {
     "name": "CustomGPT.ai"
   },
   "plugins": [
     {
-      "name": "customgpt-claude-triple-verification",
+      "name": "customgpt-claude-quadruple-verification",
       "source": "./",
       "description": "Automatic code quality, security, and output verification on every Claude Code operation. Blocks placeholder code, security vulnerabilities, and ensures output quality."
     }

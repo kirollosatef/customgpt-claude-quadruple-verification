@@ -1,13 +1,13 @@
 {
-  "name": "customgpt-claude-triple-verification",
-  "version": "1.0.0",
-  "description": "Triple verification for Claude Code — automatically blocks placeholder code, security vulnerabilities, and ensures output quality on every operation. Built by CustomGPT.ai for production teams.",
+  "name": "customgpt-claude-quadruple-verification",
+  "version": "1.1.0",
+  "description": "Quadruple verification for Claude Code — automatically blocks placeholder code, security vulnerabilities, and ensures output quality on every operation. Built by CustomGPT.ai for production teams.",
   "author": {
     "name": "CustomGPT.ai",
     "url": "https://customgpt.ai"
   },
   "homepage": "https://customgpt.ai",
-  "repository": "kirollosatef/customgpt-claude-triple-verification",
+  "repository": "kirollosatef/customgpt-claude-quadruple-verification",
   "license": "MIT",
   "keywords": [
     "verification",

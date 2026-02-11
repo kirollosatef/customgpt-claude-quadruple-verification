@@ -3,8 +3,8 @@
  *
  * Merge chain (later overrides earlier):
  *   1. Plugin defaults (config/default-rules.json)
- *   2. User config (~/.claude/triple-verify-config.json)
- *   3. Project config ($PROJECT/.claude/triple-verify-config.json)
+ *   2. User config (~/.claude/quadruple-verify-config.json)
+ *   3. Project config ($PROJECT/.claude/quadruple-verify-config.json)
  *
  * Zero dependencies — Node.js built-ins only.
  */
@@ -36,19 +36,19 @@ function loadDefaults() {
 }
 
 /**
- * Load user-level configuration (~/.claude/triple-verify-config.json).
+ * Load user-level configuration (~/.claude/quadruple-verify-config.json).
  */
 function loadUserConfig() {
-  const userPath = resolve(homedir(), '.claude', 'triple-verify-config.json');
+  const userPath = resolve(homedir(), '.claude', 'quadruple-verify-config.json');
   return loadJSONFile(userPath);
 }
 
 /**
- * Load project-level configuration ($PROJECT/.claude/triple-verify-config.json).
+ * Load project-level configuration ($PROJECT/.claude/quadruple-verify-config.json).
  */
 function loadProjectConfig() {
   const projectRoot = findProjectRoot(process.cwd());
-  const projectPath = resolve(projectRoot, '.claude', 'triple-verify-config.json');
+  const projectPath = resolve(projectRoot, '.claude', 'quadruple-verify-config.json');
   return loadJSONFile(projectPath);
 }
 
@@ -61,7 +61,7 @@ function loadJSONFile(filePath) {
     const raw = readFileSync(filePath, 'utf-8');
     return JSON.parse(raw);
   } catch (err) {
-    process.stderr.write(`[triple-verify] Config warning: Could not load ${filePath}: ${err.message}\n`);
+    process.stderr.write(`[quadruple-verify] Config warning: Could not load ${filePath}: ${err.message}\n`);
     return {};
   }
 }

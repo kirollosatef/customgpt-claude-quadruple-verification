@@ -35,8 +35,8 @@ function assert(condition, message) {
 }
 
 console.log('');
-console.log('Triple Verification Smoke Test');
-console.log('==============================');
+console.log('Quadruple Verification Smoke Test');
+console.log('=================================');
 console.log('');
 
 // ─── Cycle 1: Code Quality ─────────────────────────────────────────────
