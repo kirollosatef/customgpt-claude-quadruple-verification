@@ -9,7 +9,7 @@ describe('Audit Logger', () => {
   let tempDir;
 
   beforeEach(() => {
-    tempDir = mkdtempSync(join(tmpdir(), 'triple-verify-test-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'quadruple-verify-test-'));
   });
 
   afterEach(() => {

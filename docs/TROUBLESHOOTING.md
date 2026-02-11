@@ -1,6 +1,6 @@
 # Troubleshooting
 
-Common issues and solutions when using the CustomGPT Triple Verification plugin.
+Common issues and solutions when using the CustomGPT Quadruple Verification plugin.
 
 ---
 
@@ -20,17 +20,17 @@ Download from [nodejs.org](https://nodejs.org).
 
 **Fix:**
 1. Make sure you're running the command inside Claude Code (not a regular terminal)
-2. Add the marketplace first: `/plugin marketplace add kirollosatef/customgpt-claude-triple-verification`
-3. Then install: `/plugin install customgpt-claude-triple-verification@kirollosatef-customgpt-claude-triple-verification`
+2. Add the marketplace first: `/plugin marketplace add kirollosatef/customgpt-claude-quadruple-verification`
+3. Then install: `/plugin install customgpt-claude-quadruple-verification@kirollosatef-customgpt-claude-quadruple-verification`
 4. Check that Claude Code is up to date
 
 ### npx install fails
-**Symptom:** `npx @customgpt/claude-triple-verification` errors
+**Symptom:** `npx @customgpt/claude-quadruple-verification` errors
 
 **Fix:**
 1. Check Node.js >= 18: `node --version`
 2. Clear npm cache: `npm cache clean --force`
-3. Try with explicit registry: `npx --registry https://registry.npmjs.org @customgpt/claude-triple-verification`
+3. Try with explicit registry: `npx --registry https://registry.npmjs.org @customgpt/claude-quadruple-verification`
 
 ### WSL vs Windows confusion
 **Symptom:** Plugin installed in WSL but Claude Code runs on Windows (or vice versa)
@@ -64,11 +64,11 @@ bash install/install.sh
    ```
 2. Or verify the manual install directory exists:
    ```bash
-   ls ~/.claude/plugins/customgpt-claude-triple-verification/
+   ls ~/.claude/plugins/customgpt-claude-quadruple-verification/
    ```
 3. Check hook configuration exists:
    ```bash
-   cat ~/.claude/plugins/customgpt-claude-triple-verification/hooks/hooks.json
+   cat ~/.claude/plugins/customgpt-claude-quadruple-verification/hooks/hooks.json
    ```
 4. Run Claude with debug logging:
    ```bash
@@ -102,21 +102,21 @@ Common false positives and fixes:
 
 The plugin typically adds <50ms per operation. If you're seeing more:
 1. Check that the audit log directory is on a fast filesystem
-2. Check for disk space issues in `.claude/triple-verify-audit/`
+2. Check for disk space issues in `.claude/quadruple-verify-audit/`
 3. The Stop hook (Cycle 3) adds latency because it's a prompt-based review
 
 ### Audit logs growing large
-**Symptom:** `.claude/triple-verify-audit/` directory consuming disk space
+**Symptom:** `.claude/quadruple-verify-audit/` directory consuming disk space
 
 Each session creates a separate JSONL file. Clean up old sessions:
 ```bash
 # Remove logs older than 30 days
-find ~/.claude/triple-verify-audit/ -name "*.jsonl" -mtime +30 -delete
+find ~/.claude/quadruple-verify-audit/ -name "*.jsonl" -mtime +30 -delete
 ```
 
 Or on Windows PowerShell:
 ```powershell
-Get-ChildItem ~/.claude/triple-verify-audit/*.jsonl |
+Get-ChildItem ~/.claude/quadruple-verify-audit/*.jsonl |
   Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-30) } |
   Remove-Item
 ```
@@ -131,11 +131,11 @@ Get-ChildItem ~/.claude/triple-verify-audit/*.jsonl |
 **Debug steps:**
 1. Verify JSON syntax is valid:
    ```bash
-   node -e "import('node:fs').then(fs => console.log(JSON.parse(fs.readFileSync('.claude/triple-verify-config.json', 'utf-8'))))"
+   node -e "import('node:fs').then(fs => console.log(JSON.parse(fs.readFileSync('.claude/quadruple-verify-config.json', 'utf-8'))))"
    ```
 2. Check file location — must be at:
-   - User: `~/.claude/triple-verify-config.json`
-   - Project: `$PROJECT/.claude/triple-verify-config.json`
+   - User: `~/.claude/quadruple-verify-config.json`
+   - Project: `$PROJECT/.claude/quadruple-verify-config.json`
 3. Check that `disabledRules` is an array of rule ID strings
 
 ### Rules not matching expected content
@@ -160,7 +160,7 @@ node install/verify.mjs
 
 Depends on your install method:
 - **Marketplace:** Auto-updates every session. Restart Claude Code to pick up changes.
-- **npx:** Run `npx @customgpt/claude-triple-verification` again to get the latest.
+- **npx:** Run `npx @customgpt/claude-quadruple-verification` again to get the latest.
 - **Manual (git clone):** Run `git pull` in the plugin directory, then re-run the install script.
 
 ---

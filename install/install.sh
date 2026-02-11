@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# CustomGPT Triple Verification — macOS/Linux/WSL Installer
+# CustomGPT Quadruple Verification — macOS/Linux/WSL Installer
 # Usage: bash install.sh
 
 set -euo pipefail
@@ -13,7 +13,7 @@ NC='\033[0m'
 
 echo ""
 echo -e "${CYAN}========================================${NC}"
-echo -e "${CYAN} CustomGPT Triple Verification Installer${NC}"
+echo -e "${CYAN} CustomGPT Quadruple Verification Installer${NC}"
 echo -e "${CYAN}========================================${NC}"
 echo ""
 
@@ -63,7 +63,7 @@ PLUGIN_SOURCE="$(dirname "$SCRIPT_DIR")"
 
 CLAUDE_DIR="$HOME/.claude"
 PLUGINS_DIR="$CLAUDE_DIR/plugins"
-TARGET_DIR="$PLUGINS_DIR/customgpt-triple-verification"
+TARGET_DIR="$PLUGINS_DIR/customgpt-quadruple-verification"
 
 mkdir -p "$PLUGINS_DIR"
 
@@ -85,14 +85,14 @@ if node "$TARGET_DIR/install/verify.mjs"; then
     echo ""
     echo -e "${CYAN}Next steps:${NC}"
     echo "  1. Open any project with Claude Code"
-    echo "  2. The triple verification hooks are now active"
+    echo "  2. The quadruple verification hooks are now active"
     echo "  3. Try: 'Create a Python file with a TODO'"
-    echo "  4. Check audit logs in .claude/triple-verify-audit/"
+    echo "  4. Check audit logs in .claude/quadruple-verify-audit/"
     echo ""
     echo -e "${YELLOW}For auto-updates, use the marketplace instead:${NC}"
     echo -e "  In Claude Code:"
-    echo -e "    ${CYAN}/plugin marketplace add kirollosatef/customgpt-claude-triple-verification${NC}"
-    echo -e "    ${CYAN}/plugin install customgpt-claude-triple-verification@kirollosatef-customgpt-claude-triple-verification${NC}"
+    echo -e "    ${CYAN}/plugin marketplace add kirollosatef/customgpt-claude-quadruple-verification${NC}"
+    echo -e "    ${CYAN}/plugin install customgpt-claude-quadruple-verification@kirollosatef-customgpt-claude-quadruple-verification${NC}"
     echo ""
 else
     echo -e "${YELLOW}WARNING: Verification had issues, but plugin is installed${NC}"

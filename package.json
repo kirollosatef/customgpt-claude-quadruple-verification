@@ -1,10 +1,10 @@
 {
-  "name": "@customgpt/claude-triple-verification",
-  "version": "1.0.0",
-  "description": "Triple verification plugin for Claude Code — blocks placeholder code, security vulnerabilities, and ensures output quality before every operation.",
+  "name": "@customgpt/claude-quadruple-verification",
+  "version": "1.1.0",
+  "description": "Quadruple verification plugin for Claude Code — blocks placeholder code, security vulnerabilities, and ensures output quality before every operation.",
   "type": "module",
   "bin": {
-    "customgpt-triple-verify": "./bin/cli.mjs"
+    "customgpt-quadruple-verify": "./bin/cli.mjs"
   },
   "files": [
     "bin/",
@@ -39,6 +39,6 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kirollosatef/customgpt-claude-triple-verification"
+    "url": "https://github.com/kirollosatef/customgpt-claude-quadruple-verification"
   }
 }

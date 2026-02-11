@@ -1,5 +1,5 @@
 node_modules/
-.claude/triple-verify-audit/
+.claude/quadruple-verify-audit/
 *.log
 .DS_Store
 Thumbs.db

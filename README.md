@@ -1,12 +1,12 @@
-# CustomGPT Triple Verification for Claude Code
+# CustomGPT Quadruple Verification for Claude Code
 
-Automatic triple verification on every Claude Code operation. Blocks placeholder code, security vulnerabilities, and ensures output quality — before anything ships.
+Automatic quadruple verification on every Claude Code operation. Blocks placeholder code, security vulnerabilities, and ensures output quality — before anything ships.
 
 Built by [CustomGPT.ai](https://customgpt.ai) for production teams running Claude Code at scale.
 
 ## What It Does
 
-Three verification cycles run automatically on every Claude Code operation:
+Four verification cycles run automatically on every Claude Code operation:
 
 | Cycle | When | What |
 |-------|------|------|
@@ -27,8 +27,8 @@ Three verification cycles run automatically on every Claude Code operation:
 Two commands inside Claude Code — includes auto-updates:
 
 ```
-/plugin marketplace add kirollosatef/customgpt-claude-triple-verification
-/plugin install customgpt-claude-triple-verification@kirollosatef-customgpt-claude-triple-verification
+/plugin marketplace add kirollosatef/customgpt-claude-quadruple-verification
+/plugin install customgpt-claude-quadruple-verification@kirollosatef-customgpt-claude-quadruple-verification
 ```
 
 That's it. The plugin auto-updates every session.
@@ -38,22 +38,22 @@ That's it. The plugin auto-updates every session.
 Run from any terminal:
 
 ```bash
-npx @customgpt/claude-triple-verification
+npx @customgpt/claude-quadruple-verification
 ```
 
 ### Option 3: Manual Install
 
 **Windows (PowerShell):**
 ```powershell
-git clone https://github.com/kirollosatef/customgpt-claude-triple-verification.git
-cd customgpt-claude-triple-verification
+git clone https://github.com/kirollosatef/customgpt-claude-quadruple-verification.git
+cd customgpt-claude-quadruple-verification
 .\install\install.ps1
 ```
 
 **macOS / Linux:**
 ```bash
-git clone https://github.com/kirollosatef/customgpt-claude-triple-verification.git
-cd customgpt-claude-triple-verification
+git clone https://github.com/kirollosatef/customgpt-claude-quadruple-verification.git
+cd customgpt-claude-quadruple-verification
 bash install/install.sh
 ```
 
@@ -66,7 +66,7 @@ node install/verify.mjs
 1. Start Claude Code in any project
 2. Ask: *"Create a Python file with a TODO comment"*
 3. The operation should be **BLOCKED** with an explanation
-4. Check audit logs in `.claude/triple-verify-audit/`
+4. Check audit logs in `.claude/quadruple-verify-audit/`
 
 ## Team Setup
 
@@ -76,7 +76,7 @@ To auto-prompt all team members to install the plugin, commit this file to each 
 ```json
 {
   "plugins": [
-    "kirollosatef/customgpt-claude-triple-verification"
+    "kirollosatef/customgpt-claude-quadruple-verification"
   ]
 }
 ```
@@ -127,8 +127,8 @@ User Request → Claude generates code
 Configuration merges from three sources (later overrides earlier):
 
 1. **Plugin defaults** — `config/default-rules.json`
-2. **User config** — `~/.claude/triple-verify-config.json`
-3. **Project config** — `$PROJECT/.claude/triple-verify-config.json`
+2. **User config** — `~/.claude/quadruple-verify-config.json`
+3. **Project config** — `$PROJECT/.claude/quadruple-verify-config.json`
 
 ### Example: Disable a Rule
 ```json
@@ -138,7 +138,7 @@ Configuration merges from three sources (later overrides earlier):
 ```
 
 ### Example: Project-Level Config
-Create `.claude/triple-verify-config.json` in your project:
+Create `.claude/quadruple-verify-config.json` in your project:
 ```json
 {
   "disabledRules": ["no-empty-pass"],

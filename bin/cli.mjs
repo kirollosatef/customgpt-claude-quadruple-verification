@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-// CustomGPT Triple Verification — npx installer
-// Usage: npx @customgpt/claude-triple-verification
+// CustomGPT Quadruple Verification — npx installer
+// Usage: npx @customgpt/claude-quadruple-verification
 
 import { existsSync, mkdirSync, cpSync, readFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
@@ -12,8 +12,8 @@ import { fileURLToPath } from 'node:url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 
-const PLUGIN_NAME = 'customgpt-claude-triple-verification';
-const REPO = 'kirollosatef/customgpt-claude-triple-verification';
+const PLUGIN_NAME = 'customgpt-claude-quadruple-verification';
+const REPO = 'kirollosatef/customgpt-claude-quadruple-verification';
 
 // ── Helpers ──
 
@@ -34,8 +34,8 @@ function getPluginsDir() {
 
 async function main() {
   console.log();
-  console.log('  \x1b[1mCustomGPT Triple Verification\x1b[0m — Installer');
-  console.log('  ─────────────────────────────────────────');
+  console.log('  \x1b[1mCustomGPT Quadruple Verification\x1b[0m — Installer');
+  console.log('  ──────────────────────────────────────────────');
   console.log();
 
   // 1. Check Node version
@@ -107,7 +107,7 @@ async function main() {
   console.log();
   console.log('    In Claude Code, run:');
   console.log(`    \x1b[36m/plugin marketplace add ${REPO}\x1b[0m`);
-  console.log(`    \x1b[36m/plugin install ${PLUGIN_NAME}@kirollosatef-customgpt-claude-triple-verification\x1b[0m`);
+  console.log(`    \x1b[36m/plugin install ${PLUGIN_NAME}@kirollosatef-customgpt-claude-quadruple-verification\x1b[0m`);
   console.log();
   console.log('  The marketplace version auto-updates on every session.');
   console.log();

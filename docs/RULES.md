@@ -1,6 +1,6 @@
 # Verification Rules Reference
 
-All rules that the triple verification plugin checks, with examples of blocked and allowed code.
+All rules that the quadruple verification plugin checks, with examples of blocked and allowed code.
 
 ---
 

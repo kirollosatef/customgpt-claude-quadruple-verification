@@ -64,7 +64,7 @@ await failOpen(async () => {
       return `File: ${filePath}\n${msgs}`;
     }).join('\n\n');
 
-    deny(`Triple Verification BLOCKED session completion:\n\n${summary}\n\nFix these research file issues before completing.`);
+    deny(`Quadruple Verification BLOCKED session completion:\n\n${summary}\n\nFix these research file issues before completing.`);
   } else {
     approve();
   }
