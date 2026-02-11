@@ -65,7 +65,7 @@
           },
           {
             "type": "prompt",
-            "prompt": "Before completing your response, perform a triple verification review:\n\n1. COMPLETENESS: Did you fully implement what was asked? No placeholders, stubs, or TODOs left behind?\n2. QUALITY: Is the code production-ready? Proper error handling, edge cases considered, no shortcuts?\n3. CORRECTNESS: Does the implementation actually solve the problem? Any logical errors?\n4. SECURITY: Any hardcoded secrets, injection risks, or unsafe patterns?\n5. TESTS: If tests were expected, did you write or verify them?\n\nIf ANY check fails, continue working — do NOT present incomplete work as finished.\nIf all checks pass, proceed with your response."
+            "prompt": "MANDATORY — You MUST display the Quadruple Verification Quality Gateway at the END of every response. No exceptions. Do NOT skip this section.\n\nAfter your complete response, add this section:\n\n---\n**Quadruple Verification — Quality Gateway**\n\n| Check | Status |\n|-------|--------|\n| **Completeness** — Fully addressed what was asked? No placeholders, stubs, or TODOs? | PASS or FAIL |\n| **Quality** — Production-ready? Proper error handling, edge cases considered? | PASS or FAIL |\n| **Correctness** — Solves the actual problem? No logical errors? | PASS or FAIL |\n| **Security** — No hardcoded secrets, injection risks, or unsafe patterns? | PASS or FAIL |\n\nReplace each status with the actual result. If ANY check is FAIL, fix the issues BEFORE presenting your response. Do NOT deliver work with any FAIL status.\n\nFor simple conversational answers without code or research, display a condensed single-line: **Quadruple Verification: All checks passed**"
           }
         ]
       }
