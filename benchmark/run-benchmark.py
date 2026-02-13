@@ -308,20 +308,14 @@ def compile_results():
         "Adversarial": "category_6_adversarial"
     }
 
-    # Build multi-run index: collect ALL runs per test_id (keyed by (test_id, run_number))
-    a_by_id_run = {}
+    # Build multi-run index: collect ALL runs per test_id
     a_by_id_all = {}  # test_id -> [list of scored results across runs]
     for r in group_a:
-        key = (r["test_id"], r.get("run_number", 1))
-        a_by_id_run[key] = r
         if r["scores"]["weighted_total"] is not None:
             a_by_id_all.setdefault(r["test_id"], []).append(r)
 
-    b_by_id_run = {}
     b_by_id_all = {}
     for r in group_b:
-        key = (r["test_id"], r.get("run_number", 1))
-        b_by_id_run[key] = r
         if r["scores"]["weighted_total"] is not None:
             b_by_id_all.setdefault(r["test_id"], []).append(r)
 
@@ -345,7 +339,7 @@ def compile_results():
             "token_stats": calculate_stats(tokens) if tokens else None,
             "avg_tokens": statistics.mean(tokens) if tokens else 0,
             "n_runs": len(runs),
-            "violations_caught": runs[0].get("violations_caught", []),
+            "violations_caught": list({rule for r in runs for rule in r.get("violations_caught", [])}),
         }
 
     b_by_id_avg = {}
@@ -367,7 +361,7 @@ def compile_results():
             "token_stats": calculate_stats(tokens) if tokens else None,
             "avg_tokens": statistics.mean(tokens) if tokens else 0,
             "n_runs": len(runs),
-            "violations_caught": runs[0].get("violations_caught", []),
+            "violations_caught": list({rule for r in runs for rule in r.get("violations_caught", [])}),
         }
 
     # Matched tests: scored in BOTH groups
