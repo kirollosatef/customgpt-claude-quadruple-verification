@@ -129,6 +129,15 @@ For each test case:
 
 | **Source Quality** | 25% | No sources, vague claims | Some sources, some vague | All claims sourced with URLs |
 
+### Grading Model Selection
+
+The auto-grader (`auto-grade.py`) uses **Claude Sonnet 4.5** (`claude-sonnet-4-5-20250929`) for LLM-based grading. This was chosen over Haiku because:
+
+1. **Accuracy:** Haiku produced 7 grading failures (unparseable JSON) and penalized verbose-but-thorough plugin output as "documentation instead of code"
+2. **Retry logic:** The grader retries up to 3 times with exponential backoff (2s, 4s, 8s) on parse failures or timeouts
+3. **Smart summarization:** Instead of hard-truncating output at 15K characters (which cut off plugin output that runs 2-3x longer), the grader uses a smart summarizer that preserves the first 30% and last 30% of long output, with a summary of what was trimmed including verification metadata counts
+4. **Timeout:** Grading timeout is 180s (vs 120s for Haiku) to accommodate Sonnet's longer processing time
+
 ### Step 4: Record Results
 
 Fill in `results/run-YYYY-MM-DD.json` with all measurements.
@@ -137,11 +146,14 @@ Fill in `results/run-YYYY-MM-DD.json` with all measurements.
 
 ## Statistical Validity
 
-- **Minimum sample:** Run each test case 3 times per group (A and B) to account for variance
+- **Minimum sample:** Run each test case at least 3 times per group (n >= 3) for statistical validity
 - **Total runs:** 45 test cases x 3 runs x 2 groups = 270 runs
-- **Quick mode:** Run each test case 1 time per group = 90 runs (for initial signal)
-- **Comparison:** Use mean scores per category and overall
-- **Significance:** Report standard deviation; difference must exceed 1 SD to claim improvement
+- **Quick mode:** Run each test case 1 time per group = 90 runs (for initial signal; results are CONDITIONAL)
+- **Comparison:** Use mean scores per test (averaged across runs), then aggregate per category
+- **Standard deviation:** Reported per test and per category; used for confidence intervals
+- **95% Confidence Intervals:** Computed using t-distribution (accounts for small sample sizes)
+- **Outlier detection:** Scores more than 2 standard deviations from the test mean are flagged
+- **Significance threshold:** For a category improvement claim, the 95% CIs of Group A and Group B must not overlap
 
 ---
 
@@ -159,7 +171,8 @@ Fill in `results/run-YYYY-MM-DD.json` with all measurements.
 
 ### Pass/Fail Criteria
 
-- **PASS:** Net Value >= 14% improvement AND no category scores worse
+- **PASS:** Net Value >= 14% improvement AND no category regresses AND n >= 3 with non-overlapping 95% CIs
+- **CONDITIONAL PASS:** Net Value >= 14% AND no category regresses, but n < 3 (insufficient runs for statistical confidence)
 - **FAIL:** Net Value < 14% OR any category regresses
 
 ---

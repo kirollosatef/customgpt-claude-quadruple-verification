@@ -16,8 +16,9 @@ Usage:
 import argparse
 import json
 import os
-import subprocess
 import re
+import subprocess
+import time
 from pathlib import Path
 from safety_scanner import safety_scan
 
@@ -37,6 +38,42 @@ def load_test_case_map():
             tc["_category"] = category
             tc_map[tc["id"]] = tc
     return tc_map
+
+
+def summarize_output(text, max_chars=50000):
+    """Smart summarization that preserves grading-relevant content.
+
+    If text is under max_chars, return as-is.
+    Otherwise keep the first 30% and last 30% of the budget, and insert a
+    summary of what was trimmed (including verification metadata counts).
+    """
+    if len(text) <= max_chars:
+        return text
+
+    budget = max_chars
+    head_size = int(budget * 0.30)
+    tail_size = int(budget * 0.30)
+
+    head = text[:head_size]
+    tail = text[-tail_size:]
+    middle = text[head_size:-tail_size] if tail_size > 0 else text[head_size:]
+
+    # Count verification-relevant markers in the trimmed middle
+    verification_markers = {
+        "tool_calls": len(re.findall(r"tool_use|function_call|<tool", middle)),
+        "code_blocks": len(re.findall(r"```", middle)) // 2,
+        "verification_mentions": len(re.findall(r"verif|audit|check|review", middle, re.IGNORECASE)),
+        "error_mentions": len(re.findall(r"error|warning|fail", middle, re.IGNORECASE)),
+    }
+    markers_str = ", ".join(f"{k}={v}" for k, v in verification_markers.items() if v > 0)
+
+    separator = (
+        f"\n\n[... {len(middle):,} characters trimmed for grading. "
+        f"Trimmed section contained: {markers_str or 'standard output'}. "
+        f"Full output was {len(text):,} characters. ...]\n\n"
+    )
+
+    return head + separator + tail
 
 
 def build_grading_prompt(test_case, output_text, group):
@@ -64,7 +101,7 @@ def build_grading_prompt(test_case, output_text, group):
 {test_case["prompt"]}
 
 ## Claude's Output
-{output_text[:15000]}
+{summarize_output(output_text)}
 
 ## Grading Rubric (score each 0-100)
 
@@ -122,32 +159,46 @@ def grade_single(test_case, group, run_number=1):
 
     print(f"  Grading {test_id} ({test_case['name']})...", end=" ", flush=True)
 
-    # Run Claude to grade (using haiku for speed/cost)
-    try:
-        proc = subprocess.run(
-            ["claude", "-p", grading_prompt, "--output-format", "json", "--model", "claude-haiku-4-5-20251001"],
-            capture_output=True, text=True, timeout=120,
-            encoding="utf-8", errors="replace"
-        )
-        raw_output = proc.stdout
-    except subprocess.TimeoutExpired:
-        print("TIMEOUT")
-        return None
-    except FileNotFoundError:
-        print("ERROR: claude CLI not found")
-        return None
+    # Run Claude to grade (using Sonnet for accuracy)
+    scores = None
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        try:
+            proc = subprocess.run(
+                ["claude", "-p", grading_prompt, "--output-format", "json", "--model", "claude-sonnet-4-5-20250929"],
+                capture_output=True, text=True, timeout=180,
+                encoding="utf-8", errors="replace"
+            )
+            raw_output = proc.stdout
+        except subprocess.TimeoutExpired:
+            print(f"TIMEOUT (attempt {attempt}/{max_attempts})", end=" ", flush=True)
+            if attempt < max_attempts:
+                time.sleep(2 ** attempt)
+                continue
+            print()
+            return None
+        except FileNotFoundError:
+            print("ERROR: claude CLI not found")
+            return None
 
-    # Parse Claude's JSON response
-    try:
-        parsed = json.loads(raw_output)
-        grading_text = parsed.get("result", raw_output) if isinstance(parsed, dict) else raw_output
-    except (json.JSONDecodeError, TypeError):
-        grading_text = raw_output
+        # Parse Claude's JSON response
+        try:
+            parsed = json.loads(raw_output)
+            grading_text = parsed.get("result", raw_output) if isinstance(parsed, dict) else raw_output
+        except (json.JSONDecodeError, TypeError):
+            grading_text = raw_output
 
-    # Extract the scores JSON from the grading text
-    scores = extract_scores(grading_text)
+        # Extract the scores JSON from the grading text
+        scores = extract_scores(grading_text)
+        if scores is not None:
+            break
+
+        print(f"PARSE FAIL (attempt {attempt}/{max_attempts})", end=" ", flush=True)
+        if attempt < max_attempts:
+            time.sleep(2 ** attempt)
+
     if scores is None:
-        print(f"FAILED to parse scores from: {grading_text[:200]}")
+        print(f"FAILED to parse scores after {max_attempts} attempts: {grading_text[:200]}")
         return None
 
     # Calculate weighted total
@@ -165,9 +216,9 @@ def grade_single(test_case, group, run_number=1):
         rules = set(v["rule"] for v in safety_violations)
         print(f"  -> {len(safety_violations)} safety violation(s): {', '.join(rules)}")
 
-    # Update result file
-    notes = scores.pop("notes", "")
-    result["scores"] = scores
+    # Update result file (avoid mutating scores dict)
+    notes = scores.get("notes", "")
+    result["scores"] = {k: v for k, v in scores.items() if k != "notes"}
     result["notes"] = notes
     result["safety_violations"] = safety_violations
 

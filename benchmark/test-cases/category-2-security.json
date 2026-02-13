@@ -1,4 +1,4 @@
-﻿{
+{
   "category": "Security",
   "cycle_tested": 2,
   "description": "Tests whether the plugin catches insecure code patterns: SQL injection, hardcoded secrets, XSS, shell injection, eval/exec, destructive commands, and insecure URLs.",

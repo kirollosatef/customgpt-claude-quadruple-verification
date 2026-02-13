@@ -20,8 +20,10 @@ Prerequisites:
 
 import argparse
 import json
+import math
 import os
 import re
+import statistics
 import subprocess
 import time
 from datetime import datetime
@@ -235,6 +237,41 @@ def calculate_weighted_score(scores):
     )
 
 
+def calculate_stats(values):
+    """Calculate mean, stddev, 95% CI, and count for a list of values."""
+    n = len(values)
+    if n == 0:
+        return {"mean": 0, "stddev": 0, "ci_95_lower": 0, "ci_95_upper": 0, "count": 0}
+    mean = statistics.mean(values)
+    if n < 2:
+        return {"mean": round(mean, 2), "stddev": 0, "ci_95_lower": round(mean, 2),
+                "ci_95_upper": round(mean, 2), "count": n}
+    stddev = statistics.stdev(values)
+    # 95% CI using t-distribution approximation (1.96 for large n, wider for small n)
+    t_value = 1.96 if n >= 30 else {2: 12.71, 3: 4.30, 4: 3.18, 5: 2.78,
+                                      6: 2.57, 7: 2.45, 8: 2.36, 9: 2.31,
+                                      10: 2.26}.get(n, 2.0)
+    margin = t_value * (stddev / math.sqrt(n))
+    return {
+        "mean": round(mean, 2),
+        "stddev": round(stddev, 2),
+        "ci_95_lower": round(mean - margin, 2),
+        "ci_95_upper": round(mean + margin, 2),
+        "count": n
+    }
+
+
+def detect_outliers(values):
+    """Flag indices of values more than 2 SD from the mean."""
+    if len(values) < 3:
+        return []
+    mean = statistics.mean(values)
+    stddev = statistics.stdev(values)
+    if stddev == 0:
+        return []
+    return [i for i, v in enumerate(values) if abs(v - mean) > 2 * stddev]
+
+
 def compile_results():
     """Compile results from both groups into the final summary."""
     group_a_file = RESULTS_DIR / "group-A-results.json"
@@ -271,21 +308,74 @@ def compile_results():
         "Adversarial": "category_6_adversarial"
     }
 
-    # Build index of scored tests by test_id for matched-only analysis
-    a_by_id = {}
+    # Build multi-run index: collect ALL runs per test_id (keyed by (test_id, run_number))
+    a_by_id_run = {}
+    a_by_id_all = {}  # test_id -> [list of scored results across runs]
     for r in group_a:
+        key = (r["test_id"], r.get("run_number", 1))
+        a_by_id_run[key] = r
         if r["scores"]["weighted_total"] is not None:
-            a_by_id[r["test_id"]] = r
-    b_by_id = {}
+            a_by_id_all.setdefault(r["test_id"], []).append(r)
+
+    b_by_id_run = {}
+    b_by_id_all = {}
     for r in group_b:
+        key = (r["test_id"], r.get("run_number", 1))
+        b_by_id_run[key] = r
         if r["scores"]["weighted_total"] is not None:
-            b_by_id[r["test_id"]] = r
+            b_by_id_all.setdefault(r["test_id"], []).append(r)
+
+    # Build averaged-per-test dicts for backward compatibility
+    a_by_id_avg = {}
+    for tid, runs in a_by_id_all.items():
+        scores = [r["scores"]["weighted_total"] for r in runs]
+        latencies = [r["latency_seconds"] for r in runs]
+        tokens = [r["token_count"] for r in runs if r["token_count"] is not None]
+        a_by_id_avg[tid] = {
+            "test_id": tid,
+            "category": runs[0]["category"],
+            "scores_all": scores,
+            "score_stats": calculate_stats(scores),
+            "score_outliers": detect_outliers(scores),
+            "avg_score": statistics.mean(scores),
+            "latencies_all": latencies,
+            "latency_stats": calculate_stats(latencies),
+            "avg_latency": statistics.mean(latencies),
+            "tokens_all": tokens,
+            "token_stats": calculate_stats(tokens) if tokens else None,
+            "avg_tokens": statistics.mean(tokens) if tokens else 0,
+            "n_runs": len(runs),
+            "violations_caught": runs[0].get("violations_caught", []),
+        }
+
+    b_by_id_avg = {}
+    for tid, runs in b_by_id_all.items():
+        scores = [r["scores"]["weighted_total"] for r in runs]
+        latencies = [r["latency_seconds"] for r in runs]
+        tokens = [r["token_count"] for r in runs if r["token_count"] is not None]
+        b_by_id_avg[tid] = {
+            "test_id": tid,
+            "category": runs[0]["category"],
+            "scores_all": scores,
+            "score_stats": calculate_stats(scores),
+            "score_outliers": detect_outliers(scores),
+            "avg_score": statistics.mean(scores),
+            "latencies_all": latencies,
+            "latency_stats": calculate_stats(latencies),
+            "avg_latency": statistics.mean(latencies),
+            "tokens_all": tokens,
+            "token_stats": calculate_stats(tokens) if tokens else None,
+            "avg_tokens": statistics.mean(tokens) if tokens else 0,
+            "n_runs": len(runs),
+            "violations_caught": runs[0].get("violations_caught", []),
+        }
 
     # Matched tests: scored in BOTH groups
-    matched_ids = set(a_by_id.keys()) & set(b_by_id.keys())
+    matched_ids = set(a_by_id_avg.keys()) & set(b_by_id_avg.keys())
     total_a = len(group_a)
     total_b = len(group_b)
-    print(f"Matched tests: {len(matched_ids)} of {max(total_a, total_b)}")
+    max_runs = max((a_by_id_avg[tid]["n_runs"] for tid in matched_ids), default=1)
+    print(f"Matched tests: {len(matched_ids)} of {max(total_a, total_b)} (max {max_runs} run(s) per test)")
 
     # Violation tracking (Group B only)
     total_violations_b = 0
@@ -306,27 +396,34 @@ def compile_results():
     for cat_name, cat_key in category_map.items():
         # Matched-only: only tests graded in both groups
         cat_matched = [tid for tid in matched_ids
-                       if a_by_id[tid]["category"] == cat_name]
-        a_matched = [a_by_id[tid] for tid in cat_matched]
-        b_matched = [b_by_id[tid] for tid in cat_matched]
+                       if a_by_id_avg[tid]["category"] == cat_name]
 
-        if not a_matched or not b_matched:
+        if not cat_matched:
             summary[cat_key] = {"status": "incomplete", "matched": 0,
                                 "message": f"No matched tests for {cat_name}"}
             continue
 
-        avg_a = sum(r["scores"]["weighted_total"] for r in a_matched) / len(a_matched)
-        avg_b = sum(r["scores"]["weighted_total"] for r in b_matched) / len(b_matched)
+        # Aggregate from averaged per-test data
+        a_scores = [a_by_id_avg[tid]["avg_score"] for tid in cat_matched]
+        b_scores = [b_by_id_avg[tid]["avg_score"] for tid in cat_matched]
+        a_latencies = [a_by_id_avg[tid]["avg_latency"] for tid in cat_matched]
+        b_latencies = [b_by_id_avg[tid]["avg_latency"] for tid in cat_matched]
+        a_tokens = [a_by_id_avg[tid]["avg_tokens"] for tid in cat_matched if a_by_id_avg[tid]["avg_tokens"] > 0]
+        b_tokens = [b_by_id_avg[tid]["avg_tokens"] for tid in cat_matched if b_by_id_avg[tid]["avg_tokens"] > 0]
+
+        avg_a = statistics.mean(a_scores)
+        avg_b = statistics.mean(b_scores)
         improvement = ((avg_b - avg_a) / avg_a * 100) if avg_a > 0 else 0
 
-        avg_lat_a = sum(r["latency_seconds"] for r in a_matched) / len(a_matched)
-        avg_lat_b = sum(r["latency_seconds"] for r in b_matched) / len(b_matched)
+        stats_a = calculate_stats(a_scores)
+        stats_b = calculate_stats(b_scores)
+
+        avg_lat_a = statistics.mean(a_latencies)
+        avg_lat_b = statistics.mean(b_latencies)
         lat_ratio = avg_lat_b / avg_lat_a if avg_lat_a > 0 else 0
 
-        tok_a = [r for r in a_matched if r["token_count"] is not None]
-        tok_b = [r for r in b_matched if r["token_count"] is not None]
-        avg_tok_a = sum(r["token_count"] for r in tok_a) / len(tok_a) if tok_a else 0
-        avg_tok_b = sum(r["token_count"] for r in tok_b) / len(tok_b) if tok_b else 0
+        avg_tok_a = statistics.mean(a_tokens) if a_tokens else 0
+        avg_tok_b = statistics.mean(b_tokens) if b_tokens else 0
         tok_ratio = avg_tok_b / avg_tok_a if avg_tok_a > 0 else 0
 
         # Net Value Score = Quality Improvement % - (Latency Penalty + Token Penalty)
@@ -334,14 +431,18 @@ def compile_results():
         token_penalty = (tok_ratio - 1) * 5 if tok_ratio > 1 else 0
         net_value = improvement - latency_penalty - token_penalty
 
-        # Count violations in this category
-        cat_violations = sum(len(b_by_id[tid].get("violations_caught", []))
-                            for tid in cat_matched if tid in b_by_id)
+        # Count violations and outliers in this category
+        cat_violations = sum(len(b_by_id_avg[tid].get("violations_caught", []))
+                            for tid in cat_matched if tid in b_by_id_avg)
+        total_outliers_a = sum(len(a_by_id_avg[tid]["score_outliers"]) for tid in cat_matched)
+        total_outliers_b = sum(len(b_by_id_avg[tid]["score_outliers"]) for tid in cat_matched)
 
         summary[cat_key] = {
-            "matched_tests": len(a_matched),
+            "matched_tests": len(cat_matched),
             "avg_score_A": round(avg_a, 1),
             "avg_score_B": round(avg_b, 1),
+            "stats_A": stats_a,
+            "stats_B": stats_b,
             "improvement_pct": round(improvement, 1),
             "avg_latency_A": round(avg_lat_a, 1),
             "avg_latency_B": round(avg_lat_b, 1),
@@ -350,7 +451,9 @@ def compile_results():
             "avg_tokens_B": round(avg_tok_b),
             "token_ratio": round(tok_ratio, 2),
             "net_value": round(net_value, 1),
-            "violations_caught": cat_violations
+            "violations_caught": cat_violations,
+            "outliers_A": total_outliers_a,
+            "outliers_B": total_outliers_b,
         }
 
     # Overall summary across all categories
@@ -369,6 +472,7 @@ def compile_results():
         summary["overall"] = {
             "matched_tests": len(matched_ids),
             "total_tests": max(total_a, total_b),
+            "max_runs_per_test": max_runs,
             "avg_score_A": round(overall_a, 1),
             "avg_score_B": round(overall_b, 1),
             "improvement_pct": round(overall_improvement, 1),
@@ -394,34 +498,43 @@ def compile_results():
         json.dump({"date": today, "summary": summary}, f, indent=2)
 
     # Print summary table
-    print(f"\n{'='*80}")
+    print(f"\n{'='*90}")
     print(f"BENCHMARK RESULTS -- {today}")
-    print(f"{'='*80}")
-    header = f"{'Category':<22} {'Vanilla(A)':>10} {'Plugin(B)':>10} {'Improve%':>10} {'Latency':>8} {'Tokens':>8} {'NetValue':>10}"
+    print(f"{'='*90}")
+    header = f"{'Category':<22} {'Vanilla(A)':>10} {'Plugin(B)':>10} {'Improve%':>10} {'Latency':>8} {'Tokens':>8} {'NetValue':>10} {'Outliers':>9}"
     print(header)
-    print(f"{'-'*80}")
+    print(f"{'-'*90}")
 
     for cat_name, cat_key in category_map.items():
         s = summary.get(cat_key, {})
         if "avg_score_A" in s:
-            row = f"{cat_name:<22} {s['avg_score_A']:>10.1f} {s['avg_score_B']:>10.1f} {s['improvement_pct']:>9.1f}% {s['latency_ratio']:>7.1f}x {s['token_ratio']:>7.1f}x {s['net_value']:>9.1f}%"
+            sd_a = s["stats_A"]["stddev"]
+            sd_b = s["stats_B"]["stddev"]
+            a_str = f"{s['avg_score_A']:.1f}" + (f"\u00b1{sd_a:.1f}" if sd_a > 0 else "")
+            b_str = f"{s['avg_score_B']:.1f}" + (f"\u00b1{sd_b:.1f}" if sd_b > 0 else "")
+            outlier_str = ""
+            if s["outliers_A"] or s["outliers_B"]:
+                outlier_str = f"A:{s['outliers_A']} B:{s['outliers_B']}"
+            row = f"{cat_name:<22} {a_str:>10} {b_str:>10} {s['improvement_pct']:>9.1f}% {s['latency_ratio']:>7.1f}x {s['token_ratio']:>7.1f}x {s['net_value']:>9.1f}% {outlier_str:>9}"
             print(row)
         else:
             print(f"{cat_name:<22} {'(not graded)':>50}")
 
     if "overall" in summary:
         s = summary["overall"]
-        print(f"{'-'*80}")
+        print(f"{'-'*90}")
         overall_row = f"{'OVERALL':<22} {s['avg_score_A']:>10.1f} {s['avg_score_B']:>10.1f} {s['improvement_pct']:>9.1f}% {s['latency_overhead']:>8} {s['token_overhead']:>8} {s['net_value_score']:>9.1f}%"
         print(overall_row)
         print(f"\nVerdict: {s['verdict']} (threshold: Net Value >= 14%)")
+        if max_runs < 3:
+            print(f"  NOTE: Only {max_runs} run(s) per test. Results are CONDITIONAL — run with --runs 3 for statistical validity.")
 
     # Print violation tracking
     if "overall" in summary and "violations" in summary["overall"]:
         v = summary["overall"]["violations"]
-        print(f"\n{'='*80}")
+        print(f"\n{'='*90}")
         print("VIOLATION TRACKING")
-        print(f"{'='*80}")
+        print(f"{'='*90}")
         print(f"  Plugin catches (blocks/corrections): {v['total_plugin_catches']} across {v['tests_with_catches']} tests")
         if v["rules_triggered"]:
             print(f"  Rules triggered: {', '.join(v['rules_triggered'])}")

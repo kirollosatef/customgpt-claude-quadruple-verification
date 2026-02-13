@@ -1,4 +1,4 @@
-﻿{
+{
   "category": "Research Accuracy",
   "cycle_tested": 4,
   "description": "Tests whether the plugin catches vague unsourced claims, missing verification tags, and statistics without nearby source URLs in research markdown files.",

@@ -2,7 +2,7 @@
 
 ## Quick Reference
 
-```
+```bash
 # List all 45 test cases
 python run-benchmark.py --list
 
@@ -59,7 +59,33 @@ Same 45 test cases, now with the plugin active.
 
 ### 4. Grade Outputs
 
-For each test run, open `results/group-{A or B}/{test_id}/run-1/result.json` and fill in the scores:
+Use the **auto-grader** for LLM-based grading:
+
+```bash
+# Grade all Group A outputs
+python auto-grade.py --group A
+
+# Grade all Group B outputs
+python auto-grade.py --group B
+
+# Grade a single test
+python auto-grade.py --group A --test CQ.3
+
+# Grade both groups
+python auto-grade.py --both
+
+# Run safety scan only (no LLM grading)
+python auto-grade.py --scan-only --group B
+```
+
+**Auto-grader features:**
+
+- **Model:** Claude Sonnet 4.5 for grading accuracy (Haiku was too weak, caused parse failures and unfair penalization of verbose output)
+- **Smart summarization:** Long outputs (>50K chars) are intelligently summarized — first 30% + last 30% preserved, middle section replaced with metadata summary — instead of hard truncation at 15K
+- **Retry logic:** Up to 3 attempts per grading call with exponential backoff (2s, 4s, 8s) on parse failures or timeouts
+- **Safety scanner:** Runs pattern-based safety scans in addition to LLM grading
+
+**Manual grading** is also supported. Open `results/group-{A or B}/{test_id}/run-1/result.json` and fill in scores:
 
 ```json
 "scores": {
@@ -93,7 +119,8 @@ This generates a dated results file and prints the summary table.
 ### 6. Interpret Results
 
 **Net Value Score formula:**
-```
+
+```text
 Quality Improvement % = ((Score_B - Score_A) / Score_A) * 100
 Latency Penalty = (Latency_B / Latency_A - 1) * 10
 Token Penalty = (Tokens_B / Tokens_A - 1) * 5
@@ -101,8 +128,18 @@ Net Value = Quality Improvement % - Latency Penalty - Token Penalty
 ```
 
 **Verdict criteria:**
-- Net Value >= 14% AND no category regresses = CLEARED
-- Otherwise = BELOW THRESHOLD
+- **PASS:** Net Value >= 14% AND no category regresses AND n >= 3 with non-overlapping 95% CIs
+- **CONDITIONAL PASS:** Net Value >= 14% AND no category regresses, but n < 3
+- **FAIL:** Net Value < 14% OR any category regresses
+
+### 7. Understanding Statistical Output (Multi-Run Mode)
+
+When using `--runs 3` or higher, the compiled output includes:
+
+- **Mean ± StdDev:** Per-category scores shown as `75.3±4.2` — the `±` value is the standard deviation across runs
+- **95% Confidence Intervals:** Stored in the JSON output under `stats_A.ci_95_lower` / `ci_95_upper`. For a valid improvement claim, the CIs of Group A and Group B should not overlap
+- **Outlier flags:** The `Outliers` column shows how many individual run scores fell more than 2 standard deviations from the test mean (format: `A:0 B:1`). Investigate outliers before drawing conclusions
+- **CONDITIONAL note:** If n < 3, the output warns that results are conditional and recommends re-running with `--runs 3`
 
 ## For Dennis (Agent SDK Testing - Directive 12)
 
@@ -115,7 +152,7 @@ Use the test cases in `test-cases/category-sdk-agent.json`. Run them using the C
 
 ## File Structure
 
-```
+```text
 quadruple-verification-benchmark/
   BENCHMARK-METHODOLOGY.md       # Full methodology document
   RUN-INSTRUCTIONS.md            # This file
