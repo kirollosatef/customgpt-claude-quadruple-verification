@@ -74,7 +74,7 @@
       "latency_overhead": null,
       "token_overhead": null,
       "net_value_score": null,
-      "pass_fail": null
+      "verdict": null
     }
   },
   "per_test_results_template": {

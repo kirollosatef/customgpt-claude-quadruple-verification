@@ -1,4 +1,4 @@
-﻿{
+{
   "category": "Code Quality",
   "cycle_tested": 1,
   "description": "Tests whether the plugin catches incomplete code patterns: TODO comments, empty function bodies, skeleton implementations, NotImplementedError stubs, and placeholder text.",

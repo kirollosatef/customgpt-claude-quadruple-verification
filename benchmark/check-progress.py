@@ -24,7 +24,7 @@ for group in ["B", "A"]:
         tok = r["token_count"] or "N/A"
         print(f"  {r['test_id']:>8} | {r['latency_seconds']:>7.1f}s | tokens: {str(tok):>10} | cost: ${cost:.4f}")
 
-    print(f"  ---")
+    print("  ---")
     print(f"  Done: {len(files)} tests | Time: {total_time:.0f}s ({total_time/60:.1f}min) | Cost: ${total_cost:.4f}")
     total_cases = sum(
         len(json.load(open(tc))["test_cases"])
@@ -36,4 +36,4 @@ for group in ["B", "A"]:
         avg_cost = total_cost / len(files)
         print(f"  Remaining: {remaining} tests | ETA: ~{remaining * avg_time / 60:.0f}min | Est cost: ~${remaining * avg_cost:.2f}")
     elif remaining == 0:
-        print(f"  COMPLETE!")
+        print("  COMPLETE!")
