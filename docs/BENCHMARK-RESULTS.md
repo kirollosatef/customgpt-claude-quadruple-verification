@@ -1,9 +1,9 @@
 # Quadruple Verification Plugin - Benchmark Results (Matched Tests Only)
 
-**Plugin:** customgpt-claude-quadruple-verification v1.1.0  
-**Run Date:** February 12, 2026  
-**Model:** Claude Opus 4.6 (claude-opus-4-6)  
-**Platform:** Windows 11, Claude Code CLI  
+**Plugin:** customgpt-claude-quadruple-verification v1.1.0
+**Run Date:** February 12, 2026
+**Model:** Claude Opus 4.6 (claude-opus-4-6)
+**Platform:** Windows 11, Claude Code CLI
 
 > This report includes **only matched tests** -- tests that were successfully graded in both Group A (Vanilla) and Group B (Plugin). Timeouts, grading failures, and unscored tests are excluded for a fair apples-to-apples comparison.
 
