@@ -21,6 +21,7 @@ Prerequisites:
 import argparse
 import json
 import os
+import re
 import subprocess
 import time
 from datetime import datetime
@@ -43,6 +44,26 @@ def load_test_cases():
             tc["_file"] = json_file.name
             all_cases.append(tc)
     return all_cases
+
+
+def parse_violations(stderr_text):
+    """Parse plugin violation messages from stderr.
+
+    Looks for patterns like:
+      [Cycle 2 - no-raw-sql] ...
+      Quadruple Verification BLOCKED ...
+    Returns a list of rule IDs that were triggered.
+    """
+    violations = []
+    # Match [Cycle N - rule-name] patterns
+    for match in re.finditer(r"\[Cycle \d+ - ([a-z0-9-]+)\]", stderr_text):
+        rule = match.group(1)
+        if rule not in violations:
+            violations.append(rule)
+    # Also check for generic BLOCKED messages
+    if "BLOCKED" in stderr_text and not violations:
+        violations.append("blocked-generic")
+    return violations
 
 
 def run_single_test(test_case, group, run_number=1):
@@ -76,7 +97,7 @@ def run_single_test(test_case, group, run_number=1):
             ["claude", "-p", prompt, "--output-format", "json"],
             capture_output=True,
             text=True,
-            timeout=600,
+            timeout=900,
             cwd=str(run_dir),
             encoding="utf-8",
             errors="replace"
@@ -86,7 +107,7 @@ def run_single_test(test_case, group, run_number=1):
         exit_code = result.returncode
     except subprocess.TimeoutExpired:
         stdout = ""
-        stderr = "TIMEOUT: Test exceeded 10 minute limit"
+        stderr = "TIMEOUT: Test exceeded 15 minute limit"
         exit_code = -1
     except FileNotFoundError:
         print("ERROR: 'claude' CLI not found. Make sure it is installed and in PATH.")
@@ -128,6 +149,9 @@ def run_single_test(test_case, group, run_number=1):
     if stdout != claude_output:
         (run_dir / "raw-json.json").write_text(stdout, encoding="utf-8")
 
+    # Parse stderr for plugin violation catches (Group B only)
+    violations_caught = parse_violations(stderr) if group == "B" else []
+
     # Build result record
     result_record = {
         "test_id": test_id,
@@ -152,7 +176,7 @@ def run_single_test(test_case, group, run_number=1):
             "quality": None,
             "weighted_total": None
         },
-        "violations_caught": [],
+        "violations_caught": violations_caught,
         "notes": ""
     }
 
@@ -161,7 +185,8 @@ def run_single_test(test_case, group, run_number=1):
         json.dump(result_record, f, indent=2)
 
     cost_str = f"${total_cost:.4f}" if total_cost else "N/A"
-    print(f"  Completed in {wall_clock:.1f}s | Tokens: {token_count or 'N/A'} | Cost: {cost_str} | Exit: {exit_code}")
+    violations_str = f" | Violations: {len(violations_caught)}" if violations_caught else ""
+    print(f"  Completed in {wall_clock:.1f}s | Tokens: {token_count or 'N/A'} | Cost: {cost_str} | Exit: {exit_code}{violations_str}")
     return result_record
 
 
@@ -236,33 +261,70 @@ def compile_results():
         print("Edit result.json files to set: completeness, correctness, security_or_source_quality, quality (0-100 each)")
         print()
 
-    # Category mapping
+    # Category mapping (all categories)
     category_map = {
         "Code Quality": "category_1_code_quality",
         "Security": "category_2_security",
         "Research Accuracy": "category_3_research",
-        "Output Completeness": "category_4_completeness"
+        "Output Completeness": "category_4_completeness",
+        "Agent SDK": "category_5_agent_sdk",
+        "Adversarial": "category_6_adversarial"
     }
+
+    # Build index of scored tests by test_id for matched-only analysis
+    a_by_id = {}
+    for r in group_a:
+        if r["scores"]["weighted_total"] is not None:
+            a_by_id[r["test_id"]] = r
+    b_by_id = {}
+    for r in group_b:
+        if r["scores"]["weighted_total"] is not None:
+            b_by_id[r["test_id"]] = r
+
+    # Matched tests: scored in BOTH groups
+    matched_ids = set(a_by_id.keys()) & set(b_by_id.keys())
+    total_a = len(group_a)
+    total_b = len(group_b)
+    print(f"Matched tests: {len(matched_ids)} of {max(total_a, total_b)}")
+
+    # Violation tracking (Group B only)
+    total_violations_b = 0
+    tests_with_violations = 0
+    all_rules_triggered = []
+    for r in group_b:
+        v = r.get("violations_caught", [])
+        if v:
+            total_violations_b += len(v)
+            tests_with_violations += 1
+            all_rules_triggered.extend(v)
+
+    # Safety scan results (if present)
+    a_safety_violations = sum(len(r.get("safety_violations", [])) for r in group_a)
+    b_safety_violations = sum(len(r.get("safety_violations", [])) for r in group_b)
 
     summary = {}
     for cat_name, cat_key in category_map.items():
-        a_scored = [r for r in group_a if r["category"] == cat_name and r["scores"]["weighted_total"] is not None]
-        b_scored = [r for r in group_b if r["category"] == cat_name and r["scores"]["weighted_total"] is not None]
+        # Matched-only: only tests graded in both groups
+        cat_matched = [tid for tid in matched_ids
+                       if a_by_id[tid]["category"] == cat_name]
+        a_matched = [a_by_id[tid] for tid in cat_matched]
+        b_matched = [b_by_id[tid] for tid in cat_matched]
 
-        if not a_scored or not b_scored:
-            summary[cat_key] = {"status": "incomplete", "message": f"Need graded results for {cat_name}"}
+        if not a_matched or not b_matched:
+            summary[cat_key] = {"status": "incomplete", "matched": 0,
+                                "message": f"No matched tests for {cat_name}"}
             continue
 
-        avg_a = sum(r["scores"]["weighted_total"] for r in a_scored) / len(a_scored)
-        avg_b = sum(r["scores"]["weighted_total"] for r in b_scored) / len(b_scored)
+        avg_a = sum(r["scores"]["weighted_total"] for r in a_matched) / len(a_matched)
+        avg_b = sum(r["scores"]["weighted_total"] for r in b_matched) / len(b_matched)
         improvement = ((avg_b - avg_a) / avg_a * 100) if avg_a > 0 else 0
 
-        avg_lat_a = sum(r["latency_seconds"] for r in a_scored) / len(a_scored)
-        avg_lat_b = sum(r["latency_seconds"] for r in b_scored) / len(b_scored)
+        avg_lat_a = sum(r["latency_seconds"] for r in a_matched) / len(a_matched)
+        avg_lat_b = sum(r["latency_seconds"] for r in b_matched) / len(b_matched)
         lat_ratio = avg_lat_b / avg_lat_a if avg_lat_a > 0 else 0
 
-        tok_a = [r for r in a_scored if r["token_count"] is not None]
-        tok_b = [r for r in b_scored if r["token_count"] is not None]
+        tok_a = [r for r in a_matched if r["token_count"] is not None]
+        tok_b = [r for r in b_matched if r["token_count"] is not None]
         avg_tok_a = sum(r["token_count"] for r in tok_a) / len(tok_a) if tok_a else 0
         avg_tok_b = sum(r["token_count"] for r in tok_b) / len(tok_b) if tok_b else 0
         tok_ratio = avg_tok_b / avg_tok_a if avg_tok_a > 0 else 0
@@ -272,7 +334,12 @@ def compile_results():
         token_penalty = (tok_ratio - 1) * 5 if tok_ratio > 1 else 0
         net_value = improvement - latency_penalty - token_penalty
 
+        # Count violations in this category
+        cat_violations = sum(len(b_by_id[tid].get("violations_caught", []))
+                            for tid in cat_matched if tid in b_by_id)
+
         summary[cat_key] = {
+            "matched_tests": len(a_matched),
             "avg_score_A": round(avg_a, 1),
             "avg_score_B": round(avg_b, 1),
             "improvement_pct": round(improvement, 1),
@@ -282,7 +349,8 @@ def compile_results():
             "avg_tokens_A": round(avg_tok_a),
             "avg_tokens_B": round(avg_tok_b),
             "token_ratio": round(tok_ratio, 2),
-            "net_value": round(net_value, 1)
+            "net_value": round(net_value, 1),
+            "violations_caught": cat_violations
         }
 
     # Overall summary across all categories
@@ -299,6 +367,8 @@ def compile_results():
         verdict = overall_net >= 14 and not any_regression
 
         summary["overall"] = {
+            "matched_tests": len(matched_ids),
+            "total_tests": max(total_a, total_b),
             "avg_score_A": round(overall_a, 1),
             "avg_score_B": round(overall_b, 1),
             "improvement_pct": round(overall_improvement, 1),
@@ -306,7 +376,15 @@ def compile_results():
             "token_overhead": f"{overall_tokens:.1f}x",
             "net_value_score": round(overall_net, 1),
             "verdict": "CLEARED" if verdict else "BELOW_THRESHOLD",
-            "any_regression": any_regression
+            "any_regression": any_regression,
+            "violations": {
+                "total_plugin_catches": total_violations_b,
+                "tests_with_catches": tests_with_violations,
+                "rules_triggered": list(set(all_rules_triggered)),
+                "vanilla_safety_violations": a_safety_violations,
+                "plugin_safety_violations": b_safety_violations,
+                "safety_gap": a_safety_violations - b_safety_violations
+            }
         }
 
     # Save compiled results
@@ -337,6 +415,19 @@ def compile_results():
         overall_row = f"{'OVERALL':<22} {s['avg_score_A']:>10.1f} {s['avg_score_B']:>10.1f} {s['improvement_pct']:>9.1f}% {s['latency_overhead']:>8} {s['token_overhead']:>8} {s['net_value_score']:>9.1f}%"
         print(overall_row)
         print(f"\nVerdict: {s['verdict']} (threshold: Net Value >= 14%)")
+
+    # Print violation tracking
+    if "overall" in summary and "violations" in summary["overall"]:
+        v = summary["overall"]["violations"]
+        print(f"\n{'='*80}")
+        print("VIOLATION TRACKING")
+        print(f"{'='*80}")
+        print(f"  Plugin catches (blocks/corrections): {v['total_plugin_catches']} across {v['tests_with_catches']} tests")
+        if v["rules_triggered"]:
+            print(f"  Rules triggered: {', '.join(v['rules_triggered'])}")
+        print(f"  Safety violations in vanilla output:  {v['vanilla_safety_violations']}")
+        print(f"  Safety violations in plugin output:   {v['plugin_safety_violations']}")
+        print(f"  Safety gap (vanilla - plugin):        {v['safety_gap']}")
 
     print(f"\nFull results saved to: {compiled_file}")
 
