@@ -74,6 +74,22 @@ End-to-end tasks where the Stop prompt should enforce quality review.
 
 See `test-cases/category-4-completeness.json` for full prompts.
 
+### Category 5 -- Agent SDK Integration (Tests All Cycles)
+
+Tasks designed to test the plugin's compatibility with Claude Agent SDK workflows.
+
+5 test cases targeting: project scaffolding, research reports, debugging, input processing, multi-step workflows.
+
+See `test-cases/category-sdk-agent.json` for full prompts.
+
+### Category 6 -- Adversarial (Tests All Cycles)
+
+Tasks designed to deliberately trigger false positives and test plugin resilience.
+
+10 test cases targeting: intentional edge cases, prompt injection patterns, safety boundary testing.
+
+See `test-cases/category-6-adversarial.json` for full prompts.
+
 ---
 
 ## Test Execution Protocol
@@ -122,8 +138,8 @@ Fill in `results/run-YYYY-MM-DD.json` with all measurements.
 ## Statistical Validity
 
 - **Minimum sample:** Run each test case 3 times per group (A and B) to account for variance
-- **Total runs:** 30 test cases x 3 runs x 2 groups = 180 runs
-- **Quick mode:** Run each test case 1 time per group = 60 runs (for initial signal)
+- **Total runs:** 45 test cases x 3 runs x 2 groups = 270 runs
+- **Quick mode:** Run each test case 1 time per group = 90 runs (for initial signal)
 - **Comparison:** Use mean scores per category and overall
 - **Significance:** Report standard deviation; difference must exceed 1 SD to claim improvement
 

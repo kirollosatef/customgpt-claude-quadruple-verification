@@ -3,7 +3,7 @@
 ## Quick Reference
 
 ```
-# List all 30 test cases
+# List all 45 test cases
 python run-benchmark.py --list
 
 # Run Group A (Control - Vanilla Claude Code, no plugin)
@@ -37,11 +37,11 @@ python run-benchmark.py --compile
 ### 2. Run Group A First
 
 ```bash
-cd C:\Users\Felipe Pires\quadruple-verification-benchmark
+cd benchmark
 python run-benchmark.py --group A
 ```
 
-This runs all 30 test cases with vanilla Claude Code. Each test:
+This runs all 45 test cases with vanilla Claude Code. Each test:
 - Opens a fresh Claude session
 - Submits the exact prompt from the test case JSON
 - Records wall-clock time and token usage
@@ -55,7 +55,7 @@ Expected duration: ~30-60 minutes for quick mode (1 run each).
 python run-benchmark.py --group B
 ```
 
-Same 30 test cases, now with the plugin active.
+Same 45 test cases, now with the plugin active.
 
 ### 4. Grade Outputs
 

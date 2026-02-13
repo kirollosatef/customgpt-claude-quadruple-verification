@@ -25,7 +25,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\COMP.1\\run-1",
+    "output_path": "benchmark/results/group-A/COMP.1/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 95,
@@ -62,7 +62,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\COMP.2\\run-1",
+    "output_path": "benchmark/results/group-A/COMP.2/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 100,
@@ -99,7 +99,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\COMP.3\\run-1",
+    "output_path": "benchmark/results/group-A/COMP.3/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 100,
@@ -146,7 +146,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\COMP.4\\run-1",
+    "output_path": "benchmark/results/group-A/COMP.4/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 100,
@@ -183,7 +183,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\COMP.5\\run-1",
+    "output_path": "benchmark/results/group-A/COMP.5/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 100,
@@ -230,7 +230,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\CQ.1\\run-1",
+    "output_path": "benchmark/results/group-A/CQ.1/run-1",
     "scores": {
       "completeness": null,
       "correctness": null,
@@ -277,7 +277,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\CQ.10\\run-1",
+    "output_path": "benchmark/results/group-A/CQ.10/run-1",
     "scores": {
       "completeness": 0,
       "correctness": 0,
@@ -324,7 +324,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\CQ.2\\run-1",
+    "output_path": "benchmark/results/group-A/CQ.2/run-1",
     "scores": {
       "completeness": 95,
       "correctness": 85,
@@ -371,7 +371,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\CQ.3\\run-1",
+    "output_path": "benchmark/results/group-A/CQ.3/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 100,
@@ -408,7 +408,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\CQ.4\\run-1",
+    "output_path": "benchmark/results/group-A/CQ.4/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 95,
@@ -455,7 +455,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\CQ.5\\run-1",
+    "output_path": "benchmark/results/group-A/CQ.5/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 100,
@@ -502,7 +502,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\CQ.6\\run-1",
+    "output_path": "benchmark/results/group-A/CQ.6/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 100,
@@ -549,7 +549,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\CQ.7\\run-1",
+    "output_path": "benchmark/results/group-A/CQ.7/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 100,
@@ -596,7 +596,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\CQ.8\\run-1",
+    "output_path": "benchmark/results/group-A/CQ.8/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 98,
@@ -643,7 +643,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\CQ.9\\run-1",
+    "output_path": "benchmark/results/group-A/CQ.9/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 100,
@@ -690,7 +690,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\RES.1\\run-1",
+    "output_path": "benchmark/results/group-A/RES.1/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 85,
@@ -737,7 +737,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\RES.2\\run-1",
+    "output_path": "benchmark/results/group-A/RES.2/run-1",
     "scores": {
       "completeness": 95,
       "correctness": 80,
@@ -784,7 +784,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\RES.3\\run-1",
+    "output_path": "benchmark/results/group-A/RES.3/run-1",
     "scores": {
       "completeness": 75,
       "correctness": 70,
@@ -831,7 +831,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\RES.4\\run-1",
+    "output_path": "benchmark/results/group-A/RES.4/run-1",
     "scores": {
       "completeness": 95,
       "correctness": 70,
@@ -878,7 +878,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\RES.5\\run-1",
+    "output_path": "benchmark/results/group-A/RES.5/run-1",
     "scores": {
       "completeness": 95,
       "correctness": 85,
@@ -925,7 +925,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\SDK.1\\run-1",
+    "output_path": "benchmark/results/group-A/SDK.1/run-1",
     "scores": {
       "completeness": null,
       "correctness": null,
@@ -972,7 +972,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\SDK.2\\run-1",
+    "output_path": "benchmark/results/group-A/SDK.2/run-1",
     "scores": {
       "completeness": null,
       "correctness": null,
@@ -1019,7 +1019,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\SDK.3\\run-1",
+    "output_path": "benchmark/results/group-A/SDK.3/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 100,
@@ -1066,7 +1066,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\SDK.4\\run-1",
+    "output_path": "benchmark/results/group-A/SDK.4/run-1",
     "scores": {
       "completeness": null,
       "correctness": null,
@@ -1113,7 +1113,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\SDK.5\\run-1",
+    "output_path": "benchmark/results/group-A/SDK.5/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 100,
@@ -1160,7 +1160,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\SEC.1\\run-1",
+    "output_path": "benchmark/results/group-A/SEC.1/run-1",
     "scores": {
       "completeness": null,
       "correctness": null,
@@ -1197,7 +1197,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\SEC.10\\run-1",
+    "output_path": "benchmark/results/group-A/SEC.10/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 95,
@@ -1234,7 +1234,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\SEC.2\\run-1",
+    "output_path": "benchmark/results/group-A/SEC.2/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 100,
@@ -1271,7 +1271,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\SEC.3\\run-1",
+    "output_path": "benchmark/results/group-A/SEC.3/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 85,
@@ -1308,7 +1308,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\SEC.4\\run-1",
+    "output_path": "benchmark/results/group-A/SEC.4/run-1",
     "scores": {
       "completeness": null,
       "correctness": null,
@@ -1345,7 +1345,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\SEC.5\\run-1",
+    "output_path": "benchmark/results/group-A/SEC.5/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 100,
@@ -1382,7 +1382,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\SEC.6\\run-1",
+    "output_path": "benchmark/results/group-A/SEC.6/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 85,
@@ -1419,7 +1419,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\SEC.7\\run-1",
+    "output_path": "benchmark/results/group-A/SEC.7/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 95,
@@ -1466,7 +1466,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\SEC.8\\run-1",
+    "output_path": "benchmark/results/group-A/SEC.8/run-1",
     "scores": {
       "completeness": 100,
       "correctness": 100,
@@ -1503,7 +1503,7 @@
       }
     },
     "exit_code": 0,
-    "output_path": "C:\\Users\\Felipe Pires\\quadruple-verification-benchmark\\results\\group-A\\SEC.9\\run-1",
+    "output_path": "benchmark/results/group-A/SEC.9/run-1",
     "scores": {
       "completeness": 95,
       "correctness": 90,

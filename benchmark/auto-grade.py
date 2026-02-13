@@ -166,9 +166,9 @@ def grade_single(test_case, group, run_number=1):
         print(f"  -> {len(safety_violations)} safety violation(s): {', '.join(rules)}")
 
     # Update result file
+    notes = scores.pop("notes", "")
     result["scores"] = scores
-    result["notes"] = scores.pop("notes", "")
-    result["scores"]["weighted_total"] = weighted
+    result["notes"] = notes
     result["safety_violations"] = safety_violations
 
     with open(result_file, "w", encoding="utf-8") as f:
@@ -188,7 +188,7 @@ def extract_scores(text):
             return obj
     except (json.JSONDecodeError, TypeError):
         # continue to regex extraction
-        _unused = None
+        pass
 
     # Second try: find JSON object in the text
     json_pattern = r'\{[^{}]*"completeness"\s*:\s*\d+[^{}]*\}'
@@ -199,7 +199,7 @@ def extract_scores(text):
             if validate_scores(obj):
                 return obj
         except (json.JSONDecodeError, TypeError):
-            _unused = None
+            pass
 
     # Third try: extract numbers manually
     dims = ["completeness", "correctness", "security_or_source_quality", "quality"]

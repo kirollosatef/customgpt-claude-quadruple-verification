@@ -267,7 +267,7 @@ def compile_results():
         "Security": "category_2_security",
         "Research Accuracy": "category_3_research",
         "Output Completeness": "category_4_completeness",
-        "Agent SDK": "category_5_agent_sdk",
+        "Agent SDK Integration": "category_5_agent_sdk",
         "Adversarial": "category_6_adversarial"
     }
 
