@@ -99,7 +99,7 @@ class TestE2EPreToolGateCycles12(E2EBase):
     def test_blocks_write_with_hardcoded_api_key(self):
         result = self.run_pre("write", {
             "file_path": "config.js",
-            "content": 'const api_key = "sk_live_abc123456789";'
+            "content": 'const api_key = "sk_live_FAKE_KEY_FOR_TESTING_ONLY";'  # noqa: S105 — test fixture, not a real secret
         })
         self.assertTrue(is_blocked(result))
         self.assertIn("hardcoded secret", block_reason(result))

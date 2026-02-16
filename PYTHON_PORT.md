@@ -107,14 +107,26 @@ The `mcp__.*` matcher ensures verification only fires for the agent's custom MCP
 ## Running the tests
 
 ```bash
-# From the repo root
-python3 -m unittest tests/test_python_port.py -v
+# From the repo root — discover and run all Python tests
+python3 -m unittest discover -s tests -p "test_*.py" -v
 
 # If pytest is available
-pytest tests/test_python_port.py -v
+pytest tests/ -v
 ```
 
-The Python test suite (`tests/test_python_port.py`) mirrors the existing JS tests (`test-cycle1.mjs`, `test-cycle2.mjs`, `test-cycle4.mjs`, `test-audit.mjs`, `test-config.mjs`) and uses the same fixture files from `tests/fixtures/`. Both suites should pass for any change to the rules.
+The Python test suite spans seven files that mirror their JS counterparts 1-to-1:
+
+| Python file | JS counterpart |
+| --- | --- |
+| `tests/test_cycle1.py` | `test-cycle1.mjs` |
+| `tests/test_cycle2.py` | `test-cycle2.mjs` |
+| `tests/test_cycle4.py` | `test-cycle4.mjs` |
+| `tests/test_audit.py` | `test-audit.mjs` |
+| `tests/test_config.py` | `test-config.mjs` |
+| `tests/test_e2e.py` | _(end-to-end hook pipeline)_ |
+| `tests/test_edge_cases.py` | _(edge-case coverage)_ |
+
+All test files use the same fixture files from `tests/fixtures/`. Both suites should pass for any change to the rules.
 
 ---
 
