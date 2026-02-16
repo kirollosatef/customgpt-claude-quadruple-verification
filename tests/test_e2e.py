@@ -17,6 +17,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "python"))
 from quadruple_verification import (
@@ -29,7 +30,7 @@ from quadruple_verification import (
 
 def run_hook(coro):
     """Run an async hook callback synchronously."""
-    return asyncio.get_event_loop().run_until_complete(coro)
+    return asyncio.run(coro)
 
 
 def make_pre_input(tool_name: str, tool_input: dict) -> dict:
@@ -74,9 +75,16 @@ class E2EBase(unittest.TestCase):
     """Base class — creates a fresh hook with default config for each test."""
 
     def setUp(self):
+        self._tmp_home = Path(tempfile.mkdtemp(prefix="quadruple-e2e-home-"))
+        self._home_patcher = patch("pathlib.Path.home", return_value=self._tmp_home)
+        self._home_patcher.start()
         self.config = _load_config()
         self.pre = _make_pre_tool_hook(self.config)
         self.post = _make_post_tool_hook(self.config)
+
+    def tearDown(self):
+        self._home_patcher.stop()
+        shutil.rmtree(self._tmp_home, ignore_errors=True)
 
     def run_pre(self, tool_name: str, tool_input: dict) -> dict:
         return run_hook(self.pre(make_pre_input(tool_name, tool_input), None, None))
@@ -99,7 +107,7 @@ class TestE2EPreToolGateCycles12(E2EBase):
     def test_blocks_write_with_hardcoded_api_key(self):
         result = self.run_pre("write", {
             "file_path": "config.js",
-            "content": 'const api_key = "sk_live_FAKE_KEY_FOR_TESTING_ONLY";'  # noqa: S105 — test fixture, not a real secret
+            "content": 'const api_key = "sk_live_FAKE_KEY_FOR_TESTING_ONLY";'  # test fixture, not a real secret
         })
         self.assertTrue(is_blocked(result))
         self.assertIn("hardcoded secret", block_reason(result))
@@ -268,10 +276,15 @@ class TestE2EPreToolGateEdgeCases(E2EBase):
 class TestE2EStopGate(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix="quadruple-e2e-stop-"))
+        self._tmp_home = Path(tempfile.mkdtemp(prefix="quadruple-e2e-home-"))
+        self._home_patcher = patch("pathlib.Path.home", return_value=self._tmp_home)
+        self._home_patcher.start()
         self.config = _load_config()
 
     def tearDown(self):
+        self._home_patcher.stop()
         shutil.rmtree(self.tmp, ignore_errors=True)
+        shutil.rmtree(self._tmp_home, ignore_errors=True)
 
     def run_stop(self, cwd: Path) -> dict:
         """Run the stop hook with a specific working directory."""
@@ -339,12 +352,17 @@ class TestE2EStopGate(unittest.TestCase):
 class TestE2EPostToolAudit(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix="quadruple-e2e-audit-"))
+        self._tmp_home = Path(tempfile.mkdtemp(prefix="quadruple-e2e-home-"))
+        self._home_patcher = patch("pathlib.Path.home", return_value=self._tmp_home)
+        self._home_patcher.start()
         self.config = _load_config()
         self.config.setdefault("audit", {})["logDir"] = str(self.tmp)
         self.post = _make_post_tool_hook(self.config)
 
     def tearDown(self):
+        self._home_patcher.stop()
         shutil.rmtree(self.tmp, ignore_errors=True)
+        shutil.rmtree(self._tmp_home, ignore_errors=True)
 
     def run_post(self, tool_name: str, tool_input: dict) -> dict:
         return run_hook(self.post(make_post_input(tool_name, tool_input), None, None))

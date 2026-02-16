@@ -134,7 +134,7 @@ All test files use the same fixture files from `tests/fixtures/`. Both suites sh
 
 Create a JSON file at either location to override defaults:
 
-```
+```text
 ~/.claude/quadruple-verify-config.json          # user-wide
 <project>/.claude/quadruple-verify-config.json  # project-specific (wins)
 ```
