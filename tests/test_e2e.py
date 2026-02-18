@@ -276,6 +276,8 @@ class TestE2EPreToolGateEdgeCases(E2EBase):
 class TestE2EStopGate(unittest.TestCase):
     def setUp(self):
         self.tmp = Path(tempfile.mkdtemp(prefix="quadruple-e2e-stop-"))
+        # Create a .git marker so _find_project_root resolves to this temp dir
+        (self.tmp / ".git").mkdir()
         self._tmp_home = Path(tempfile.mkdtemp(prefix="quadruple-e2e-home-"))
         self._home_patcher = patch("pathlib.Path.home", return_value=self._tmp_home)
         self._home_patcher.start()
