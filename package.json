@@ -19,7 +19,7 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "test": "node --test tests/",
+    "test": "node --test tests/test-*.mjs",
     "test:cycle1": "node --test tests/test-cycle1.mjs",
     "test:cycle2": "node --test tests/test-cycle2.mjs",
     "test:audit": "node --test tests/test-audit.mjs",

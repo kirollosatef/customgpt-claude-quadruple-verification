@@ -734,23 +734,25 @@ def _find_markdown_files(directory: Path, max_depth: int, _depth: int = 0) -> li
 # ─── Cycle 3: Stop Quality Prompt ─────────────────────────────────────────────
 
 CYCLE3_SYSTEM_MESSAGE = """\
-MANDATORY — You MUST display the Quadruple Verification Quality Gateway at the END of every response. No exceptions.
+When your response includes code changes, file modifications, or research content, \
+perform a self-check before finishing and append a brief quality summary.
 
-After your complete response, add this section:
+Skip this check entirely when returning structured data (JSON, API responses) \
+or answering simple conversational questions.
+
+When the check applies, append after your response:
 
 ---
-**Quadruple Verification — Quality Gateway**
+**Quality Check**
 
 | Check | Status |
 |-------|--------|
-| **Completeness** — Fully addressed what was asked? No placeholders, stubs, or TODOs? | PASS or FAIL |
-| **Quality** — Production-ready? Proper error handling, edge cases considered? | PASS or FAIL |
-| **Correctness** — Solves the actual problem? No logical errors? | PASS or FAIL |
-| **Security** — No hardcoded secrets, injection risks, or unsafe patterns? | PASS or FAIL |
+| Completeness — addressed what was asked, no placeholders or stubs? | PASS / FAIL |
+| Quality — production-ready, error handling, edge cases? | PASS / FAIL |
+| Correctness — solves the actual problem, no logic errors? | PASS / FAIL |
+| Security — no hardcoded secrets, injection risks, unsafe patterns? | PASS / FAIL |
 
-Replace each status with the actual result. If ANY check is FAIL, fix the issues BEFORE presenting your response.
-
-For simple conversational answers without code or research, display a condensed single-line: **Quadruple Verification: All checks passed**\
+If any check is FAIL, fix the issues before presenting the response.\
 """
 
 
