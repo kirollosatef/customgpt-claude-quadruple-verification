@@ -438,6 +438,26 @@ def _extract_content(tool_name: str, tool_input: dict) -> tuple[str, str, str, s
     return "", "unknown", "", ""
 
 
+# ─── Project Root Discovery ──────────────────────────────────────────────────
+
+def _find_project_root(start_dir: Path | None = None) -> Path:
+    """Walk up from *start_dir* looking for .git, package.json, or .claude.
+
+    Falls back to *start_dir* (or cwd) if no marker is found within 20 levels.
+    Mirrors ``findProjectRoot()`` in ``scripts/lib/utils.mjs``.
+    """
+    d = start_dir or Path.cwd()
+    markers = [".git", "package.json", ".claude"]
+    for _ in range(20):
+        if any((d / m).exists() for m in markers):
+            return d
+        parent = d.parent
+        if parent == d:
+            break
+        d = parent
+    return start_dir or Path.cwd()
+
+
 # ─── Config ───────────────────────────────────────────────────────────────────
 
 def _deep_merge(base: dict, override: dict) -> dict:
@@ -475,7 +495,7 @@ def _load_config(plugin_root: Path | None = None) -> dict:
         Path.home() / ".claude" / "quadruple-verify-config.json"
     )
 
-    project_root = Path.cwd()
+    project_root = _find_project_root()
     project_config = _load_json_file(
         project_root / ".claude" / "quadruple-verify-config.json"
     )
@@ -500,7 +520,7 @@ def _get_audit_path(config: dict) -> Path:
     if audit_cfg.get("logDir"):
         return Path(audit_cfg["logDir"])
 
-    project_claude = Path.cwd() / ".claude"
+    project_claude = _find_project_root() / ".claude"
     if project_claude.exists():
         return project_claude / "quadruple-verify-audit"
 
@@ -604,7 +624,22 @@ def _make_post_tool_hook(config: dict):
     async def post_tool_hook(input_data: dict[str, Any], tool_use_id: str | None, context: Any) -> dict:
         try:
             tool_name = input_data.get("tool_name", "")
-            _log_entry("post-tool", tool_name, "log-only", [], {}, config)
+            tool_input = input_data.get("tool_input", {})
+            metadata: dict[str, Any] = {}
+            if tool_input.get("file_path"):
+                metadata["filePath"] = tool_input["file_path"]
+                metadata["applicableCycles"] = (
+                    "Cycle 4 (Research Verification)"
+                    if _is_research_file(tool_input["file_path"])
+                    else "Cycles 1-3"
+                )
+            if tool_input.get("command"):
+                metadata["command"] = tool_input["command"][:200]
+            if tool_input.get("url"):
+                metadata["url"] = tool_input["url"]
+            if tool_input.get("pattern"):
+                metadata["pattern"] = tool_input["pattern"]
+            _log_entry("post-tool", tool_name, "log-only", [], metadata, config)
         except Exception as e:
             print(f"[quadruple-verify] post-tool error: {e}", file=sys.stderr)
         return {}
@@ -624,7 +659,7 @@ def _make_stop_hook(config: dict):
                 _log_entry("stop", "Stop", "approve", [], {}, config)
                 return {}
 
-            project_root = Path.cwd()
+            project_root = _find_project_root()
             search_dirs = [
                 project_root / "docs" / "research",
                 project_root / "research",
