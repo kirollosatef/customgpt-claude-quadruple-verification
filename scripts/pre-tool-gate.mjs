@@ -24,6 +24,7 @@ import { runCycle1, runCycle2 } from './lib/rules-engine.mjs';
 import { runCycle4 } from './lib/research-verifier.mjs';
 import { logPreTool } from './lib/audit-logger.mjs';
 import { loadConfig } from './lib/config-loader.mjs';
+import { checkCapabilities } from './lib/capability-gate.mjs';
 
 await failOpen(async () => {
   const input = await readStdinJSON();
@@ -44,6 +45,15 @@ await failOpen(async () => {
 
   const toolName = input.tool_name || '';
   const toolInput = input.tool_input || {};
+
+  // Capability enforcement — check if tool is allowed to use declared resources
+  const capResult = checkCapabilities(toolName, config);
+  if (!capResult.allowed) {
+    const capMsg = `Quadruple Verification BLOCKED: Tool "${toolName}" requires capabilities [${capResult.missing.join(', ')}] which are not in the allowed list.`;
+    logPreTool(toolName, 'block', [{ ruleId: 'capability-denied', message: capMsg }], { missing: capResult.missing });
+    deny(capMsg);
+    process.exit(0);
+  }
 
   // Determine what content to verify and what context to use
   const { content, context, fileExt, filePath } = extractContent(toolName, toolInput);

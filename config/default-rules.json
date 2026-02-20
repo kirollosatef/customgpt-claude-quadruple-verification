@@ -31,5 +31,11 @@
   "strictness": {
     "blockOnFirstViolation": false,
     "reportAllViolations": true
+  },
+  "capabilities": {
+    "enabled": false,
+    "allowed": ["filesystem", "shell", "network", "mcp"],
+    "failClosed": true,
+    "description": "Capability declaration enforcement — tools must declare resource access"
   }
 }
