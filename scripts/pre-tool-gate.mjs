@@ -37,7 +37,7 @@ await failOpen(async () => {
     process.exit(0);
   }
 
-  const config = loadConfig();
+  let config = loadConfig();
 
   // Lean mode: skip Cycle 1+2 pre-tool checks entirely.
   // Stop prompt, behavioral tracking, audit, and Cycle 4 remain active.
@@ -110,7 +110,7 @@ await failOpen(async () => {
     const reasons = allViolations.map(v =>
       `[Cycle ${v.cycle} - ${v.ruleId}] ${v.message}`
     );
-    const reasonText = `Quadruple Verification BLOCKED this operation:\n\n${reasons.join('\n\n')}\n\nFix these issues and try again.`;
+    let reasonText = `Quadruple Verification BLOCKED this operation:\n\n${reasons.join('\n\n')}\n\nFix these issues and try again.`;
 
     // Track token budget usage for this block message
     const budgetResult = trackInjection('block-message', reasonText, config);
@@ -119,12 +119,7 @@ await failOpen(async () => {
       const condensedReasons = allViolations.map(v =>
         `[Cycle ${v.cycle} - ${v.ruleId}] ${v.message}`
       );
-      reasonText = `Quadruple Verification BLOCKED (condensed):
-
-${condensedReasons.join('
-')}
-
-Fix these issues and try again.`;
+      reasonText = 'Quadruple Verification BLOCKED (condensed):\n\n' + condensedReasons.join('\n') + '\n\nFix these issues and try again.';
     }
     // Context optimization: prioritize violations by effectiveness
     allViolations = prioritizeMessages(allViolations);
@@ -133,16 +128,12 @@ Fix these issues and try again.`;
     const correctionResult = trackCorrectionAttempt(filePath, allViolations);
     const correctionHint = buildCorrectionHint(allViolations);
     if (correctionHint) {
-      reasonText += '
-
-' + correctionHint;
+      reasonText += '\n\n' + correctionHint;
     }
     if (correctionResult.isEscalated) {
       const escalation = escalateIfNeeded(filePath);
       if (escalation) {
-        reasonText += '
-
-' + escalation;
+        reasonText += '\n\n' + escalation;
       }
     }
     logPreTool(toolName, 'block', allViolations, { fileExt, context, tokenBudget: budgetResult, corrections: correctionResult });
