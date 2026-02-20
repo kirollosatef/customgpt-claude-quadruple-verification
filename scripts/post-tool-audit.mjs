@@ -16,6 +16,7 @@ import { readStdinJSON, isResearchFile, failOpen } from './lib/utils.mjs';
 import { logPostTool } from './lib/audit-logger.mjs';
 import { trackAndDetect } from './lib/behavior-tracker.mjs';
 import { detectInjectionPatterns } from './lib/content-boundary.mjs';
+import { detectSensitiveAccess, captureSystemState, logSystemEvent } from './lib/system-monitor.mjs';
 
 await failOpen(async () => {
   const input = await readStdinJSON();
@@ -54,6 +55,24 @@ await failOpen(async () => {
   const behaviorWarnings = trackAndDetect(toolName, toolInput);
   if (behaviorWarnings.length > 0) {
     metadata.behaviorWarnings = behaviorWarnings;
+  }
+
+  // System monitoring for Bash commands (sensitive path detection + process snapshot)
+  if (normalized === 'bash' && toolInput.command) {
+    const sensitiveHits = detectSensitiveAccess(toolInput.command);
+    if (sensitiveHits.length > 0) {
+      metadata.sensitiveAccess = sensitiveHits;
+      process.stderr.write(sensitiveHits.map(d =>
+        '[quadruple-verify][system-monitor] WARNING: Sensitive path access detected: ' + d.description + '
+'
+      ).join(''));
+      // Capture process state after sensitive access for audit trail
+      const systemState = captureSystemState();
+      metadata.systemState = systemState;
+      logSystemEvent('sensitive-access', { command: toolInput.command.slice(0, 200), detections: sensitiveHits, systemState }, (name, data) => {
+        // Already logged via logPostTool below
+      });
+    }
   }
 
   // Scan external content for injection patterns (WebFetch/WebSearch/MCP results)
