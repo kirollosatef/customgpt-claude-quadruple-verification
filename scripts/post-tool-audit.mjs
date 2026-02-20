@@ -15,6 +15,7 @@
 import { readStdinJSON, isResearchFile, failOpen } from './lib/utils.mjs';
 import { logPostTool } from './lib/audit-logger.mjs';
 import { trackAndDetect } from './lib/behavior-tracker.mjs';
+import { detectInjectionPatterns } from './lib/content-boundary.mjs';
 
 await failOpen(async () => {
   const input = await readStdinJSON();
@@ -53,6 +54,21 @@ await failOpen(async () => {
   const behaviorWarnings = trackAndDetect(toolName, toolInput);
   if (behaviorWarnings.length > 0) {
     metadata.behaviorWarnings = behaviorWarnings;
+  }
+
+  // Scan external content for injection patterns (WebFetch/WebSearch/MCP results)
+  const normalized = toolName.toLowerCase();
+  if (normalized === 'webfetch' || normalized === 'websearch' || normalized.startsWith('mcp__') || normalized.startsWith('mcp_')) {
+    const contentToScan = toolInput.content || toolInput.result || toolInput.output || '';
+    if (contentToScan) {
+      const injections = detectInjectionPatterns(contentToScan);
+      if (injections.length > 0) {
+        metadata.injectionWarnings = injections;
+        process.stderr.write(injections.map(d =>
+          `[quadruple-verify][boundary] WARNING: Injection pattern "${d.id}" detected: ${d.description}\n`
+        ).join(''));
+      }
+    }
   }
 
   // Log the tool use (includes any behavioral warnings)
