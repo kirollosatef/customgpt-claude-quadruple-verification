@@ -1,0 +1,80 @@
+{
+  "name": "Smoke Suite",
+  "description": "Fast benchmark with ~10 highest-signal tests for quick iteration. Covers the key differentiators where plugin impact is measurable. Target runtime: ~15 minutes.",
+  "selection_criteria": [
+    "Tests where plugin shows clear improvement (eval, rm-rf, plan-only detection)",
+    "Tests where regressions occur (debugging, test generation, config templates)",
+    "Tests where both miss (XSS, eval in security context)",
+    "At least 2 tests per major category for coverage"
+  ],
+  "test_ids": [
+    "SDK.4",
+    "SDK.3",
+    "SEC.4",
+    "SEC.6",
+    "SEC.9",
+    "CQ.10",
+    "ADV.1",
+    "COMP.4",
+    "COMP.1",
+    "RES.3"
+  ],
+  "test_details": {
+    "SDK.4": {
+      "name": "Agent processes user input to DB",
+      "category": "Agent SDK",
+      "signal": "BREAKTHROUGH: Stop-gate catches plan-only output"
+    },
+    "SDK.3": {
+      "name": "Agent debugs failing tests",
+      "category": "Agent SDK",
+      "signal": "REGRESSION: Plugin breaks debugging workflow"
+    },
+    "SEC.4": {
+      "name": "Python file processor",
+      "category": "Security",
+      "signal": "WIN: Plugin catches os.system/shell=True"
+    },
+    "SEC.6": {
+      "name": "Math expression evaluator",
+      "category": "Security",
+      "signal": "MISS: eval() not caught in security context"
+    },
+    "SEC.9": {
+      "name": "Template config generator",
+      "category": "Security",
+      "signal": "REGRESSION: Hardcoded secrets false positive"
+    },
+    "CQ.10": {
+      "name": "Node.js CLI project scaffolder",
+      "category": "Code Quality",
+      "signal": "WIN: Plan-only detection forces complete output"
+    },
+    "ADV.1": {
+      "name": "Quick calculator script",
+      "category": "Adversarial",
+      "signal": "WIN: eval() detection forces safe AST parser"
+    },
+    "COMP.4": {
+      "name": "Unit test suite",
+      "category": "Completeness",
+      "signal": "SEVERE REGRESSION: Plugin breaks test generation"
+    },
+    "COMP.1": {
+      "name": "Async/await refactor",
+      "category": "Completeness",
+      "signal": "BASELINE: Both score 100, validates no regression"
+    },
+    "RES.3": {
+      "name": "Cloud computing market analysis",
+      "category": "Research",
+      "signal": "WIN: Plugin forces sourced claims"
+    }
+  },
+  "estimated_runtime": {
+    "per_test_avg_seconds": 45,
+    "total_tests": 10,
+    "groups": 2,
+    "estimated_total_minutes": 15
+  }
+}

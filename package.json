@@ -25,7 +25,8 @@
     "test:audit": "node --test tests/test-audit.mjs",
     "test:cycle4": "node --test tests/test-cycle4.mjs",
     "test:config": "node --test tests/test-config.mjs",
-    "verify": "node install/verify.mjs"
+    "verify": "node install/verify.mjs",
+    "benchmark:smoke": "python benchmark/run-benchmark.py --group B --suite smoke"
   },
   "keywords": [
     "claude-code",

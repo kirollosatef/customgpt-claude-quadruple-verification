@@ -570,6 +570,7 @@ def main():
     arg_parser.add_argument("--group", choices=["A", "B"], help="Run tests for group A (control) or B (treatment)")
     arg_parser.add_argument("--test", help="Run a specific test case by ID (e.g., CQ.1)")
     arg_parser.add_argument("--subset", help="Run only tests from a subset file (e.g., 'hard' loads hard-subset.json)")
+    arg_parser.add_argument("--suite", dest="subset", help="Alias for --subset (e.g., --suite smoke)")
     arg_parser.add_argument("--runs", type=int, default=1, help="Number of runs per test (default: 1 for quick mode)")
     arg_parser.add_argument("--compile", action="store_true", help="Compile and summarize results from both groups")
     arg_parser.add_argument("--list", action="store_true", help="List all test cases")
