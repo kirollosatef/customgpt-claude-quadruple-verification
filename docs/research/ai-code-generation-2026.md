@@ -1,7 +1,5 @@
 # The State of AI Code Generation Tools (2026)
 
-<!-- PERPLEXITY_VERIFIED -->
-
 > Research report compiled February 2026. All statistics sourced from publicly available surveys and benchmarks as cited throughout this document.
 
 ## Executive Summary

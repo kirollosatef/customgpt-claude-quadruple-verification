@@ -1,7 +1,5 @@
 # WebAssembly Adoption in Production Environments (2026)
 
-<!-- PERPLEXITY_VERIFIED -->
-
 ## Executive Summary
 
 WebAssembly (Wasm) has transitioned from an experimental technology to a production staple across browser, server, and edge environments. As of early 2026, Wasm is present on approximately 5.5% of Chrome page loads ([Chrome Platform Status via ByteIota](https://byteiota.com/webassembly-hits-4-5-adoption-eyes-50-by-2030/)), 96.14% of global browsers support it ([Can I Use](https://caniuse.com/wasm)), and the release of Wasm 3.0 in September 2025 marked the largest specification update since the technology's inception ([WebAssembly.org](https://webassembly.org/news/2025-09-17-wasm-3.0/)). Major enterprises including Google, Adobe, Figma, American Express, and Cloudflare are running Wasm workloads in production, while Akamai's December 2025 acquisition of Fermyon signals strong industry confidence in Wasm's future at the edge ([Akamai Newsroom](https://www.akamai.com/newsroom/press-release/akamai-announces-acquisition-of-function-as-a-service-company-fermyon)).

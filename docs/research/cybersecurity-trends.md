@@ -1,5 +1,3 @@
-<!-- PERPLEXITY_VERIFIED -->
-
 # Cybersecurity Trends 2025-2026
 
 > Research compiled February 2026. All statistics are attributed to their specific

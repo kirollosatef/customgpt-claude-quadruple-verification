@@ -1,7 +1,5 @@
 # Cloud Computing Market Analysis: AWS vs Azure vs GCP
 
-<!-- PERPLEXITY_VERIFIED -->
-
 > **Published:** February 14, 2026 | **Data through:** Q4 2025 (Synergy Research)
 
 ---

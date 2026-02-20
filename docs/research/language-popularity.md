@@ -1,7 +1,5 @@
 # Programming Language Popularity Trends (2025-2026)
 
-<!-- PERPLEXITY_VERIFIED -->
-
 A data-driven analysis of programming language popularity across the TIOBE Index,
 Stack Overflow Developer Survey, GitHub Octoverse, and job market data.
 

@@ -1,5 +1,3 @@
-<!-- PERPLEXITY_VERIFIED -->
-
 # React vs Vue.js: Technical Comparison (February 2026)
 
 ---
