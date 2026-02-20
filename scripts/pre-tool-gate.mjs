@@ -23,7 +23,7 @@ import { readStdinJSON, deny, approve, getFileExtension, isResearchFile, failOpe
 import { runCycle1, runCycle2 } from './lib/rules-engine.mjs';
 import { runCycle4 } from './lib/research-verifier.mjs';
 import { logPreTool } from './lib/audit-logger.mjs';
-import { loadConfig } from './lib/config-loader.mjs';
+import { loadConfig, getTrustLevel } from './lib/config-loader.mjs';
 import { checkCapabilities } from './lib/capability-gate.mjs';
 
 await failOpen(async () => {
@@ -45,6 +45,19 @@ await failOpen(async () => {
 
   const toolName = input.tool_name || '';
   const toolInput = input.tool_input || {};
+
+  // Trust level enforcement
+  const trustLevel = getTrustLevel(config);
+  if (trustLevel === 'minimal') {
+    logPreTool(toolName, 'approve', [], { reason: 'trust-minimal' });
+    approve();
+    process.exit(0);
+  }
+
+  // In strict mode, enable all rules (remove disabled rules)
+  if (trustLevel === 'strict') {
+    config = { ...config, disabledRules: [] };
+  }
 
   // Capability enforcement — check if tool is allowed to use declared resources
   const capResult = checkCapabilities(toolName, config);

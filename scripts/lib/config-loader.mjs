@@ -93,3 +93,15 @@ function deepMerge(base, override) {
 
 // Export for testing
 export { deepMerge, loadJSONFile };
+
+
+/**
+ * Get the effective trust level from config.
+ * @param {object} config
+ * @returns {'minimal' | 'standard' | 'strict'}
+ */
+export function getTrustLevel(config) {
+  const level = (config && config.trustLevel) || 'standard';
+  if (['minimal', 'standard', 'strict'].includes(level)) return level;
+  return 'standard';
+}

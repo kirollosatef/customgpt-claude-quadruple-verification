@@ -2,22 +2,24 @@
   "version": "1.3.0",
   "failMode": "open",
   "leanMode": false,
-  "disabledRules": ["no-any-type"],
+  "disabledRules": [
+    "no-any-type"
+  ],
   "cycle1": {
     "enabled": true,
-    "description": "Code quality verification — blocks TODO, placeholder, stub code"
+    "description": "Code quality verification \u2014 blocks TODO, placeholder, stub code"
   },
   "cycle2": {
     "enabled": true,
-    "description": "Security verification — blocks eval, hardcoded secrets, injection patterns"
+    "description": "Security verification \u2014 blocks eval, hardcoded secrets, injection patterns"
   },
   "cycle3": {
     "enabled": true,
-    "description": "Output quality verification — second AI reviews completeness and correctness"
+    "description": "Output quality verification \u2014 second AI reviews completeness and correctness"
   },
   "cycle4": {
     "enabled": true,
-    "description": "Research claim verification — blocks vague language, unverified statistics, and missing source URLs in research files"
+    "description": "Research claim verification \u2014 blocks vague language, unverified statistics, and missing source URLs in research files"
   },
   "audit": {
     "enabled": true,
@@ -26,7 +28,7 @@
   },
   "mcp": {
     "maxInputSizeBytes": 10240,
-    "description": "MCP tool input validation — detects sensitive data in inputs and flags oversized payloads"
+    "description": "MCP tool input validation \u2014 detects sensitive data in inputs and flags oversized payloads"
   },
   "strictness": {
     "blockOnFirstViolation": false,
@@ -34,8 +36,14 @@
   },
   "capabilities": {
     "enabled": false,
-    "allowed": ["filesystem", "shell", "network", "mcp"],
+    "allowed": [
+      "filesystem",
+      "shell",
+      "network",
+      "mcp"
+    ],
     "failClosed": true,
-    "description": "Capability declaration enforcement — tools must declare resource access"
-  }
+    "description": "Capability declaration enforcement \u2014 tools must declare resource access"
+  },
+  "trustLevel": "standard"
 }

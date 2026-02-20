@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, writeFileSync, rmSync, existsSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { deepMerge, loadJSONFile } from '../scripts/lib/config-loader.mjs';
+import { deepMerge, loadJSONFile, getTrustLevel } from '../scripts/lib/config-loader.mjs';
 
 describe('Config Loader', () => {
   describe('deepMerge', () => {
@@ -95,4 +95,22 @@ describe('Config Loader', () => {
       assert.deepEqual(result, {});
     });
   });
+
+  describe('getTrustLevel', () => {
+    it('should default to standard', () => {
+      assert.equal(getTrustLevel({}), 'standard');
+      assert.equal(getTrustLevel(null), 'standard');
+    });
+
+    it('should accept valid trust levels', () => {
+      assert.equal(getTrustLevel({ trustLevel: 'minimal' }), 'minimal');
+      assert.equal(getTrustLevel({ trustLevel: 'strict' }), 'strict');
+      assert.equal(getTrustLevel({ trustLevel: 'standard' }), 'standard');
+    });
+
+    it('should reject invalid trust levels', () => {
+      assert.equal(getTrustLevel({ trustLevel: 'invalid' }), 'standard');
+    });
+  });
+
 });
