@@ -47,6 +47,10 @@
   },
   "trustLevel": "standard",
   "maxVerificationTokens": 500,
+  "modelRouting": {
+    "enabled": false,
+    "description": "Context-aware verification routing — adjusts verification intensity based on operation type and risk"
+  },
   "cycle5": {
     "enabled": false,
     "model": "claude-haiku-4-5-20251001",

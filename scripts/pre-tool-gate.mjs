@@ -27,6 +27,7 @@ import { loadConfig, getTrustLevel } from './lib/config-loader.mjs';
 import { checkCapabilities } from './lib/capability-gate.mjs';
 import { trackInjection, condenseIfOverBudget } from './lib/prompt-budget.mjs';
 import { buildCorrectionHint, trackCorrectionAttempt, escalateIfNeeded } from './lib/self-correction.mjs';
+import { determineVerificationLevel, getVerificationConfig } from './lib/model-router.mjs';
 
 await failOpen(async () => {
   const input = await readStdinJSON();
@@ -78,6 +79,16 @@ await failOpen(async () => {
     logPreTool(toolName, 'approve', [], { reason: 'no-content' });
     approve();
     process.exit(0);
+  }
+
+  // Model routing: adjust verification intensity based on context
+  if (config.modelRouting && config.modelRouting.enabled === true) {
+    const verLevel = determineVerificationLevel(toolName, toolInput, config);
+    if (verLevel !== 'standard') {
+      const adjustedConfig = getVerificationConfig(verLevel, config);
+      // Use adjusted config for remaining checks
+      Object.assign(config, adjustedConfig);
+    }
   }
 
   // Route to the appropriate verification cycles
