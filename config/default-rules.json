@@ -46,5 +46,11 @@
     "description": "Capability declaration enforcement \u2014 tools must declare resource access"
   },
   "trustLevel": "standard",
-  "maxVerificationTokens": 500
+  "maxVerificationTokens": 500,
+  "cycle5": {
+    "enabled": false,
+    "model": "claude-haiku-4-5-20251001",
+    "minResponseTokens": 500,
+    "description": "Inference-based verification — second AI model reviews response quality (opt-in)"
+  }
 }
