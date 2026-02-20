@@ -48,6 +48,21 @@ describe('Config Loader', () => {
     });
   });
 
+  describe('leanMode', () => {
+    it('should default leanMode to false', () => {
+      const base = { version: '1.3.0' };
+      const result = deepMerge(base, {});
+      assert.equal(result.leanMode, undefined);
+    });
+
+    it('should accept leanMode override', () => {
+      const base = { leanMode: false };
+      const override = { leanMode: true };
+      const result = deepMerge(base, override);
+      assert.equal(result.leanMode, true);
+    });
+  });
+
   describe('loadJSONFile', () => {
     let tempDir;
 

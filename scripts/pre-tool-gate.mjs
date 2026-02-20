@@ -33,6 +33,15 @@ await failOpen(async () => {
   }
 
   const config = loadConfig();
+
+  // Lean mode: skip Cycle 1+2 pre-tool checks entirely.
+  // Stop prompt, behavioral tracking, audit, and Cycle 4 remain active.
+  if (config.leanMode === true) {
+    logPreTool(input.tool_name || '', 'approve', [], { reason: 'lean-mode' });
+    approve();
+    process.exit(0);
+  }
+
   const toolName = input.tool_name || '';
   const toolInput = input.tool_input || {};
 
