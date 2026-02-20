@@ -93,6 +93,119 @@ function saveState(state) {
   writeFileSync(path, JSON.stringify(state, null, 2), 'utf-8');
 }
 
+
+/**
+ * Compute a simple similarity ratio between two strings using character bigrams.
+ * @param {string} a
+ * @param {string} b
+ * @returns {number} Ratio between 0 and 1
+ */
+export function similarityRatio(a, b) {
+  if (!a || !b) return 0;
+  if (a === b) return 1;
+
+  const getBigrams = (str) => {
+    const bigrams = new Set();
+    for (let i = 0; i < str.length - 1; i++) {
+      bigrams.add(str.slice(i, i + 2));
+    }
+    return bigrams;
+  };
+
+  const bigramsA = getBigrams(a);
+  const bigramsB = getBigrams(b);
+
+  let intersection = 0;
+  for (const bg of bigramsA) {
+    if (bigramsB.has(bg)) intersection++;
+  }
+
+  const union = bigramsA.size + bigramsB.size - intersection;
+  return union === 0 ? 0 : intersection / union;
+}
+
+/**
+ * Detect edit-revert loops (same file edited with >80% similar content 3+ times).
+ * @param {string} filePath
+ * @param {string} newContent
+ * @param {object} state - Session state
+ * @returns {Array<{pattern: string, message: string}>}
+ */
+export function detectEditLoop(filePath, newContent, state) {
+  const warnings = [];
+  if (!filePath || !newContent || !state) return warnings;
+
+  // Initialize edit tracking
+  if (!state.editHistory) state.editHistory = {};
+  if (!state.editHistory[filePath]) state.editHistory[filePath] = [];
+
+  const history = state.editHistory[filePath];
+
+  // Check similarity with recent edits
+  let similarCount = 0;
+  for (const prev of history.slice(-5)) {
+    const ratio = similarityRatio(prev, newContent);
+    if (ratio > 0.8) similarCount++;
+  }
+
+  if (similarCount >= 2) {
+    warnings.push({
+      pattern: 'edit-revert-loop',
+      message: `File "${filePath}" has been edited ${similarCount + 1} times with >80% similar content. This may indicate an edit-revert loop.`
+    });
+  }
+
+  // Track this edit (keep last 10 per file)
+  history.push(newContent.slice(0, 500)); // Keep only first 500 chars for comparison
+  if (history.length > 10) {
+    state.editHistory[filePath] = history.slice(-10);
+  }
+
+  return warnings;
+}
+
+/**
+ * Detect brute-force retry loops (same command retried 3+ times).
+ * @param {string} command
+ * @param {object} state - Session state
+ * @returns {Array<{pattern: string, message: string}>}
+ */
+export function detectRetryLoop(command, state) {
+  const warnings = [];
+  if (!command || !state) return warnings;
+
+  // Initialize retry tracking
+  if (!state.retryHistory) state.retryHistory = [];
+
+  // Normalize command (trim whitespace)
+  const normalized = command.trim();
+
+  // Count consecutive identical commands
+  let consecutiveCount = 0;
+  for (let i = state.retryHistory.length - 1; i >= 0; i--) {
+    if (state.retryHistory[i] === normalized) {
+      consecutiveCount++;
+    } else {
+      break;
+    }
+  }
+
+  if (consecutiveCount >= 3) {
+    warnings.push({
+      pattern: 'brute-force-retry',
+      message: `Command has been retried ${consecutiveCount + 1} consecutive times. Consider a different approach.`
+    });
+  }
+
+  // Track this command (keep last 20)
+  state.retryHistory.push(normalized);
+  if (state.retryHistory.length > 20) {
+    state.retryHistory = state.retryHistory.slice(-20);
+  }
+
+  return warnings;
+}
+
 /**
  * Record a tool operation and check for suspicious behavioral patterns.
  *
@@ -138,6 +251,13 @@ export function trackAndDetect(toolName, toolInput = {}) {
     }
   }
 
+  // ─── Pattern 5: Edit-Revert Loop ──────────────────────────────────────
+  if ((normalized === 'write' || normalized === 'edit') && entry.filePath) {
+    const editContent = toolInput.content || toolInput.new_string || '';
+    const editLoopWarnings = detectEditLoop(entry.filePath, editContent, state);
+    warnings.push(...editLoopWarnings);
+  }
+
   // ─── Pattern 2: Rapid Destructive Sequence ──────────────────────────────
   if (normalized === 'bash' && entry.command) {
     const isDestructive = DESTRUCTIVE_PATTERNS.some(p => p.test(entry.command));
@@ -154,6 +274,12 @@ export function trackAndDetect(toolName, toolInput = {}) {
         });
       }
     }
+  }
+
+  // ─── Pattern 5b: Brute-Force Retry Loop ──────────────────────────────
+  if (normalized === 'bash' && entry.command) {
+    const retryWarnings = detectRetryLoop(entry.command, state);
+    warnings.push(...retryWarnings);
   }
 
   // ─── Pattern 3: Exfiltration Sequence ───────────────────────────────────
