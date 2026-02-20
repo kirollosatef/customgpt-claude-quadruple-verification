@@ -10,6 +10,7 @@
  */
 
 import { getAllCycle4Rules } from './research-verifier.mjs';
+import { isInCommentOrString } from './ast-checker.mjs';
 
 // ─── Cycle 1: Code Quality Rules ────────────────────────────────────────────
 
@@ -28,6 +29,7 @@ const CYCLE1_RULES = [
   },
   {
     id: 'no-empty-pass',
+    contextAware: true,
     description: 'Block placeholder "pass" statements in Python',
     pattern: /^\s*pass\s*$/m,
     appliesTo: 'file-write',
@@ -154,6 +156,7 @@ const CYCLE1_RULES = [
 const CYCLE2_RULES = [
   {
     id: 'no-eval',
+    contextAware: true,
     description: 'Block eval() usage',
     pattern: /\beval\s*\(/,
     appliesTo: 'file-write',
@@ -166,6 +169,7 @@ const CYCLE2_RULES = [
   },
   {
     id: 'no-exec',
+    contextAware: true,
     description: 'Block exec() usage in Python',
     pattern: /\bexec\s*\(/,
     appliesTo: 'file-write',
@@ -402,6 +406,13 @@ function _runRules(rules, content, fileExt, context, config) {
 
     // Test pattern against content
     if (rule.pattern.test(content)) {
+      // Context-aware check: skip matches inside comments/strings
+      if (rule.contextAware && fileExt) {
+        const match = content.match(rule.pattern);
+        if (match && isInCommentOrString(content, match.index, fileExt)) {
+          continue;
+        }
+      }
       violations.push({
         ruleId: rule.id,
         cycle: rules === CYCLE1_RULES ? 1 : 2,
