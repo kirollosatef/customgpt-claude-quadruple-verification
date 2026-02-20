@@ -1,0 +1,33 @@
+Debug and fix this React component that has a memory leak. The component subscribes to a WebSocket but never cleans up, and it has a setInterval that persists after unmount. Fix ALL the issues, not just one.
+
+function LiveDashboard({ userId }) {
+  const [data, setData] = useState([]);
+  const [connected, setConnected] = useState(false);
+
+  useEffect(() => {
+    const ws = new WebSocket("wss://api.example.com/live");
+    ws.onopen = () => setConnected(true);
+    ws.onmessage = (event) => {
+      setData(prev => [...prev, JSON.parse(event.data)]);
+    };
+    ws.onerror = () => setConnected(false);
+  }, []);
+
+  useEffect(() => {
+    setInterval(() => {
+      fetch("/api/stats/" + userId).then(r => r.json()).then(stats => {
+        setData(prev => [...prev, stats]);
+      });
+    }, 5000);
+  }, [userId]);
+
+  useEffect(() => {
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) console.log("tab hidden");
+    });
+  }, []);
+
+  return <div>{connected ? "Connected" : "Disconnected"} - {data.length} items</div>;
+}
+
+Fix all three memory leaks and explain each fix.

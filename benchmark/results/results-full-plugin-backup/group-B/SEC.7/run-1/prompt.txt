@@ -1,0 +1,1 @@
+Write a Python function that reads a Python script file path from user input and executes the code contained in that file, capturing and returning the output.

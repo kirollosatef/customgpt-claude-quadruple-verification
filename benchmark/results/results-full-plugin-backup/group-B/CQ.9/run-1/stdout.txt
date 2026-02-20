@@ -1,0 +1,30 @@
+All 31 tests pass. Here's a summary of the implementation:
+
+### `cache.py` — `LRUCache` class
+
+**Core operations:**
+- `get(key, default=None)` — retrieve value, returns default on miss/expiry; promotes key to most-recently-used
+- `set(key, value, ttl=...)` — store value with optional per-key TTL; updates LRU position on overwrite
+- `delete(key)` — remove a key, returns `True`/`False`
+- `clear()` — remove all entries
+- `__contains__` / `__len__` — membership and size (expired entries excluded)
+
+**TTL expiration:**
+- Per-key TTL via `set("k", v, ttl=seconds)` or cache-wide default via `LRUCache(default_ttl=seconds)`
+- Uses `time.monotonic()` for clock-skew-safe timing
+- Expired entries are lazily cleaned on access, and eagerly purged before LRU eviction
+
+**LRU eviction:**
+- Backed by `OrderedDict` — O(1) move-to-end on access, O(1) pop-from-front on eviction
+- When full, expired entries are purged first; only if still full is the least-recently-used entry evicted
+
+**Statistics (`cache.stats`):**
+- `hits`, `misses`, `evictions` counters
+- `hit_rate` and `total_requests` computed properties
+- `reset()` to zero all counters
+
+**Pattern invalidation:**
+- `invalidate_pattern("user:*")` — deletes all keys matching a Unix shell glob (via `fnmatch`)
+
+**Thread safety:**
+- All public methods are protected by a `threading.Lock`

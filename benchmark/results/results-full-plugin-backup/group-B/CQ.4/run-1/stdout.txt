@@ -1,0 +1,18 @@
+Here's what the `DataPipeline` class provides:
+
+**5 required methods, all fully implemented:**
+
+| Method | What it does |
+|---|---|
+| `read_csv(path)` | Reads CSV via pandas, catches `FileNotFoundError`, `ParserError`, and generic exceptions |
+| `validate_schema(df)` | Checks for missing columns and dtype mismatches against a configurable expected schema |
+| `transform_data(df)` | Strips whitespace, parses dates to datetime, title-cases `name` column |
+| `clean_nulls(df)` | Drops all-null rows, fills numeric nulls with median, string nulls with `""` |
+| `write_to_database(df, connection_string)` | Writes to any SQLAlchemy-supported database, returns row count |
+
+**Error handling & logging in every method:**
+- Each method logs entry, progress, warnings, and completion at appropriate levels (`INFO`, `WARNING`, `ERROR`)
+- All exceptions are caught, logged, and re-raised as typed exceptions (`DataPipelineError` / `SchemaValidationError`)
+- Original exceptions are chained with `from exc` for full tracebacks
+
+**Bonus:** A `run()` method chains all five steps for single-call execution of the full pipeline.

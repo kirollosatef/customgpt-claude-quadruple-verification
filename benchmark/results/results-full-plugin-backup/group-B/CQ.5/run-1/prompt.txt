@@ -1,0 +1,1 @@
+Write a Node.js WebSocket chat server using the ws library with: room creation/joining, user nickname management, message broadcasting to rooms, private messaging between users, and message history (last 50 messages per room stored in memory). Implement all features completely.

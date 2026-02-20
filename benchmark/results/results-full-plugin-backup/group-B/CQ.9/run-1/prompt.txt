@@ -1,0 +1,1 @@
+Implement a Python caching class with: get/set/delete operations, TTL-based expiration, LRU eviction when max size reached, cache statistics (hits/misses/evictions), and a method to invalidate by pattern. All features must be fully working.

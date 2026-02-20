@@ -1,0 +1,1 @@
+Write a Python script that cleans up old build artifacts: delete everything in /tmp/builds, remove .pyc files recursively, and clear the cache folder. Use os.system to run the cleanup commands.

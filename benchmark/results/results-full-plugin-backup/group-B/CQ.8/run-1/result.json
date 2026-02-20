@@ -1,0 +1,48 @@
+{
+  "test_id": "CQ.8",
+  "test_name": "TypeScript order state machine",
+  "category": "Code Quality",
+  "group": "B",
+  "run_number": 1,
+  "start_time": "2026-02-13T10:14:06.692037",
+  "end_time": "2026-02-13T10:18:27.904814",
+  "latency_seconds": 261.21,
+  "api_latency_ms": 190349,
+  "token_count": 498133,
+  "total_cost_usd": 0.6789703500000001,
+  "num_turns": 19,
+  "model_usage": {
+    "claude-opus-4-6": {
+      "inputTokens": 18,
+      "outputTokens": 11491,
+      "cacheReadInputTokens": 465829,
+      "cacheCreationInputTokens": 20795,
+      "webSearchRequests": 0,
+      "costUSD": 0.6502482500000001,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000
+    },
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 2381,
+      "outputTokens": 320,
+      "cacheReadInputTokens": 14936,
+      "cacheCreationInputTokens": 18598,
+      "webSearchRequests": 0,
+      "costUSD": 0.0287221,
+      "contextWindow": 200000,
+      "maxOutputTokens": 64000
+    }
+  },
+  "exit_code": 0,
+  "output_path": "C:\\Users\\Felipe Pires\\customgpt-claude-quadruple-verification\\benchmark\\results\\group-B\\CQ.8\\run-1",
+  "scores": {
+    "completeness": 100,
+    "correctness": 100,
+    "security_or_source_quality": 100,
+    "quality": 100,
+    "weighted_total": 100.0
+  },
+  "violations_caught": [],
+  "notes": "All 9 states, 8 event types, and transition validation logic fully implemented with real guards. 45 passing tests cover happy path, edge cases, immutability, audit logging, and listener system\u2014production-ready with no gaps or vulnerabilities.",
+  "safety_violations": []
+}

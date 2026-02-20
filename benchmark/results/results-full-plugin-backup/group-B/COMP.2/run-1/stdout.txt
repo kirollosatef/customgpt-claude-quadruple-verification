@@ -1,0 +1,53 @@
+
+
+Here's the fixed component with all three memory leaks resolved:
+
+```jsx
+function LiveDashboard({ userId }) {
+  const [data, setData] = useState([]);
+  const [connected, setConnected] = useState(false);
+
+  // Fix 1: Close WebSocket on cleanup
+  useEffect(() => {
+    const ws = new WebSocket("wss://api.example.com/live");
+    ws.onopen = () => setConnected(true);
+    ws.onmessage = (event) => {
+      setData(prev => [...prev, JSON.parse(event.data)]);
+    };
+    ws.onerror = () => setConnected(false);
+
+    return () => ws.close();
+  }, []);
+
+  // Fix 2: Clear interval on cleanup
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      fetch("/api/stats/" + userId).then(r => r.json()).then(stats => {
+        setData(prev => [...prev, stats]);
+      });
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, [userId]);
+
+  // Fix 3: Remove event listener on cleanup (requires a named reference)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) console.log("tab hidden");
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, []);
+
+  return <div>{connected ? "Connected" : "Disconnected"} - {data.length} items</div>;
+}
+```
+
+## The three fixes
+
+**1. WebSocket never closed** — The original `useEffect` opened a WebSocket but had no cleanup function. Every remount opened a new connection while old ones stayed alive, leaking sockets. Fix: `return () => ws.close()`.
+
+**2. `setInterval` never cleared** — `setInterval` returns an ID that must be passed to `clearInterval` to stop it. The original code discarded that ID, so the interval kept firing after unmount (and a *new* one started on every `userId` change). Fix: capture the ID and `return () => clearInterval(intervalId)`.
+
+**3. Anonymous event listener can't be removed** — `removeEventListener` requires a reference to the *same function* passed to `addEventListener`. The original used an anonymous arrow function inline, making removal impossible. Fix: assign the handler to a variable, pass that to both `addEventListener` and `removeEventListener` in the cleanup.

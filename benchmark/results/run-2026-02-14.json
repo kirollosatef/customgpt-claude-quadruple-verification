@@ -1,0 +1,206 @@
+{
+  "date": "2026-02-14",
+  "summary": {
+    "category_1_code_quality": {
+      "matched_tests": 10,
+      "avg_score_A": 89.0,
+      "avg_score_B": 97.7,
+      "stats_A": {
+        "mean": 89.03,
+        "stddev": 25.62,
+        "ci_95_lower": 70.71,
+        "ci_95_upper": 107.34,
+        "count": 10
+      },
+      "stats_B": {
+        "mean": 97.65,
+        "stddev": 4.25,
+        "ci_95_lower": 94.61,
+        "ci_95_upper": 100.69,
+        "count": 10
+      },
+      "improvement_pct": 9.7,
+      "avg_latency_A": 196.4,
+      "avg_latency_B": 135.0,
+      "latency_ratio": 0.69,
+      "avg_tokens_A": 581813,
+      "avg_tokens_B": 271129,
+      "token_ratio": 0.47,
+      "net_value": 9.7,
+      "violations_caught": 0,
+      "outliers_A": 0,
+      "outliers_B": 0
+    },
+    "category_2_security": {
+      "matched_tests": 10,
+      "avg_score_A": 89.8,
+      "avg_score_B": 89.5,
+      "stats_A": {
+        "mean": 89.75,
+        "stddev": 16.6,
+        "ci_95_lower": 77.89,
+        "ci_95_upper": 101.61,
+        "count": 10
+      },
+      "stats_B": {
+        "mean": 89.5,
+        "stddev": 24.55,
+        "ci_95_lower": 71.96,
+        "ci_95_upper": 107.04,
+        "count": 10
+      },
+      "improvement_pct": -0.3,
+      "avg_latency_A": 35.4,
+      "avg_latency_B": 30.0,
+      "latency_ratio": 0.85,
+      "avg_tokens_A": 49805,
+      "avg_tokens_B": 47599,
+      "token_ratio": 0.96,
+      "net_value": -0.3,
+      "violations_caught": 0,
+      "outliers_A": 0,
+      "outliers_B": 0
+    },
+    "category_3_research": {
+      "matched_tests": 5,
+      "avg_score_A": 93.5,
+      "avg_score_B": 100.0,
+      "stats_A": {
+        "mean": 93.45,
+        "stddev": 12.17,
+        "ci_95_lower": 78.32,
+        "ci_95_upper": 108.58,
+        "count": 5
+      },
+      "stats_B": {
+        "mean": 100.0,
+        "stddev": 0.0,
+        "ci_95_lower": 100.0,
+        "ci_95_upper": 100.0,
+        "count": 5
+      },
+      "improvement_pct": 7.0,
+      "avg_latency_A": 212.9,
+      "avg_latency_B": 155.4,
+      "latency_ratio": 0.73,
+      "avg_tokens_A": 442740,
+      "avg_tokens_B": 461713,
+      "token_ratio": 1.04,
+      "net_value": 6.8,
+      "violations_caught": 0,
+      "outliers_A": 0,
+      "outliers_B": 0
+    },
+    "category_4_completeness": {
+      "matched_tests": 5,
+      "avg_score_A": 100.0,
+      "avg_score_B": 77.5,
+      "stats_A": {
+        "mean": 100.0,
+        "stddev": 0.0,
+        "ci_95_lower": 100.0,
+        "ci_95_upper": 100.0,
+        "count": 5
+      },
+      "stats_B": {
+        "mean": 77.5,
+        "stddev": 43.66,
+        "ci_95_lower": 23.22,
+        "ci_95_upper": 131.78,
+        "count": 5
+      },
+      "improvement_pct": -22.5,
+      "avg_latency_A": 57.6,
+      "avg_latency_B": 33.2,
+      "latency_ratio": 0.58,
+      "avg_tokens_A": 144351,
+      "avg_tokens_B": 53224,
+      "token_ratio": 0.37,
+      "net_value": -22.5,
+      "violations_caught": 0,
+      "outliers_A": 0,
+      "outliers_B": 0
+    },
+    "category_5_agent_sdk": {
+      "matched_tests": 5,
+      "avg_score_A": 80.0,
+      "avg_score_B": 65.0,
+      "stats_A": {
+        "mean": 80.0,
+        "stddev": 44.72,
+        "ci_95_lower": 24.4,
+        "ci_95_upper": 135.6,
+        "count": 5
+      },
+      "stats_B": {
+        "mean": 64.95,
+        "stddev": 45.89,
+        "ci_95_lower": 7.89,
+        "ci_95_upper": 122.01,
+        "count": 5
+      },
+      "improvement_pct": -18.8,
+      "avg_latency_A": 320.2,
+      "avg_latency_B": 128.2,
+      "latency_ratio": 0.4,
+      "avg_tokens_A": 666912,
+      "avg_tokens_B": 393365,
+      "token_ratio": 0.59,
+      "net_value": -18.8,
+      "violations_caught": 0,
+      "outliers_A": 0,
+      "outliers_B": 0
+    },
+    "category_6_adversarial": {
+      "matched_tests": 10,
+      "avg_score_A": 70.5,
+      "avg_score_B": 68.1,
+      "stats_A": {
+        "mean": 70.5,
+        "stddev": 22.66,
+        "ci_95_lower": 54.3,
+        "ci_95_upper": 86.7,
+        "count": 10
+      },
+      "stats_B": {
+        "mean": 68.1,
+        "stddev": 38.59,
+        "ci_95_lower": 40.52,
+        "ci_95_upper": 95.68,
+        "count": 10
+      },
+      "improvement_pct": -3.4,
+      "avg_latency_A": 34.9,
+      "avg_latency_B": 27.6,
+      "latency_ratio": 0.79,
+      "avg_tokens_A": 35574,
+      "avg_tokens_B": 54342,
+      "token_ratio": 1.53,
+      "net_value": -6.0,
+      "violations_caught": 0,
+      "outliers_A": 0,
+      "outliers_B": 0
+    },
+    "overall": {
+      "matched_tests": 45,
+      "total_tests": 45,
+      "max_runs_per_test": 1,
+      "avg_score_A": 87.1,
+      "avg_score_B": 83.0,
+      "improvement_pct": -4.8,
+      "latency_overhead": "0.7x",
+      "token_overhead": "0.8x",
+      "net_value_score": -5.2,
+      "verdict": "BELOW_THRESHOLD",
+      "any_regression": true,
+      "violations": {
+        "total_plugin_catches": 0,
+        "tests_with_catches": 0,
+        "rules_triggered": [],
+        "vanilla_safety_violations": 23,
+        "plugin_safety_violations": 25,
+        "safety_gap": -2
+      }
+    }
+  }
+}

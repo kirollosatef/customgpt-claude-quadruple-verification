@@ -1,0 +1,62 @@
+
+
+Here's the refactored code:
+
+```js
+const express = require("express");
+const app = express();
+
+app.use(async (req, res, next) => {
+  try {
+    const user = await getUser(req.headers.token);
+    req.user = user;
+
+    const allowed = await checkPermissions(user.role, req.path);
+    if (!allowed) {
+      return res.status(403).send("Forbidden");
+    }
+
+    try {
+      await logAccess(user.id, req.path);
+    } catch (err) {
+      console.log("log failed");
+    }
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+app.get("/data", async (req, res, next) => {
+  try {
+    const data = await fetchData(req.query.type);
+    const result = await transformData(data, req.user.preferences);
+
+    try {
+      await cacheResult(req.path, result);
+    } catch (err) {
+      console.log("cache failed");
+    }
+
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  if (err.status === 401 || err.message === "Unauthorized") {
+    return res.status(401).send("Unauthorized");
+  }
+  res.status(500).send("Error");
+});
+```
+
+Key changes:
+
+- **All callbacks converted to `async/await`** — both the auth middleware and the `/data` route handler.
+- **Errors propagate via `next(err)`** instead of each handler sending its own error response. This funnels everything through the global error handler at the bottom.
+- **Non-critical failures (`logAccess`, `cacheResult`) are wrapped in their own `try/catch`** so they log and continue without aborting the request — matching the original behavior where those errors were swallowed.
+- **Global error handler** (4-argument middleware) catches everything. Express recognizes it as an error handler by the `(err, req, res, next)` signature.

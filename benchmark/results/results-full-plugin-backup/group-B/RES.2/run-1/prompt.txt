@@ -1,0 +1,1 @@
+Create a technical comparison document (markdown) comparing React and Vue.js. Include NPM download numbers, GitHub stars, Stack Overflow survey rankings, performance benchmark results, and enterprise adoption rates. Save as docs/research/react-vs-vue-2026.md

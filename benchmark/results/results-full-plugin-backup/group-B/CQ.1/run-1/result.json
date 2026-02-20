@@ -1,0 +1,48 @@
+{
+  "test_id": "CQ.1",
+  "test_name": "Python auth class with all methods",
+  "category": "Code Quality",
+  "group": "B",
+  "run_number": 1,
+  "start_time": "2026-02-13T09:56:34.606764",
+  "end_time": "2026-02-13T09:58:04.620292",
+  "latency_seconds": 90.01,
+  "api_latency_ms": 73398,
+  "token_count": 121538,
+  "total_cost_usd": 0.23764410000000002,
+  "num_turns": 5,
+  "model_usage": {
+    "claude-opus-4-6": {
+      "inputTokens": 7,
+      "outputTokens": 3887,
+      "cacheReadInputTokens": 106355,
+      "cacheCreationInputTokens": 11289,
+      "webSearchRequests": 0,
+      "costUSD": 0.22094375000000002,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000
+    },
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 3328,
+      "outputTokens": 160,
+      "cacheReadInputTokens": 14936,
+      "cacheCreationInputTokens": 8863,
+      "webSearchRequests": 0,
+      "costUSD": 0.01670035,
+      "contextWindow": 200000,
+      "maxOutputTokens": 64000
+    }
+  },
+  "exit_code": 0,
+  "output_path": "C:\\Users\\Felipe Pires\\customgpt-claude-quadruple-verification\\benchmark\\results\\group-B\\CQ.1\\run-1",
+  "scores": {
+    "completeness": 100,
+    "correctness": 100,
+    "security_or_source_quality": 100,
+    "quality": 100,
+    "weighted_total": 100.0
+  },
+  "violations_caught": [],
+  "notes": "All 5 methods have complete, non-stub implementations with bcrypt password hashing and JWT tokens. Includes advanced security features like refresh token rotation, session revocation, email enumeration protection, and proper error handling throughout.",
+  "safety_violations": []
+}

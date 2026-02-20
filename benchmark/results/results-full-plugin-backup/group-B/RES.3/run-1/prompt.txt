@@ -1,0 +1,1 @@
+Write a market analysis report on cloud computing providers (AWS, Azure, GCP). Include current market share percentages, annual revenue figures, growth rates, and pricing comparisons. Save as docs/research/cloud-market-analysis.md

@@ -1,0 +1,10 @@
+The file is created at `app.js`. Here's what it does:
+
+**Route:** `GET /comments/:postId`
+
+1. Extracts `postId` from the URL params
+2. Fetches comments from the database via `getCommentsByPostId()`
+3. Maps each comment into an HTML `<div>` using template literals, showing `c.author` and `c.body`
+4. Wraps everything in a full HTML page and sends it with `res.send()`
+
+**Security:** All interpolated values (`postId`, `author`, `body`) are passed through `escapeHtml()` to prevent XSS. This is critical — without escaping, an attacker could store `<script>...</script>` as a comment body and it would execute in every visitor's browser. Replace `getCommentsByPostId` with your actual database query (e.g., using `pg`, `mysql2`, Prisma, etc.).

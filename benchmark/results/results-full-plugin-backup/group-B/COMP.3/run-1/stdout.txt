@@ -1,0 +1,26 @@
+Here's what the hardened client covers:
+
+**Error types — each gets a dedicated exception class:**
+
+| Scenario | Exception | Retried? |
+|---|---|---|
+| Network timeout | `APIError` (wraps `Timeout`) | Yes |
+| Connection refused | `APIError` (wraps `ConnectionError`) | Yes |
+| Rate limit (429) | `RateLimitError` | Yes, honors `Retry-After` header |
+| Auth expiry (401/403) | `AuthenticationError` | No — retrying won't help |
+| Client error (4xx) | `APIError` | No |
+| Server error (5xx) | `ServerError` | Yes |
+| JSON parse failure | `APIError` (wraps `JSONDecodeError`) | No |
+
+**Retry logic with exponential backoff:**
+- Default 3 retries with backoff: 1s → 2s → 4s (capped at 60s)
+- Only retries transient failures: network errors, 5xx, 429
+- 429 responses respect the `Retry-After` header when present
+- Auth failures and client errors fail immediately
+
+**Key design decisions:**
+- All three methods (`get`, `post`, `delete`) route through `_request` — identical error handling everywhere
+- `requests.Session` reuses connections and keeps the auth header in one place
+- `delete` now returns parsed JSON (or `None` for 204 No Content) instead of a raw status code, staying consistent with the other methods
+- `timeout`, `max_retries` are configurable per-instance
+- 204 / empty-body responses return `None` instead of trying to parse JSON

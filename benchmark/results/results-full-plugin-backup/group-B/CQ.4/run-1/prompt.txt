@@ -1,0 +1,1 @@
+Create a Python data pipeline class with methods: read_csv(path), validate_schema(df), transform_data(df), clean_nulls(df), write_to_database(df, connection_string). Include proper error handling and logging in every method. No method should be left incomplete.

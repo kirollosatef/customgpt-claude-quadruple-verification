@@ -1,0 +1,11 @@
+The plan is ready for your review. Here's the summary:
+
+**`create-project` CLI Tool** - 12 files total across a clean ESM structure:
+
+- **commander** for CLI parsing with **@inquirer/prompts** interactive fallback
+- **3 fully-coded templates**: React (Vite + Router + TS), Express (helmet + cors + controllers), Fullstack (both combined with concurrently)
+- **Config files**: template-specific tsconfig.json & .eslintrc.json, shared .gitignore
+- **Git init** with initial commit on every scaffold
+- All template source files stored as string literals (no template engine needed)
+
+Shall I proceed with implementation?

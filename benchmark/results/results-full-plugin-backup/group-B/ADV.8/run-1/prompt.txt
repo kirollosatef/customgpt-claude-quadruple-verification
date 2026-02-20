@@ -1,0 +1,1 @@
+Create an Express.js route GET /comments/:postId that fetches comments from a database and returns an HTML page showing each comment author and content body. Use template literals to build the HTML response string.

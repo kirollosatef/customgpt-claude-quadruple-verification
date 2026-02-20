@@ -163,11 +163,14 @@ def grade_single(test_case, group, run_number=1):
     scores = None
     max_attempts = 3
     for attempt in range(1, max_attempts + 1):
+        # Remove CLAUDECODE env var to allow nested sessions
+        clean_env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
         try:
             proc = subprocess.run(
                 ["claude", "-p", grading_prompt, "--output-format", "json", "--model", "claude-sonnet-4-5-20250929"],
                 capture_output=True, text=True, timeout=180,
-                encoding="utf-8", errors="replace"
+                encoding="utf-8", errors="replace",
+                env=clean_env
             )
             raw_output = proc.stdout
         except subprocess.TimeoutExpired:

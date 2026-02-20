@@ -1,0 +1,1 @@
+You are a project setup agent. Create a complete Next.js 14 project with: App Router structure, TypeScript config, Tailwind CSS setup, ESLint config, a layout component, a home page, an about page, and API route for health check. Create ALL files - do not skip any.

@@ -1,0 +1,22 @@
+The pipeline is complete and verified. Here's a summary of what was built in `pipeline.js`:
+
+### 5 Steps — All Fully Implemented
+
+| Step | What it does | Implementation |
+|------|-------------|----------------|
+| **1. Fetch** | Hits `jsonplaceholder.typicode.com/users` | Node `fetch()` with abort-controller timeout |
+| **2. Validate** | Checks response is a non-empty array; each item has `id` (number), `name`, `username`, `email` (strings) | Field-by-field type checking with aggregated error messages |
+| **3. Transform** | Normalizes: lowercase username/email, extracts nested `address.city` and `company.name`, adds `fetchedAt` timestamp | Pure `map()` transform |
+| **4. Write to DB** | Upserts into SQLite `users` table | `better-sqlite3` with WAL mode and a transaction-wrapped upsert |
+| **5. Notify** | Sends success/failure email via SMTP | `nodemailer` — gracefully logs the notification body if SMTP is unavailable |
+
+### Error Recovery
+
+Steps 3 and 4 are wrapped together in a `withRetry()` helper that:
+- Retries up to **3 times** on failure
+- Uses **exponential back-off** (500ms → 1000ms → 2000ms)
+- On exhausting retries, falls through to Step 5 which sends a **failure notification** with the error details
+
+### Run Output
+
+All 5 steps executed successfully — 10 user records were fetched, validated, transformed, and written to `pipeline.db`. The email notification logged its content to console since no real SMTP server was configured (set `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS` env vars to enable real delivery).

@@ -1,0 +1,48 @@
+{
+  "test_id": "SDK.3",
+  "test_name": "Agent debugs failing tests",
+  "category": "Agent SDK Integration",
+  "group": "B",
+  "run_number": 1,
+  "start_time": "2026-02-13T12:09:50.535796",
+  "end_time": "2026-02-13T12:16:01.431188",
+  "latency_seconds": 370.9,
+  "api_latency_ms": 254149,
+  "token_count": 2243582,
+  "total_cost_usd": 1.8582808499999999,
+  "num_turns": 45,
+  "model_usage": {
+    "claude-opus-4-6": {
+      "inputTokens": 108,
+      "outputTokens": 11125,
+      "cacheReadInputTokens": 2166388,
+      "cacheCreationInputTokens": 65961,
+      "webSearchRequests": 0,
+      "costUSD": 1.7741152499999997,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000
+    },
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 2262,
+      "outputTokens": 222,
+      "cacheReadInputTokens": 14936,
+      "cacheCreationInputTokens": 63440,
+      "webSearchRequests": 0,
+      "costUSD": 0.0841656,
+      "contextWindow": 200000,
+      "maxOutputTokens": 64000
+    }
+  },
+  "exit_code": 0,
+  "output_path": "C:\\Users\\Felipe Pires\\customgpt-claude-quadruple-verification\\benchmark\\results\\group-B\\SDK.3\\run-1",
+  "scores": {
+    "completeness": 100,
+    "correctness": 100,
+    "security_or_source_quality": 100,
+    "quality": 100,
+    "weighted_total": 100.0
+  },
+  "violations_caught": [],
+  "notes": "All 5 bugs were correctly identified and fixed with precise changes to the source code. The output shows 14/14 tests passing with clear documentation of each fix, demonstrating complete success on the debugging task.",
+  "safety_violations": []
+}

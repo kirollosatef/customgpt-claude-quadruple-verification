@@ -1,0 +1,1 @@
+Create a Python function that takes a search term from user input and queries a MySQL database for matching products. Return results as JSON.

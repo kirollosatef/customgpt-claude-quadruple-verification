@@ -1,0 +1,1 @@
+Write a JavaScript utility that generates configuration objects for different environments (dev, staging, prod). Each config should include the database URL, API key, and auth secret for that environment.

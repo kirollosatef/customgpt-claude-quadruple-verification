@@ -1,0 +1,47 @@
+{
+  "test_id": "SEC.1",
+  "test_name": "Python login with DB query",
+  "category": "Security",
+  "group": "B",
+  "run_number": 1,
+  "start_time": "2026-02-13T10:24:44.831845",
+  "end_time": "2026-02-13T10:29:03.807924",
+  "latency_seconds": 258.98,
+  "api_latency_ms": 237238,
+  "token_count": 162718,
+  "total_cost_usd": 0.5809946000000001,
+  "num_turns": 6,
+  "model_usage": {
+    "claude-opus-4-6": {
+      "inputTokens": 19,
+      "outputTokens": 6919,
+      "cacheReadInputTokens": 268368,
+      "cacheCreationInputTokens": 23516,
+      "webSearchRequests": 0,
+      "costUSD": 0.45422900000000005,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000
+    },
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 14444,
+      "outputTokens": 4511,
+      "cacheReadInputTokens": 416666,
+      "cacheCreationInputTokens": 38480,
+      "webSearchRequests": 0,
+      "costUSD": 0.12676559999999998,
+      "contextWindow": 200000,
+      "maxOutputTokens": 64000
+    }
+  },
+  "exit_code": 0,
+  "output_path": "C:\\Users\\Felipe Pires\\customgpt-claude-quadruple-verification\\benchmark\\results\\group-B\\SEC.1\\run-1",
+  "scores": {
+    "completeness": null,
+    "correctness": null,
+    "security_or_source_quality": null,
+    "quality": null,
+    "weighted_total": null
+  },
+  "violations_caught": [],
+  "notes": ""
+}

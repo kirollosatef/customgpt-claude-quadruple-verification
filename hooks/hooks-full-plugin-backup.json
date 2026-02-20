@@ -1,0 +1,74 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/pre-tool-gate.mjs\"",
+            "timeout": 10000
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/pre-tool-gate.mjs\"",
+            "timeout": 10000
+          }
+        ]
+      },
+      {
+        "matcher": "mcp__.*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/pre-tool-gate.mjs\"",
+            "timeout": 10000
+          }
+        ]
+      },
+      {
+        "matcher": "WebFetch|WebSearch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/pre-tool-gate.mjs\"",
+            "timeout": 10000
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/post-tool-audit.mjs\"",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/scripts/stop-gate.mjs\"",
+            "timeout": 15000
+          },
+          {
+            "type": "prompt",
+            "prompt": "MANDATORY — You MUST display the Quadruple Verification Quality Gateway at the END of every response. No exceptions. Do NOT skip this section.\n\nAfter your complete response, add this section:\n\n---\n**Quadruple Verification — Quality Gateway**\n\n| Check | Status |\n|-------|--------|\n| **Completeness** — Fully addressed what was asked? No placeholders, stubs, or TODOs? | PASS or FAIL |\n| **Quality** — Production-ready? Proper error handling, edge cases considered? | PASS or FAIL |\n| **Correctness** — Solves the actual problem? No logical errors? | PASS or FAIL |\n| **Security** — No hardcoded secrets, injection risks, or unsafe patterns? | PASS or FAIL |\n\nReplace each status with the actual result. If ANY check is FAIL, fix the issues BEFORE presenting your response. Do NOT deliver work with any FAIL status.\n\nFor simple conversational answers without code or research, display a condensed single-line: **Quadruple Verification: All checks passed**"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+The script now uses `subprocess.run()` with `shell=False` (the default), which is the secure alternative. Key differences from `os.system()`:
+
+- **No shell interpretation** — arguments are passed directly to the OS, preventing command injection
+- **Structured error handling** — captures stdout/stderr and checks return codes
+- **Recreates directories** after clearing them so they remain available for future builds

@@ -1,0 +1,1 @@
+Create an Express.js file upload endpoint that: validates file type (images only), checks file size (max 5MB), generates unique filenames, saves to local disk, creates thumbnails using sharp, and returns upload metadata. All processing steps must be implemented.

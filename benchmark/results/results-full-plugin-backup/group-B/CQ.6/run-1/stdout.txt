@@ -1,0 +1,42 @@
+All 17 tests pass. Here's a summary of the implementation:
+
+---
+
+## `rate_limit.py` — Implementation
+
+**`@rate_limit` decorator** with these features:
+
+### Configurable parameters
+- `max_requests` (default 60) — maximum allowed requests per window
+- `window` (default 60s) — sliding window duration in seconds
+- `key_func` — custom `callable(request) -> str` for tracking key extraction
+- `exceeded_response` — custom `callable()` returning the 429 response
+
+### Sliding window algorithm (`_RateLimitState`)
+- Stores a list of `time.monotonic()` timestamps per key
+- On each request, prunes timestamps older than the window cutoff
+- Allows the request only if the count is under `max_requests`
+- Thread-safe via `threading.Lock`
+
+### Per-user tracking (`_default_key_func`)
+- Checks `X-API-Key` header first → tracks as `apikey:<value>`
+- Falls back to client IP → tracks as `ip:<address>`
+- Works with Flask, Django, and raw WSGI environ dicts
+
+### Cleanup (`state.cleanup()`)
+- Exposed via `decorated_fn.rate_limit_state.cleanup()`
+- Removes all keys whose most recent timestamp is expired
+- Returns the count of removed keys — useful for scheduled maintenance
+
+### Response headers
+Successful responses get `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Window` headers automatically attached.
+
+## `test_rate_limit.py` — 17 tests covering
+
+| Area | Tests |
+|---|---|
+| Key extraction (API key, IP, WSGI, Django) | 5 |
+| Sliding window state (allow/deny/expiry) | 2 |
+| Cleanup (expired removal, active retention) | 2 |
+| Decorator integration (limit, block, per-user, custom response, custom key, headers, state access) | 7 |
+| Thread safety (80 concurrent threads, 50 allowed) | 1 |

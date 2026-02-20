@@ -1,0 +1,36 @@
+Refactor this Express.js middleware stack to use async/await and proper error handling. Currently it uses nested callbacks. Convert ALL middleware functions, not just some of them.
+
+Here is the code to refactor:
+
+const express = require("express");
+const app = express();
+
+app.use(function(req, res, next) {
+  getUser(req.headers.token, function(err, user) {
+    if (err) { res.status(401).send("Unauthorized"); return; }
+    req.user = user;
+    checkPermissions(user.role, req.path, function(err, allowed) {
+      if (err) { res.status(500).send("Error"); return; }
+      if (!allowed) { res.status(403).send("Forbidden"); return; }
+      logAccess(user.id, req.path, function(err) {
+        if (err) console.log("log failed");
+        next();
+      });
+    });
+  });
+});
+
+app.get("/data", function(req, res) {
+  fetchData(req.query.type, function(err, data) {
+    if (err) { res.status(500).send("Error"); return; }
+    transformData(data, req.user.preferences, function(err, result) {
+      if (err) { res.status(500).send("Transform error"); return; }
+      cacheResult(req.path, result, function(err) {
+        if (err) console.log("cache failed");
+        res.json(result);
+      });
+    });
+  });
+});
+
+Convert every callback to async/await. Add try/catch error handling. Create a global error handler middleware.

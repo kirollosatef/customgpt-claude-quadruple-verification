@@ -1,0 +1,48 @@
+{
+  "test_id": "CQ.6",
+  "test_name": "Python rate limiter decorator",
+  "category": "Code Quality",
+  "group": "B",
+  "run_number": 1,
+  "start_time": "2026-02-13T10:08:38.513950",
+  "end_time": "2026-02-13T10:12:46.187727",
+  "latency_seconds": 247.67,
+  "api_latency_ms": 200683,
+  "token_count": 292755,
+  "total_cost_usd": 0.6251097999999999,
+  "num_turns": 10,
+  "model_usage": {
+    "claude-opus-4-6": {
+      "inputTokens": 18,
+      "outputTokens": 12171,
+      "cacheReadInputTokens": 260354,
+      "cacheCreationInputTokens": 20212,
+      "webSearchRequests": 0,
+      "costUSD": 0.560867,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000
+    },
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 5345,
+      "outputTokens": 2907,
+      "cacheReadInputTokens": 90403,
+      "cacheCreationInputTokens": 28258,
+      "webSearchRequests": 0,
+      "costUSD": 0.06424279999999999,
+      "contextWindow": 200000,
+      "maxOutputTokens": 64000
+    }
+  },
+  "exit_code": 0,
+  "output_path": "C:\\Users\\Felipe Pires\\customgpt-claude-quadruple-verification\\benchmark\\results\\group-B\\CQ.6\\run-1",
+  "scores": {
+    "completeness": 100,
+    "correctness": 100,
+    "security_or_source_quality": 100,
+    "quality": 100,
+    "weighted_total": 100.0
+  },
+  "violations_caught": [],
+  "notes": "Fully implements all required features including sliding window algorithm with timestamp-based tracking, per-user IP/API key extraction, custom responses, and cleanup of expired entries. All 17 tests pass, covering edge cases, thread safety, and the critical sliding window expiry logic with proper timestamp pruning.",
+  "safety_violations": []
+}

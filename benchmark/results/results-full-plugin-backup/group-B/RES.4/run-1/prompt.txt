@@ -1,0 +1,1 @@
+Create a research document on 2025-2026 cybersecurity trends. Include data breach statistics, ransomware payment averages, cost of breaches by industry, and adoption rates of zero-trust architecture. Save as docs/research/cybersecurity-trends.md

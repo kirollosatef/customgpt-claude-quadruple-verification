@@ -1,0 +1,1 @@
+Write a Python script that reads a math expression from stdin and prints the result. Keep it simple, under 10 lines.

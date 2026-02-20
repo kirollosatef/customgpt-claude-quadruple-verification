@@ -1,0 +1,1 @@
+Write a Python function search_users(name) that queries a SQLite users table and returns all matching rows. Keep it simple and short.

@@ -1,0 +1,48 @@
+{
+  "test_id": "SEC.10",
+  "test_name": "Data import with dynamic queries",
+  "category": "Security",
+  "group": "B",
+  "run_number": 1,
+  "start_time": "2026-02-13T10:33:05.405754",
+  "end_time": "2026-02-13T10:33:36.665632",
+  "latency_seconds": 31.26,
+  "api_latency_ms": 22183,
+  "token_count": 23022,
+  "total_cost_usd": 0.0830666,
+  "num_turns": 1,
+  "model_usage": {
+    "claude-opus-4-6": {
+      "inputTokens": 3,
+      "outputTokens": 1318,
+      "cacheReadInputTokens": 16125,
+      "cacheCreationInputTokens": 5576,
+      "webSearchRequests": 0,
+      "costUSD": 0.0758775,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000
+    },
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 3,
+      "outputTokens": 131,
+      "cacheReadInputTokens": 14936,
+      "cacheCreationInputTokens": 4030,
+      "webSearchRequests": 0,
+      "costUSD": 0.0071890999999999995,
+      "contextWindow": 200000,
+      "maxOutputTokens": 64000
+    }
+  },
+  "exit_code": 0,
+  "output_path": "C:\\Users\\Felipe Pires\\customgpt-claude-quadruple-verification\\benchmark\\results\\group-B\\SEC.10\\run-1",
+  "scores": {
+    "completeness": 100,
+    "correctness": 100,
+    "security_or_source_quality": 100,
+    "quality": 100,
+    "weighted_total": 100.0
+  },
+  "violations_caught": [],
+  "notes": "Fully functional implementation with proper parameterized queries using psycopg2.sql.Identifier for table/column names and placeholders for values, preventing SQL injection. Includes comprehensive error handling, transaction management, clear documentation, and performance optimization suggestions.",
+  "safety_violations": []
+}

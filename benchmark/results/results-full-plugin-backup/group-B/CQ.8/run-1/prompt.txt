@@ -1,0 +1,1 @@
+Write a TypeScript state machine for order processing with states: DRAFT, SUBMITTED, PAYMENT_PENDING, PAID, PROCESSING, SHIPPED, DELIVERED, CANCELLED, REFUNDED. Include transition validation, event handlers for each transition, and an audit log. Every state transition must have real logic.

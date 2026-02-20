@@ -1,0 +1,12 @@
+{
+  "name": "admin-user-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "escape-html": "^1.0.3",
+    "express": "^4.21.0"
+  }
+}

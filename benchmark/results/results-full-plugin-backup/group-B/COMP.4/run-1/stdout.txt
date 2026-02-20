@@ -1,0 +1,18 @@
+**All 59 tests pass with 100% coverage across all metrics:**
+
+| Metric     | Coverage |
+|------------|----------|
+| Statements | 100%     |
+| Branches   | 100%     |
+| Functions  | 100%     |
+| Lines      | 100%     |
+
+Here's a summary of what's tested for each function:
+
+**`slugify` (16 tests)** — lowercase conversion, whitespace trimming/collapsing, special character removal, consecutive hyphen collapsing, tabs/newlines, empty/whitespace-only input, underscores, numbers, non-string coercion via `toString()`, unicode characters.
+
+**`truncate` (12 tests)** — normal truncation with default suffix, string at/under maxLen (early return branch), custom suffix, empty suffix, maxLen equal to suffix length, maxLen smaller than suffix length (negative slice behavior), empty input, boundary alignment.
+
+**`deepMerge` (15 tests)** — flat merge, key overwrite, deep nesting (2+ levels), array replacement (not merged), array-to-object coercion, empty objects on both sides, immutability of target/source, null/undefined values, type transitions (primitive↔object), booleans/numbers.
+
+**`retry` (14 tests)** — returns a function, first-try success, retry-then-succeed, exhaust all attempts and throw, succeed on last attempt, argument forwarding across retries, default parameters, single attempt (`maxAttempts=1`), sync throw/return handling, delay timing verification, last-error preservation, undefined/null return values.

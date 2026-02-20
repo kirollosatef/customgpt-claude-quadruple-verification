@@ -34,17 +34,40 @@ TEST_CASES_DIR = BASE_DIR / "test-cases"
 RESULTS_DIR = BASE_DIR / "results"
 
 
-def load_test_cases():
-    """Load all test cases from JSON files."""
+def load_subset_ids(subset_name):
+    """Load test IDs from a subset definition file."""
+    subset_file = TEST_CASES_DIR / f"{subset_name}-subset.json"
+    if not subset_file.exists():
+        print(f"ERROR: Subset file '{subset_file}' not found.")
+        return None
+    with open(subset_file, "r", encoding="utf-8-sig") as f:
+        data = json.load(f)
+    return set(data.get("test_ids", []))
+
+
+def load_test_cases(subset=None):
+    """Load all test cases from JSON files, optionally filtered by subset."""
+    subset_ids = None
+    if subset:
+        subset_ids = load_subset_ids(subset)
+        if subset_ids is None:
+            return []
+
     all_cases = []
     for json_file in sorted(TEST_CASES_DIR.glob("category-*.json")):
         with open(json_file, "r", encoding="utf-8-sig") as f:
             data = json.load(f)
         category = data["category"]
         for tc in data["test_cases"]:
+            if subset_ids and tc["id"] not in subset_ids:
+                continue
             tc["_category"] = category
             tc["_file"] = json_file.name
             all_cases.append(tc)
+
+    if subset_ids:
+        print(f"  Subset '{subset}': {len(all_cases)} of {len(subset_ids)} tests loaded")
+
     return all_cases
 
 
@@ -94,6 +117,8 @@ def run_single_test(test_case, group, run_number=1):
     start_iso = datetime.now().isoformat()
 
     # Run Claude CLI in non-interactive mode
+    # Remove CLAUDECODE env var to allow nested sessions
+    clean_env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
     try:
         result = subprocess.run(
             ["claude", "-p", prompt, "--output-format", "json"],
@@ -102,7 +127,8 @@ def run_single_test(test_case, group, run_number=1):
             timeout=900,
             cwd=str(run_dir),
             encoding="utf-8",
-            errors="replace"
+            errors="replace",
+            env=clean_env
         )
         stdout = result.stdout
         stderr = result.stderr
@@ -192,9 +218,9 @@ def run_single_test(test_case, group, run_number=1):
     return result_record
 
 
-def run_group(group, test_filter=None, runs=1):
+def run_group(group, test_filter=None, runs=1, subset=None):
     """Run all (or filtered) test cases for a group."""
-    all_cases = load_test_cases()
+    all_cases = load_test_cases(subset=subset)
 
     if test_filter:
         all_cases = [tc for tc in all_cases if tc["id"] == test_filter]
@@ -543,6 +569,7 @@ def main():
     arg_parser = argparse.ArgumentParser(description="Quadruple Verification Benchmark Runner")
     arg_parser.add_argument("--group", choices=["A", "B"], help="Run tests for group A (control) or B (treatment)")
     arg_parser.add_argument("--test", help="Run a specific test case by ID (e.g., CQ.1)")
+    arg_parser.add_argument("--subset", help="Run only tests from a subset file (e.g., 'hard' loads hard-subset.json)")
     arg_parser.add_argument("--runs", type=int, default=1, help="Number of runs per test (default: 1 for quick mode)")
     arg_parser.add_argument("--compile", action="store_true", help="Compile and summarize results from both groups")
     arg_parser.add_argument("--list", action="store_true", help="List all test cases")
@@ -550,10 +577,12 @@ def main():
     args = arg_parser.parse_args()
 
     if args.list:
-        cases = load_test_cases()
+        cases = load_test_cases(subset=args.subset)
         for tc in cases:
             print(f"  {tc['id']:<8} {tc['_category']:<22} {tc['name']}")
         print(f"\nTotal: {len(cases)} test cases")
+        if args.subset:
+            print(f"(filtered by subset: {args.subset})")
         return
 
     if args.compile:
@@ -561,7 +590,7 @@ def main():
         return
 
     if args.group:
-        run_group(args.group, test_filter=args.test, runs=args.runs)
+        run_group(args.group, test_filter=args.test, runs=args.runs, subset=args.subset)
         return
 
     arg_parser.print_help()

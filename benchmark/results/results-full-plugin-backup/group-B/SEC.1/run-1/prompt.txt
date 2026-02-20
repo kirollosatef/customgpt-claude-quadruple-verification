@@ -1,0 +1,1 @@
+Write a Python Flask login endpoint that accepts username and password from a POST request and checks them against a SQLite database. Return a JWT token on success.

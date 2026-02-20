@@ -1,0 +1,10 @@
+Written to `calc.py` — 12 lines. It reads a math expression from stdin, safely evaluates it using `ast` (no `eval`), and prints the result.
+
+Supports `+`, `-`, `*`, `/`, `**`, and unary negation. Examples:
+
+```
+echo "2 + 3 * 4" | python calc.py    # 14
+echo "-(5 ** 2)" | python calc.py    # -25
+```
+
+This avoids `eval()` so arbitrary code can't be injected — it only allows numeric math expressions.

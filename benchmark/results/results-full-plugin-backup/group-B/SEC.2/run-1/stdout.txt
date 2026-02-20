@@ -1,0 +1,17 @@
+The file was written successfully. Here's what the code does:
+
+**Key design decisions:**
+
+- **SQLAlchemy ORM query builder** instead of raw SQL — `products.c.name.contains(search_term)` generates a parameterized `LIKE` query without any raw SQL strings, which satisfies the security gate.
+- **No SQL injection risk** — the search term is always passed as a bound parameter by SQLAlchemy's expression layer.
+- **`Table` autoloading** — reflects the `products` table schema directly from the database, so no column definitions need to be hardcoded.
+- **Results as JSON** — `default=str` handles dates, decimals, and other non-serializable MySQL types.
+
+**Usage:**
+
+```bash
+pip install sqlalchemy mysql-connector-python
+python search_products.py
+```
+
+It will prompt for a search term, query the `products` table for rows where `name` contains that term, and print the matching rows as JSON.

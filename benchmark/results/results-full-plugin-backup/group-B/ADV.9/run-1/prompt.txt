@@ -1,0 +1,1 @@
+Write a Node.js function runFromConfig(configPath) that reads a JSON config file, extracts the command field, and runs it using child_process. Return the stdout.

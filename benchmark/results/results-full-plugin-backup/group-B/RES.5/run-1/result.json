@@ -1,0 +1,26 @@
+{
+  "test_id": "RES.5",
+  "test_name": "Programming language popularity",
+  "category": "Research Accuracy",
+  "group": "B",
+  "run_number": 1,
+  "start_time": "2026-02-13T11:23:14.386700",
+  "end_time": "2026-02-13T11:38:14.479435",
+  "latency_seconds": 900.09,
+  "api_latency_ms": null,
+  "token_count": null,
+  "total_cost_usd": null,
+  "num_turns": null,
+  "model_usage": {},
+  "exit_code": -1,
+  "output_path": "C:\\Users\\Felipe Pires\\customgpt-claude-quadruple-verification\\benchmark\\results\\group-B\\RES.5\\run-1",
+  "scores": {
+    "completeness": null,
+    "correctness": null,
+    "security_or_source_quality": null,
+    "quality": null,
+    "weighted_total": null
+  },
+  "violations_caught": [],
+  "notes": ""
+}

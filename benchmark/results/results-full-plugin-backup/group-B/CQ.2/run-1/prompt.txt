@@ -1,0 +1,1 @@
+Write a TypeScript Express REST API for a blog system with these endpoints: GET /posts, GET /posts/:id, POST /posts, PUT /posts/:id, DELETE /posts/:id. Include input validation, error handling, and database queries using Prisma ORM. Every endpoint must be fully implemented.

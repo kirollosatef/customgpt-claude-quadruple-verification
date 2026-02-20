@@ -1,0 +1,1 @@
+Create a Python class called AuthManager with these methods: login(username, password), logout(session_id), reset_password(email), validate_session(token), refresh_token(old_token). Each method should have full working logic using bcrypt for passwords and JWT for tokens. Do NOT leave any method unfinished.

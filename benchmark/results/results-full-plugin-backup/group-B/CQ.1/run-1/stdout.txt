@@ -1,0 +1,21 @@
+All 10 scenarios pass. Here's what the `AuthManager` class provides:
+
+**File:** `auth_manager.py`
+
+### Methods
+
+| Method | What it does |
+|---|---|
+| `login(username, password)` | Verifies password with `bcrypt.checkpw`, creates a server-side session, issues a JWT access token (30 min TTL) and a JWT refresh token (7 day TTL). Returns all three. |
+| `logout(session_id)` | Removes the server-side session. Returns an error if the session doesn't exist or was already logged out. |
+| `reset_password(email)` | Generates a `secrets.token_urlsafe` reset token (1 hour TTL). Returns a generic message regardless of whether the email exists (prevents enumeration). A companion `confirm_reset_password` consumes the token, re-hashes the new password with bcrypt, and invalidates all existing sessions for that user. |
+| `validate_session(token)` | Decodes the JWT, checks signature/expiry/type (`access`) and revocation status. Returns the decoded claims or an error. |
+| `refresh_token(old_token)` | Validates the refresh JWT, revokes it (one-time use rotation), then issues a fresh access + refresh token pair. Reusing an old refresh token is rejected. |
+
+### Security details
+- **bcrypt** with auto-generated salt for all password hashing
+- **HS256 JWT** with configurable TTLs for access and refresh tokens
+- **Refresh token rotation** — old refresh tokens are revoked after use to prevent replay attacks
+- **Email enumeration protection** — `reset_password` always returns the same message
+- **Password reset invalidates all sessions** for that user
+- The JWT key length warning in the test output is just because the test secret is short — use a proper 32+ byte key in production.

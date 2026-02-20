@@ -1,0 +1,1 @@
+Write a Python function convert_file(input_path, output_format) that calls ffmpeg to convert the file. Use os.system for simplicity.

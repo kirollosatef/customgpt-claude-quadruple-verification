@@ -1,0 +1,141 @@
+
+
+Here's a Python function that imports CSV data into a PostgreSQL table:
+
+```python
+import csv
+import psycopg2
+
+
+def import_csv_to_postgres(
+    filepath: str,
+    table_name: str,
+    column_mapping: dict[str, str],
+    connection_params: dict,
+) -> int:
+    """Import CSV data into a PostgreSQL table.
+
+    Args:
+        filepath: Path to the CSV file.
+        table_name: Target PostgreSQL table name.
+        column_mapping: Maps CSV column headers to DB column names,
+                        e.g. {"Name": "name", "Email Address": "email"}.
+        connection_params: psycopg2 connection kwargs,
+                          e.g. {"dbname": "mydb", "user": "postgres", "password": "secret"}.
+
+    Returns:
+        Number of rows inserted.
+    """
+    db_columns = list(column_mapping.values())
+    placeholders = ", ".join(["%s"] * len(db_columns))
+    columns_str = ", ".join(db_columns)
+
+    # Use identifier quoting to prevent SQL injection on table/column names
+    query = f"INSERT INTO {psycopg2.extensions.quote_ident(table_name, None)} ({', '.join(psycopg2.extensions.quote_ident(c, None) for c in db_columns)}) VALUES ({placeholders})"
+
+    conn = psycopg2.connect(**connection_params)
+    try:
+        cur = conn.cursor()
+        row_count = 0
+
+        with open(filepath, newline="", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                values = [row[csv_col] for csv_col in column_mapping]
+                cur.execute(query, values)
+                row_count += 1
+
+        conn.commit()
+        return row_count
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
+```
+
+Wait — `quote_ident` with `None` as the connection won't work properly. Let me fix that to build the query safely inside the connection context:
+
+```python
+import csv
+import psycopg2
+from psycopg2 import sql
+
+
+def import_csv_to_postgres(
+    filepath: str,
+    table_name: str,
+    column_mapping: dict[str, str],
+    connection_params: dict,
+) -> int:
+    """Import CSV data into a PostgreSQL table.
+
+    Args:
+        filepath: Path to the CSV file.
+        table_name: Target PostgreSQL table name.
+        column_mapping: Maps CSV column headers to DB column names,
+                        e.g. {"Name": "name", "Email Address": "email"}.
+        connection_params: psycopg2 connection kwargs,
+                          e.g. {"dbname": "mydb", "user": "postgres", "password": "secret"}.
+
+    Returns:
+        Number of rows inserted.
+    """
+    db_columns = list(column_mapping.values())
+
+    query = sql.SQL("INSERT INTO {table} ({columns}) VALUES ({placeholders})").format(
+        table=sql.Identifier(table_name),
+        columns=sql.SQL(", ").join(sql.Identifier(c) for c in db_columns),
+        placeholders=sql.SQL(", ").join(sql.Placeholder() * len(db_columns)),
+    )
+
+    conn = psycopg2.connect(**connection_params)
+    try:
+        cur = conn.cursor()
+        row_count = 0
+
+        with open(filepath, newline="", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                values = [row[csv_col] for csv_col in column_mapping]
+                cur.execute(query, values)
+                row_count += 1
+
+        conn.commit()
+        return row_count
+    except Exception:
+        conn.rollback()
+        raise
+    finally:
+        conn.close()
+```
+
+**Usage:**
+
+```python
+rows = import_csv_to_postgres(
+    filepath="users.csv",
+    table_name="users",
+    column_mapping={
+        "Full Name": "name",       # CSV header -> DB column
+        "Email Address": "email",
+        "Age": "age",
+    },
+    connection_params={
+        "dbname": "mydb",
+        "user": "postgres",
+        "password": "secret",
+        "host": "localhost",
+    },
+)
+print(f"Inserted {rows} rows")
+```
+
+**Key design choices:**
+
+- **`psycopg2.sql`** — table and column names use `sql.Identifier`, which properly quotes them and prevents SQL injection. Values go through parameterized `%s` placeholders.
+- **`column_mapping` dict** — decouples CSV headers from DB column names, so the CSV doesn't need to match the schema exactly.
+- **Transaction semantics** — all rows insert in one transaction; a failure rolls everything back so you don't end up with partial imports.
+- **`DictReader`** — reads rows keyed by CSV header, making the column mapping straightforward.
+
+For large files (100k+ rows), you'd want to swap the row-by-row `execute` for `cur.executemany()` or `psycopg2.extras.execute_values()` for significantly better throughput.

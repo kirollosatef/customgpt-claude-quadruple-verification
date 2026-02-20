@@ -1,0 +1,12 @@
+Done. The file has been saved to `docs/research/react-vs-vue-2026.md` and passed all 4 quadruple verification cycles. Here's a summary of what's covered:
+
+**6 sections, 82 sourced claims across:**
+
+1. **NPM Weekly Downloads** — React ~28M/w vs Vue ~6.4M/w (4.5x lead), with Vue growing faster at ~37% YoY
+2. **GitHub Stars** — React ~231K vs Vue ~210K, with cross-source discrepancies noted
+3. **Stack Overflow Survey 2025** — React 44.7% usage vs Vue 17.6%, but nearly tied on admiration (~52% vs ~51%); State of JS 2024 shows Vue with higher retention (87% vs 75%)
+4. **Performance Benchmarks** — Bundle size (Vue 33KB vs React 44KB), js-framework-benchmark geometric mean (Vue 1.06 vs React 1.25), startup/memory advantages for Vue
+5. **Enterprise Adoption** — W3Techs market share (React 6.2% vs Vue 0.7%), notable enterprise users for both, US job market (React 67K+ vs Vue 10K+ openings)
+6. **Summary Scorecard** — with "when to choose" recommendations for each framework
+
+Every statistical claim has a source URL within 300 characters, as required by the verification system.

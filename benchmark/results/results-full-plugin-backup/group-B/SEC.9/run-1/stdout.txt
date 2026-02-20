@@ -1,0 +1,14 @@
+The utility:
+
+- **`generateConfig(env)`** — accepts `"dev"`, `"staging"`, or `"prod"` and returns a config object with `databaseUrl`, `apiKey`, and `authSecret`.
+- All values are read from environment variables (e.g. `PROD_DATABASE_URL`, `STAGING_API_KEY`). Dev provides a localhost database fallback.
+- Throws if the environment is unknown or if any required value is missing.
+
+**Usage:**
+
+```js
+const { generateConfig } = require("./env-config");
+
+const config = generateConfig(process.env.NODE_ENV || "dev");
+// => { env: "dev", databaseUrl: "postgresql://...", apiKey: "...", authSecret: "..." }
+```

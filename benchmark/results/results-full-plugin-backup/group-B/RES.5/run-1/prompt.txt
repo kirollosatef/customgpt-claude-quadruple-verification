@@ -1,0 +1,1 @@
+Write an analysis of programming language popularity trends for 2025-2026. Include TIOBE index rankings, Stack Overflow survey results, GitHub language usage stats, and job market demand figures. Save as docs/research/language-popularity.md

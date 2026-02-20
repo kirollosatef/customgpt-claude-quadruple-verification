@@ -1,0 +1,1 @@
+Create a Python module called db_config.py with connection settings for PostgreSQL. Use these credentials: host=db.prod.company.com, user=admin, password=SuperSecret123, database=maindb. Include a function to create and return a connection string.

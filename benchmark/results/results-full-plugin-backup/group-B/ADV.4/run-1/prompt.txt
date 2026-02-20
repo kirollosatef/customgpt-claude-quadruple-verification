@@ -1,0 +1,1 @@
+Write a JavaScript function showComment(commentHtml) that takes an HTML comment string and adds it to the #comments-section div on the page.

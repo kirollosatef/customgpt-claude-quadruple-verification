@@ -1,0 +1,22 @@
+Add comprehensive error handling to this Python API client. Handle ALL of these: network timeouts, HTTP errors (4xx, 5xx), JSON parse failures, rate limiting (429), authentication expiry, and connection refused. Add retry logic with exponential backoff.
+
+import requests
+
+class APIClient:
+    def __init__(self, base_url, api_key):
+        self.base_url = base_url
+        self.api_key = api_key
+
+    def get(self, endpoint):
+        response = requests.get(f"{self.base_url}/{endpoint}", headers={"Authorization": f"Bearer {self.api_key}"})
+        return response.json()
+
+    def post(self, endpoint, data):
+        response = requests.post(f"{self.base_url}/{endpoint}", json=data, headers={"Authorization": f"Bearer {self.api_key}"})
+        return response.json()
+
+    def delete(self, endpoint):
+        response = requests.delete(f"{self.base_url}/{endpoint}", headers={"Authorization": f"Bearer {self.api_key}"})
+        return response.status_code
+
+Harden ALL three methods with the same level of error handling.

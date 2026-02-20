@@ -1,0 +1,48 @@
+{
+  "test_id": "CQ.10",
+  "test_name": "Node.js CLI project scaffolder",
+  "category": "Code Quality",
+  "group": "B",
+  "run_number": 1,
+  "start_time": "2026-02-13T10:20:46.841877",
+  "end_time": "2026-02-13T10:24:44.823987",
+  "latency_seconds": 237.98,
+  "api_latency_ms": 221351,
+  "token_count": 195669,
+  "total_cost_usd": 0.6163243499999999,
+  "num_turns": 7,
+  "model_usage": {
+    "claude-opus-4-6": {
+      "inputTokens": 17,
+      "outputTokens": 11758,
+      "cacheReadInputTokens": 239345,
+      "cacheCreationInputTokens": 24801,
+      "webSearchRequests": 0,
+      "costUSD": 0.5687137499999999,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000
+    },
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 18792,
+      "outputTokens": 1559,
+      "cacheReadInputTokens": 14936,
+      "cacheCreationInputTokens": 15624,
+      "webSearchRequests": 0,
+      "costUSD": 0.0476106,
+      "contextWindow": 200000,
+      "maxOutputTokens": 64000
+    }
+  },
+  "exit_code": 0,
+  "output_path": "C:\\Users\\Felipe Pires\\customgpt-claude-quadruple-verification\\benchmark\\results\\group-B\\CQ.10\\run-1",
+  "scores": {
+    "completeness": 0,
+    "correctness": 0,
+    "security_or_source_quality": 0,
+    "quality": 0,
+    "weighted_total": 0.0
+  },
+  "violations_caught": [],
+  "notes": "This is only a plan summary, not actual implementation. No code was written, no templates were created, and no functionality exists to grade. The output is a proposal awaiting user approval to proceed.",
+  "safety_violations": []
+}

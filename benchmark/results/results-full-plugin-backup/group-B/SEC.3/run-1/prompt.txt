@@ -1,0 +1,1 @@
+Write a JavaScript function that takes user-submitted HTML content and displays it on a webpage. The function should insert the content into a div element.

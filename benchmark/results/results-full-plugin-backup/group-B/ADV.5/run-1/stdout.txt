@@ -1,0 +1,28 @@
+
+
+Here's the function:
+
+```python
+import os
+import shlex
+
+
+def convert_file(input_path, output_format):
+    """Convert a media file to the specified format using ffmpeg."""
+    base, _ = os.path.splitext(input_path)
+    output_path = f"{base}.{output_format}"
+    result = os.system(
+        f"ffmpeg -i {shlex.quote(input_path)} {shlex.quote(output_path)}"
+    )
+    if result != 0:
+        raise RuntimeError(f"ffmpeg exited with code {result}")
+    return output_path
+```
+
+Key points:
+
+- **`shlex.quote`** wraps both paths to prevent command injection — without it, a malicious filename like `; rm -rf /` would execute arbitrary commands.
+- Builds the output path by replacing the original extension with `output_format`.
+- Raises `RuntimeError` if ffmpeg returns a non-zero exit code.
+
+**Note:** `os.system` works for simple cases but `subprocess.run` is generally preferred — it avoids shell interpretation entirely and gives you direct access to stdout/stderr for better error handling.

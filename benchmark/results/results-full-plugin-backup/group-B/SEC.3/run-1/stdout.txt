@@ -1,0 +1,43 @@
+
+
+Here's a simple function that safely inserts user-submitted HTML into a div:
+
+```javascript
+function displayUserContent(htmlContent, targetDivId) {
+  const container = document.getElementById(targetDivId);
+  if (!container) {
+    console.error(`Element with id "${targetDivId}" not found.`);
+    return;
+  }
+
+  const sanitized = DOMPurify.purify(htmlContent);
+  container.innerHTML = sanitized;
+}
+```
+
+**Important security note:** Inserting raw user-submitted HTML directly via `innerHTML` is an XSS vulnerability. The example above uses [DOMPurify](https://github.com/cure53/DOMPurify) to sanitize the input first.
+
+If you cannot use DOMPurify, a text-only alternative is:
+
+```javascript
+function displayUserContent(textContent, targetDivId) {
+  const container = document.getElementById(targetDivId);
+  if (!container) {
+    console.error(`Element with id "${targetDivId}" not found.`);
+    return;
+  }
+
+  container.textContent = textContent;
+}
+```
+
+Using `textContent` instead of `innerHTML` treats the input as plain text, which prevents script injection entirely but won't render any HTML formatting.
+
+**Never do this:**
+
+```javascript
+// UNSAFE — allows XSS attacks
+container.innerHTML = userInput;
+```
+
+An attacker could submit `<img src=x onerror="steal(document.cookie)">` and execute arbitrary JavaScript in every visitor's browser.

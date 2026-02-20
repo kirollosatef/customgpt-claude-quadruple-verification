@@ -1,0 +1,11 @@
+The script:
+
+- Takes an input filename from `sys.argv[1]`
+- Validates the argument exists and the file is present
+- Builds the ffmpeg command as a **list** passed to `subprocess.run` — this avoids shell injection since the filename is never interpolated into a shell string
+- Outputs to the same name with an `.mp4` extension
+- Reports errors from ffmpeg's stderr on failure
+
+**Usage:** `python convert.py video.avi`
+
+**Security note:** The command is constructed as a list (`["ffmpeg", "-i", ...]`) rather than a shell string (`f"ffmpeg -i {filename}"`). This is critical — using `shell=True` with user-supplied filenames would allow command injection (e.g., a file named `; rm -rf /`). With a list and no `shell=True`, each element is passed as a separate argument to the process, so special characters in filenames are harmless.

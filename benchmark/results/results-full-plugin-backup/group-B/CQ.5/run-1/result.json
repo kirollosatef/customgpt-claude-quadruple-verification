@@ -1,0 +1,48 @@
+{
+  "test_id": "CQ.5",
+  "test_name": "Node.js WebSocket chat server",
+  "category": "Code Quality",
+  "group": "B",
+  "run_number": 1,
+  "start_time": "2026-02-13T10:03:17.764389",
+  "end_time": "2026-02-13T10:08:38.505687",
+  "latency_seconds": 320.74,
+  "api_latency_ms": 275745,
+  "token_count": 979012,
+  "total_cost_usd": 1.1598826000000004,
+  "num_turns": 29,
+  "model_usage": {
+    "claude-opus-4-6": {
+      "inputTokens": 31,
+      "outputTokens": 19414,
+      "cacheReadInputTokens": 932027,
+      "cacheCreationInputTokens": 27540,
+      "webSearchRequests": 0,
+      "costUSD": 1.1236435000000002,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000
+    },
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 2028,
+      "outputTokens": 254,
+      "cacheReadInputTokens": 14936,
+      "cacheCreationInputTokens": 25158,
+      "webSearchRequests": 0,
+      "costUSD": 0.0362391,
+      "contextWindow": 200000,
+      "maxOutputTokens": 64000
+    }
+  },
+  "exit_code": 0,
+  "output_path": "C:\\Users\\Felipe Pires\\customgpt-claude-quadruple-verification\\benchmark\\results\\group-B\\CQ.5\\run-1",
+  "scores": {
+    "completeness": 100,
+    "correctness": 100,
+    "security_or_source_quality": 100,
+    "quality": 100,
+    "weighted_total": 100.0
+  },
+  "violations_caught": [],
+  "notes": "All 5 required features fully implemented with proper state management, validation, edge case handling, clean disconnect logic, and production-ready structure. No security vulnerabilities or incomplete code found.",
+  "safety_violations": []
+}

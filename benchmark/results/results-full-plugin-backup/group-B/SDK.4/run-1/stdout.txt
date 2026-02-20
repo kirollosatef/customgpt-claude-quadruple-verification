@@ -1,0 +1,11 @@
+The plan creates two files in the `run-1` directory:
+
+- **`app.py`** — A single-file Flask app with the `POST /register` endpoint covering validation, bcrypt hashing, bleach sanitization, parameterized PostgreSQL queries, and comprehensive error handling for all edge cases.
+- **`requirements.txt`** — Four pinned dependencies.
+
+Key design choices:
+- Raw psycopg2 with parameterized queries (makes SQL injection prevention explicit)
+- All validators collect errors simultaneously (user sees all issues at once, not one at a time)
+- bcrypt 72-byte limit enforced at validation layer (prevents silent truncation)
+- DB-level UNIQUE constraint on email as defense-in-depth against race conditions
+- Password hash never appears in any response

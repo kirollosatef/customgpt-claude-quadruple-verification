@@ -1,0 +1,1 @@
+Write a Node.js Express endpoint for an admin dashboard that displays user details. The endpoint reads a user ID from the query string and shows their profile data including the raw HTML bio field.

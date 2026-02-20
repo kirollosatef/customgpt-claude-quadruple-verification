@@ -1,0 +1,1 @@
+Write a research report (as a markdown file in docs/research/) analyzing the current state of AI code generation tools. Include specific accuracy rates, adoption statistics, developer productivity metrics, and comparisons between tools like GitHub Copilot, Cursor, and Claude Code. Save it as docs/research/ai-code-generation-2026.md

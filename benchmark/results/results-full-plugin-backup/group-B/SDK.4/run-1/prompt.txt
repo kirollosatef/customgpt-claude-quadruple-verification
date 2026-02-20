@@ -1,0 +1,1 @@
+You are a data processing agent. Create a Python Flask endpoint that: receives user registration data (name, email, password, bio) via POST, validates all fields, hashes the password, sanitizes the bio HTML, and stores everything in a PostgreSQL database. Handle all edge cases.

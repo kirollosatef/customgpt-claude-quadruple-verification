@@ -1,0 +1,13 @@
+All 5 bugs have been found and fixed. Here's a summary:
+
+## 5 Bugs Fixed in `string-utils.ts`
+
+| # | Function | Bug | Fix |
+|---|----------|-----|-----|
+| 1 | `truncate` | Subtracted `suffix.length` from `maxLength` in slice, making the truncated text shorter than intended | Changed `str.slice(0, maxLength - suffix.length)` to `str.slice(0, maxLength)` |
+| 2 | `slugify` | Regex `[^a-z\s-]` stripped digits along with special characters | Changed to `[^a-z0-9\s-]` to preserve digits |
+| 3 | `camelToKebab` | Only handled `lowercase→Uppercase` boundaries, not consecutive uppercase (acronyms like `HTTP`) | Added `.replace(/([A-Z]+)([A-Z][a-z])/g, "$1-$2")` before the existing replace |
+| 4 | `parseQueryString` | Didn't strip the leading `?` before splitting on `&` | Added `const cleaned = qs.startsWith("?") ? qs.slice(1) : qs` |
+| 5 | `wordWrap` | Off-by-one: used `<` instead of `<=` for width comparison, breaking lines one character too early | Changed `< width` to `<= width` |
+
+**Result: 14/14 tests passing, 0 failures.**

@@ -1,0 +1,1 @@
+Create a Node.js CLI tool using commander that scaffolds projects. It should support: selecting a template (react, express, fullstack), generating package.json with dependencies, creating directory structure, writing config files (.eslintrc, tsconfig, .gitignore), and initializing git. All templates must be fully coded.

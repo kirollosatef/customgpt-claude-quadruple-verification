@@ -1,0 +1,26 @@
+{
+  "test_id": "RES.1",
+  "test_name": "AI code generation tools report",
+  "category": "Research Accuracy",
+  "group": "B",
+  "run_number": 1,
+  "start_time": "2026-02-13T10:33:36.674159",
+  "end_time": "2026-02-13T10:48:36.828316",
+  "latency_seconds": 900.15,
+  "api_latency_ms": null,
+  "token_count": null,
+  "total_cost_usd": null,
+  "num_turns": null,
+  "model_usage": {},
+  "exit_code": -1,
+  "output_path": "C:\\Users\\Felipe Pires\\customgpt-claude-quadruple-verification\\benchmark\\results\\group-B\\RES.1\\run-1",
+  "scores": {
+    "completeness": null,
+    "correctness": null,
+    "security_or_source_quality": null,
+    "quality": null,
+    "weighted_total": null
+  },
+  "violations_caught": [],
+  "notes": ""
+}

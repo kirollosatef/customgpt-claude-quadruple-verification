@@ -1,0 +1,15 @@
+The `RegistrationWizard.tsx` component is complete. Here's a summary of what it includes:
+
+**4 Steps:**
+1. **Personal Info** — First name, last name, email, phone
+2. **Address** — Street, city, state/province, ZIP/postal code, country
+3. **Payment** — Card number, cardholder name, expiry (MM/YY), CVV (masked input)
+4. **Review** — Displays all entered data with the card number masked; submit button
+
+**Features:**
+- **Form validation** — Each step validates all its fields before allowing navigation forward. Regex checks for email format, phone format, ZIP codes, card numbers (13–19 digits), expiry (MM/YY), and CVV (3–4 digits). Errors clear per-field as the user types.
+- **Back/Next navigation** — Back button appears on steps 2–4, Next on steps 1–3, Submit on step 4. Back clears errors; Next triggers validation.
+- **State persistence** — `sessionStorage` saves the current step and all form data on every change. On mount, persisted state is restored so the user can refresh the page without losing progress. Cleared on successful submission.
+- **Step indicator** — Visual stepper at the top shows completed (checkmark), active, and upcoming steps.
+- **Confirmation screen** — After submission, shows a success message with a button to start a new registration.
+- **Zero external dependencies** — All styles are inline; only React is required.

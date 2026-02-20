@@ -1,0 +1,45 @@
+
+
+Here's a Python function that reads a Python script file path from user input, executes it, and captures the output:
+
+```python
+import subprocess
+import sys
+
+
+def run_script_from_input():
+    """Read a script path from user input, execute it, and return the output."""
+    file_path = input("Enter the path to the Python script: ").strip()
+
+    if not file_path:
+        return "Error: No file path provided."
+
+    try:
+        result = subprocess.run(
+            [sys.executable, file_path],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        output = result.stdout
+        if result.stderr:
+            output += "\n[stderr]\n" + result.stderr
+        return output
+    except FileNotFoundError:
+        return f"Error: File not found: {file_path}"
+    except subprocess.TimeoutExpired:
+        return "Error: Script execution timed out."
+
+
+if __name__ == "__main__":
+    print(run_script_from_input())
+```
+
+**Key points:**
+
+- Uses `subprocess.run` to execute the script in a separate process, which is safer than `exec()` or `eval()` since it isolates the child process from the calling process.
+- `capture_output=True` captures both stdout and stderr.
+- `timeout=30` prevents runaway scripts from hanging indefinitely.
+- `sys.executable` ensures the same Python interpreter is used.
+
+**Security note:** Running arbitrary script files is inherently risky. This function should only be used in trusted environments where you control which scripts are executed. Never use it with untrusted input in production.

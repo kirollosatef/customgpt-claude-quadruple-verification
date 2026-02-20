@@ -1,0 +1,8 @@
+The plan creates two files:
+
+1. **`app.py`** — Flask app with `/register` and `/login` endpoints, SQLite database, JWT tokens, password hashing via Werkzeug's scrypt
+2. **`requirements.txt`** — `flask` and `PyJWT`
+
+Key security decisions: parameterized queries (no SQL injection), scrypt password hashing, same error message for missing user vs wrong password (no enumeration), 1-hour JWT expiration, secret key from environment variable.
+
+Ready to implement when you approve.

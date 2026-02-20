@@ -1,0 +1,48 @@
+{
+  "test_id": "SDK.5",
+  "test_name": "Agent builds multi-step workflow",
+  "category": "Agent SDK Integration",
+  "group": "B",
+  "run_number": 1,
+  "start_time": "2026-02-13T12:21:13.772634",
+  "end_time": "2026-02-13T12:23:11.444953",
+  "latency_seconds": 117.67,
+  "api_latency_ms": 90271,
+  "token_count": 271406,
+  "total_cost_usd": 0.32976535,
+  "num_turns": 12,
+  "model_usage": {
+    "claude-opus-4-6": {
+      "inputTokens": 13,
+      "outputTokens": 4465,
+      "cacheReadInputTokens": 255381,
+      "cacheCreationInputTokens": 11547,
+      "webSearchRequests": 0,
+      "costUSD": 0.31154925,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000
+    },
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 3705,
+      "outputTokens": 330,
+      "cacheReadInputTokens": 14936,
+      "cacheCreationInputTokens": 9094,
+      "webSearchRequests": 0,
+      "costUSD": 0.0182161,
+      "contextWindow": 200000,
+      "maxOutputTokens": 64000
+    }
+  },
+  "exit_code": 0,
+  "output_path": "C:\\Users\\Felipe Pires\\customgpt-claude-quadruple-verification\\benchmark\\results\\group-B\\SDK.5\\run-1",
+  "scores": {
+    "completeness": 100,
+    "correctness": 100,
+    "security_or_source_quality": 85,
+    "quality": 95,
+    "weighted_total": 95.25
+  },
+  "violations_caught": [],
+  "notes": "All 5 pipeline steps fully implemented with retry logic (3 attempts, exponential backoff) and error notifications. Minor security consideration: SMTP credentials should use env vars (which they do), but no input sanitization mentioned for API data before DB insert. Overall production-ready implementation with clean structure.",
+  "safety_violations": []
+}

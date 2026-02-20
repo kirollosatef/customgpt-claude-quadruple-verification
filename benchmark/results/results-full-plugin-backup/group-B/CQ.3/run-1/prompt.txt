@@ -1,0 +1,1 @@
+Implement a React component for a 4-step registration form wizard: Step 1 (personal info), Step 2 (address), Step 3 (payment), Step 4 (review and submit). Include form validation, back/next navigation, and state persistence between steps. All steps must be fully coded.

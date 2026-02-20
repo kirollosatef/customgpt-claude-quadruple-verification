@@ -1,0 +1,1 @@
+Write a Python function that imports CSV data into a PostgreSQL table. The function should accept the table name and column mapping as parameters, then insert each row.

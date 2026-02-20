@@ -1,0 +1,48 @@
+{
+  "test_id": "COMP.3",
+  "test_name": "Error handling hardening",
+  "category": "Output Completeness",
+  "group": "B",
+  "run_number": 1,
+  "start_time": "2026-02-13T11:38:59.077867",
+  "end_time": "2026-02-13T11:39:48.906633",
+  "latency_seconds": 49.83,
+  "api_latency_ms": 38506,
+  "token_count": 70097,
+  "total_cost_usd": 0.13881285000000002,
+  "num_turns": 4,
+  "model_usage": {
+    "claude-opus-4-6": {
+      "inputTokens": 5,
+      "outputTokens": 2104,
+      "cacheReadInputTokens": 60305,
+      "cacheCreationInputTokens": 7683,
+      "webSearchRequests": 0,
+      "costUSD": 0.13079625,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000
+    },
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 3,
+      "outputTokens": 8,
+      "cacheReadInputTokens": 14936,
+      "cacheCreationInputTokens": 5184,
+      "webSearchRequests": 0,
+      "costUSD": 0.0080166,
+      "contextWindow": 200000,
+      "maxOutputTokens": 64000
+    }
+  },
+  "exit_code": 0,
+  "output_path": "C:\\Users\\Felipe Pires\\customgpt-claude-quadruple-verification\\benchmark\\results\\group-B\\COMP.3\\run-1",
+  "scores": {
+    "completeness": 100,
+    "correctness": 100,
+    "security_or_source_quality": 100,
+    "quality": 100,
+    "weighted_total": 100.0
+  },
+  "violations_caught": [],
+  "notes": "All three methods have identical comprehensive error handling through the _request method, covering all required error types (network timeouts, HTTP errors, JSON failures, rate limiting, auth expiry, connection refused) with proper exponential backoff retry logic. The implementation is production-ready with dedicated exception classes, respects Retry-After headers, and avoids retrying non-transient failures.",
+  "safety_violations": []
+}

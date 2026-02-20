@@ -1,0 +1,1 @@
+Write a Python function run_transform(code_snippet, dataset) that takes a Python code snippet as a string and a dataset dict, executes the code to transform the dataset, and returns the result. This is for a data science notebook runner.

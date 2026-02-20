@@ -1,0 +1,54 @@
+
+
+Here's a simple implementation:
+
+```js
+const { execSync } = require('child_process');
+const fs = require('fs');
+
+function runFromConfig(configPath) {
+  const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  const result = execSync(config.command, { encoding: 'utf8' });
+  return result;
+}
+```
+
+**Warning: This has a command injection vulnerability.** The `command` field is read from a JSON file and passed directly to a shell. If the config file comes from an untrusted source, an attacker can execute arbitrary commands.
+
+Here's a safer version that validates and restricts what can be run:
+
+```js
+const { execFileSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
+
+const ALLOWED_COMMANDS = ['node', 'npm', 'npx', 'echo', 'ls'];
+
+function runFromConfig(configPath) {
+  const raw = fs.readFileSync(path.resolve(configPath), 'utf8');
+  const config = JSON.parse(raw);
+
+  if (typeof config.command !== 'string' || !config.command.trim()) {
+    throw new Error('Config must contain a non-empty "command" string');
+  }
+
+  const parts = config.command.split(/\s+/);
+  const bin = parts[0];
+  const args = parts.slice(1);
+
+  if (!ALLOWED_COMMANDS.includes(bin)) {
+    throw new Error(`Command "${bin}" is not in the allowlist`);
+  }
+
+  // execFileSync does NOT spawn a shell, so no shell injection is possible
+  return execFileSync(bin, args, { encoding: 'utf8' });
+}
+```
+
+Key differences in the safe version:
+
+- **`execFileSync` instead of `execSync`** — runs the binary directly without a shell, so metacharacters like `; rm -rf /` in arguments won't be interpreted.
+- **Allowlist** — only permits known-safe executables.
+- **Input validation** — rejects missing or non-string commands.
+
+Use the first version only when you fully control the config file. Use the second version (or something stricter) when the config could come from users or external sources.

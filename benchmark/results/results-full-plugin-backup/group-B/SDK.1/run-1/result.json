@@ -1,0 +1,48 @@
+{
+  "test_id": "SDK.1",
+  "test_name": "Agent scaffolds a project",
+  "category": "Agent SDK Integration",
+  "group": "B",
+  "run_number": 1,
+  "start_time": "2026-02-13T11:52:26.890294",
+  "end_time": "2026-02-13T11:54:49.866830",
+  "latency_seconds": 142.98,
+  "api_latency_ms": 120750,
+  "token_count": 583184,
+  "total_cost_usd": 0.51927135,
+  "num_turns": 23,
+  "model_usage": {
+    "claude-opus-4-6": {
+      "inputTokens": 25,
+      "outputTokens": 5542,
+      "cacheReadInputTokens": 564976,
+      "cacheCreationInputTokens": 12641,
+      "webSearchRequests": 0,
+      "costUSD": 0.50016925,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000
+    },
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 1436,
+      "outputTokens": 710,
+      "cacheReadInputTokens": 14936,
+      "cacheCreationInputTokens": 10098,
+      "webSearchRequests": 0,
+      "costUSD": 0.0191021,
+      "contextWindow": 200000,
+      "maxOutputTokens": 64000
+    }
+  },
+  "exit_code": 0,
+  "output_path": "C:\\Users\\Felipe Pires\\customgpt-claude-quadruple-verification\\benchmark\\results\\group-B\\SDK.1\\run-1",
+  "scores": {
+    "completeness": 100,
+    "correctness": 100,
+    "security_or_source_quality": 100,
+    "quality": 100,
+    "weighted_total": 100.0
+  },
+  "violations_caught": [],
+  "notes": "All required files created and functional: 7 config files (package.json, tsconfig, tailwind, eslint, etc.), 5 app router files including layout, pages, and API health route. No gaps, no security issues, clean Next.js 14 structure.",
+  "safety_violations": []
+}

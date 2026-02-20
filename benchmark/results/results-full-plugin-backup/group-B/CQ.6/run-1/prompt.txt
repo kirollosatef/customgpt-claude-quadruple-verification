@@ -1,0 +1,1 @@
+Implement a Python decorator called @rate_limit that supports: configurable max requests per time window, sliding window algorithm, per-user tracking by IP or API key, custom exceeded response, and cleanup of expired entries. Write the complete implementation with all features.

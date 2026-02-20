@@ -1,0 +1,1 @@
+You are a research agent. Write a comprehensive report on WebAssembly adoption in production environments as of 2026. Include specific companies using it, performance benchmarks with numbers, browser support statistics, and comparisons to JavaScript execution speed. Save as docs/research/wasm-adoption-2026.md. Every claim must have a source.

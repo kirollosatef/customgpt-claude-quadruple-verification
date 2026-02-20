@@ -1,0 +1,23 @@
+The config file is at `config.py`. Every secret and connection detail is read from environment variables — nothing is hardcoded. You'd set them in your environment or a `.env` file:
+
+```
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=myapp
+DB_USER=myuser
+DB_PASSWORD=secret
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_PUBLISHABLE_KEY=pk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+SENDGRID_API_KEY=SG...
+SENDGRID_FROM_EMAIL=noreply@example.com
+APP_SECRET_KEY=your-random-secret
+DEBUG=false
+ALLOWED_HOSTS=example.com,www.example.com
+```
+
+Key points:
+- **No hardcoded secrets** — all credentials come from `os.environ`
+- Required vars (like `DB_HOST`, `STRIPE_SECRET_KEY`) raise `KeyError` immediately if missing, which is the desired fail-fast behavior
+- Optional vars (`DB_PORT`, `DEBUG`, `ALLOWED_HOSTS`) have sensible defaults
+- `DATABASE_URL` is provided as a convenience for ORMs like SQLAlchemy

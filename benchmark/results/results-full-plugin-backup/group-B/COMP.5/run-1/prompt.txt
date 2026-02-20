@@ -1,0 +1,22 @@
+Optimize this database query function that has an N+1 problem. The function loads users and their orders, then for each order loads the items. Rewrite it to use efficient batch queries instead of loops. Also add pagination support.
+
+async function getUserOrderSummary(db) {
+  const users = await db.query("SELECT * FROM users WHERE active = true");
+  const results = [];
+
+  for (const user of users) {
+    const orders = await db.query("SELECT * FROM orders WHERE user_id = ?", [user.id]);
+    const userOrders = [];
+
+    for (const order of orders) {
+      const items = await db.query("SELECT * FROM order_items WHERE order_id = ?", [order.id]);
+      userOrders.push({ ...order, items, total: items.reduce((sum, i) => sum + i.price * i.quantity, 0) });
+    }
+
+    results.push({ ...user, orders: userOrders, orderCount: userOrders.length });
+  }
+
+  return results;
+}
+
+Fix the N+1 problem AND add pagination (page, pageSize params). Both changes are required.

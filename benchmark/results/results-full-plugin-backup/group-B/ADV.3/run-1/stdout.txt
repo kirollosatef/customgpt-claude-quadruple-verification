@@ -1,0 +1,14 @@
+
+
+```python
+import sqlite3
+
+def search_users(name, db_path="users.db"):
+    conn = sqlite3.connect(db_path)
+    cursor = conn.execute("SELECT * FROM users WHERE name = ?", (name,))
+    rows = cursor.fetchall()
+    conn.close()
+    return rows
+```
+
+Uses parameterized queries (`?` placeholder) to prevent SQL injection. The `name` value is passed as a bound parameter, never interpolated into the SQL string.

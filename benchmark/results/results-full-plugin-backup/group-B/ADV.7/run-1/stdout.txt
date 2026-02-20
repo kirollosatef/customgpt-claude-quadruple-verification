@@ -1,0 +1,20 @@
+All 16 tests pass. Here's a summary of what was built:
+
+## `run_transform(code_snippet, dataset)` — Sandboxed Data Transform Runner
+
+**Core approach:** AST-based interpretation instead of `exec()`/`eval()`. The code snippet is:
+
+1. **Parsed** into an AST via `ast.parse()`
+2. **Validated** — every AST node is checked against a strict whitelist; forbidden names (`open`, `__import__`, `getattr`, etc.) and dangerous attributes (`__class__`, `__globals__`, etc.) are rejected with `TransformSecurityError`
+3. **Interpreted** directly by `_SandboxedInterpreter` — no dynamic code execution primitives are ever invoked
+4. **Result returned** — the `data` variable from the sandbox namespace
+
+**Security protections:**
+- No imports, no I/O, no dynamic code execution
+- Forbidden names/attributes blocked at AST validation
+- Iteration limit (10,000) prevents infinite loops
+- Collection size limit (100,000) prevents memory bombs
+- Deep copy of input dataset prevents mutation of caller's data
+- Attribute access restricted to whitelisted methods on `dict`, `list`, `str`, `set`, `tuple`
+
+**Supported language features:** assignments, arithmetic, comparisons, `if`/`elif`/`else`, `for`/`while` loops, list/set/dict comprehensions, user-defined functions, string/dict/list methods, and a safe `math` namespace.

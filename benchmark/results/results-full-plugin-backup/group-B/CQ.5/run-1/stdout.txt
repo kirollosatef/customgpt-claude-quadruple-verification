@@ -1,0 +1,30 @@
+All done. Here's the server at `server.js` — all 12 functional tests passed.
+
+## Features
+
+**Nickname management** — `set_nickname` sets or renames, enforces global uniqueness, notifies room members on rename.
+
+**Room creation/joining** — `create_room` creates and auto-joins, `join_room` joins existing rooms (auto-leaves current room), `leave_room` exits. Empty rooms are garbage-collected.
+
+**Message broadcasting** — `message` broadcasts to all users in the room including the sender.
+
+**Private messaging** — `private_message` sends directly to a user by nickname, sender gets confirmation.
+
+**Message history** — Last 50 messages per room stored in memory, delivered to users on `join_room` via the `history` array.
+
+**Extras** — `list_rooms` (names + user counts), `list_users` (nicknames in current room), input validation with error responses, clean disconnect handling.
+
+## Protocol (JSON over WebSocket)
+
+| Client sends | Server responds |
+|---|---|
+| `{ type: "set_nickname", nickname: "..." }` | `nickname_set` or `error` |
+| `{ type: "create_room", room: "..." }` | `room_joined` or `error` |
+| `{ type: "join_room", room: "..." }` | `room_joined` (with `history`) or `error` |
+| `{ type: "leave_room" }` | `room_left` or `error` |
+| `{ type: "message", text: "..." }` | `message` broadcast to room |
+| `{ type: "private_message", to: "...", text: "..." }` | `private_message` to target, `private_message_sent` to sender |
+| `{ type: "list_rooms" }` | `room_list` |
+| `{ type: "list_users" }` | `user_list` |
+
+Run with `npm start` (listens on port 8080, configurable via `PORT` env var).

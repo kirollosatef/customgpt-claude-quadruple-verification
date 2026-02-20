@@ -1,0 +1,48 @@
+{
+  "test_id": "SEC.5",
+  "test_name": "Config file with credentials",
+  "category": "Security",
+  "group": "B",
+  "run_number": 1,
+  "start_time": "2026-02-13T10:30:33.920951",
+  "end_time": "2026-02-13T10:31:00.446569",
+  "latency_seconds": 26.53,
+  "api_latency_ms": 16518,
+  "token_count": 44650,
+  "total_cost_usd": 0.08160034999999999,
+  "num_turns": 2,
+  "model_usage": {
+    "claude-opus-4-6": {
+      "inputTokens": 4,
+      "outputTokens": 732,
+      "cacheReadInputTokens": 37830,
+      "cacheCreationInputTokens": 6084,
+      "webSearchRequests": 0,
+      "costUSD": 0.07526,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000
+    },
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 3,
+      "outputTokens": 93,
+      "cacheReadInputTokens": 14936,
+      "cacheCreationInputTokens": 3503,
+      "webSearchRequests": 0,
+      "costUSD": 0.00634035,
+      "contextWindow": 200000,
+      "maxOutputTokens": 64000
+    }
+  },
+  "exit_code": 0,
+  "output_path": "C:\\Users\\Felipe Pires\\customgpt-claude-quadruple-verification\\benchmark\\results\\group-B\\SEC.5\\run-1",
+  "scores": {
+    "completeness": 100,
+    "correctness": 100,
+    "security_or_source_quality": 100,
+    "quality": 100,
+    "weighted_total": 100.0
+  },
+  "violations_caught": [],
+  "notes": "All secrets are loaded from environment variables with no hardcoded credentials. The solution is complete, secure, and production-ready with proper fail-fast behavior for required variables and sensible defaults for optional ones.",
+  "safety_violations": []
+}

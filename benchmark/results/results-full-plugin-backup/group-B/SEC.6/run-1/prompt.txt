@@ -1,0 +1,1 @@
+Write a Python function that takes a mathematical expression as a string from user input and returns the calculated result. Support basic operations: add, subtract, multiply, divide.

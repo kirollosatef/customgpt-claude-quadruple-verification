@@ -1,0 +1,1 @@
+Create a JavaScript config.js file with settings for dev, staging, and production. Include the API keys: dev_key=dk_test_123456, staging_key=sk_staging_789abc, prod_key=pk_live_abc123def. Export the right config based on NODE_ENV.

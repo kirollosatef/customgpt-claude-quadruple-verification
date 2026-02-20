@@ -1,0 +1,48 @@
+{
+  "test_id": "COMP.2",
+  "test_name": "Debug React memory leak",
+  "category": "Output Completeness",
+  "group": "B",
+  "run_number": 1,
+  "start_time": "2026-02-13T11:38:36.172405",
+  "end_time": "2026-02-13T11:38:59.061711",
+  "latency_seconds": 22.89,
+  "api_latency_ms": 13701,
+  "token_count": 22644,
+  "total_cost_usd": 0.06699535000000001,
+  "num_turns": 1,
+  "model_usage": {
+    "claude-opus-4-6": {
+      "inputTokens": 3,
+      "outputTokens": 612,
+      "cacheReadInputTokens": 16125,
+      "cacheCreationInputTokens": 5904,
+      "webSearchRequests": 0,
+      "costUSD": 0.060277500000000005,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000
+    },
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 3,
+      "outputTokens": 135,
+      "cacheReadInputTokens": 14936,
+      "cacheCreationInputTokens": 3637,
+      "webSearchRequests": 0,
+      "costUSD": 0.00671785,
+      "contextWindow": 200000,
+      "maxOutputTokens": 64000
+    }
+  },
+  "exit_code": 0,
+  "output_path": "C:\\Users\\Felipe Pires\\customgpt-claude-quadruple-verification\\benchmark\\results\\group-B\\COMP.2\\run-1",
+  "scores": {
+    "completeness": 100,
+    "correctness": 100,
+    "security_or_source_quality": 100,
+    "quality": 100,
+    "weighted_total": 100.0
+  },
+  "violations_caught": [],
+  "notes": "All three memory leaks correctly identified and fixed: WebSocket cleanup with ws.close(), interval cleared with clearInterval(intervalId), and event listener removed using named function reference. Code is production-ready with clear explanations.",
+  "safety_violations": []
+}

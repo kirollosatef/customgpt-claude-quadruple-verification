@@ -1,0 +1,47 @@
+All 45 tests pass. Here's what was built:
+
+---
+
+### `order-state-machine.ts` — Architecture
+
+**State graph** with 9 states and 8 event types, wired through a declarative transition table:
+
+```
+DRAFT → SUBMITTED → PAYMENT_PENDING → PAID → PROCESSING → SHIPPED → DELIVERED
+  ↓         ↓              ↓             ↓         ↓
+  └─────────┴──────────────┴─────────────┴─────────┘→ CANCELLED
+                                          ↓         ↓        ↓        ↓
+                                         PAID → PROCESSING → SHIPPED → DELIVERED → REFUNDED
+```
+
+**Each transition has real logic:**
+
+| Transition | Guard logic |
+|---|---|
+| SUBMIT | Items non-empty, total > 0, email present |
+| REQUEST_PAYMENT | Payment method required |
+| CONFIRM_PAYMENT | Transaction ID required, amount must match order total (within ±0.01) |
+| BEGIN_PROCESSING | Payment timestamp must exist |
+| SHIP | Carrier + tracking number required |
+| DELIVER | Ship timestamp must exist |
+| CANCEL | Reason required; only from DRAFT/SUBMITTED/PAYMENT_PENDING/PAID/PROCESSING |
+| REFUND | Reason required, completed payment must exist; only from PAID/PROCESSING/SHIPPED/DELIVERED |
+
+**Key design decisions:**
+- **Immutable** — `send()` returns a new order object, never mutates the input
+- **Audit log** — every transition appends an `AuditEntry` with timestamp, actor, from/to states, event, and arbitrary metadata
+- **Listener system** — `onTransition()` subscribes to events, returns an unsubscribe function
+- **Introspection** — `availableEvents()` and `canSend()` let callers query valid transitions without throwing
+- **Table-driven** — all transitions live in a single `TRANSITIONS` record keyed by `state:event`, making the graph easy to audit and extend
+
+### `order-state-machine.test.ts` — 45 tests covering:
+- Order creation and total rounding
+- Full happy path (DRAFT → DELIVERED)
+- Every guard rejection (no items, bad email, missing payment, amount mismatch, missing shipping, missing reason)
+- Cancel from all 5 allowed states + rejection from 4 disallowed states
+- Refund from all 4 allowed states + rejection from 5 disallowed states
+- Illegal state skips (DRAFT→PAID, DRAFT→SHIPPED, PAID→DELIVERED)
+- Audit log content and accumulation
+- Immutability guarantees
+- `availableEvents` / `canSend` introspection
+- Listener subscribe/unsubscribe

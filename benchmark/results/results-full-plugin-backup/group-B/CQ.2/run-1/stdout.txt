@@ -1,0 +1,42 @@
+All files are created. Here's the project structure and what each piece does:
+
+```
+├── prisma/schema.prisma    # Post model (SQLite)
+├── src/
+│   ├── app.ts              # Express app setup + middleware
+│   ├── server.ts           # Server entry point
+│   ├── lib/prisma.ts       # Prisma client singleton
+│   ├── middleware/
+│   │   ├── validate.ts     # Zod validation middleware
+│   │   └── errorHandler.ts # Global error handler + AppError class
+│   ├── routes/posts.ts     # All 5 CRUD endpoints
+│   └── schemas/post.ts     # Zod schemas for create/update
+├── package.json
+├── tsconfig.json
+└── .env
+```
+
+**Endpoints implemented:**
+
+| Method | Route | Description | Validation |
+|--------|-------|-------------|------------|
+| `GET` | `/posts` | List all posts (filterable by `?published=true/false` and `?author=`) | — |
+| `GET` | `/posts/:id` | Get single post | ID must be integer; 404 if missing |
+| `POST` | `/posts` | Create post | `title`, `content`, `author` required; `published` optional |
+| `PUT` | `/posts/:id` | Update post | All fields optional; 404 if post doesn't exist |
+| `DELETE` | `/posts/:id` | Delete post | 404 if post doesn't exist; returns 204 |
+
+**Key design decisions:**
+
+- **Zod** for request body validation — the `validate()` middleware parses the body and returns structured 400 errors with per-field messages
+- **AppError** class for domain errors (400, 404) — caught by the global `errorHandler` middleware
+- **Existence checks** before update/delete to return proper 404s instead of Prisma errors
+- **SQLite** via Prisma for zero-config local dev — swap the datasource provider to `postgresql`/`mysql` in production
+
+**To run:**
+
+```bash
+npm install
+npx prisma migrate dev --name init
+npm run dev
+```

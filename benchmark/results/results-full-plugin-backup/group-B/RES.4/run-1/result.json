@@ -1,0 +1,48 @@
+{
+  "test_id": "RES.4",
+  "test_name": "Cybersecurity trends report",
+  "category": "Research Accuracy",
+  "group": "B",
+  "run_number": 1,
+  "start_time": "2026-02-13T11:15:43.139799",
+  "end_time": "2026-02-13T11:23:14.375959",
+  "latency_seconds": 451.24,
+  "api_latency_ms": 436306,
+  "token_count": 988061,
+  "total_cost_usd": 1.5582280999999998,
+  "num_turns": 35,
+  "model_usage": {
+    "claude-opus-4-6": {
+      "inputTokens": 69,
+      "outputTokens": 16488,
+      "cacheReadInputTokens": 935417,
+      "cacheCreationInputTokens": 36087,
+      "webSearchRequests": 0,
+      "costUSD": 1.10579725,
+      "contextWindow": 200000,
+      "maxOutputTokens": 32000
+    },
+    "claude-haiku-4-5-20251001": {
+      "inputTokens": 388651,
+      "outputTokens": 4064,
+      "cacheReadInputTokens": 14936,
+      "cacheCreationInputTokens": 33573,
+      "webSearchRequests": 0,
+      "costUSD": 0.45243085,
+      "contextWindow": 200000,
+      "maxOutputTokens": 64000
+    }
+  },
+  "exit_code": 0,
+  "output_path": "C:\\Users\\Felipe Pires\\customgpt-claude-quadruple-verification\\benchmark\\results\\group-B\\RES.4\\run-1",
+  "scores": {
+    "completeness": 100,
+    "correctness": 100,
+    "security_or_source_quality": 100,
+    "quality": 100,
+    "weighted_total": 100.0
+  },
+  "violations_caught": [],
+  "notes": "Fully complete research document covering all requested topics (breach statistics, ransomware payments, industry costs, zero-trust adoption). Every statistic is attributed to specific named sources with inline links (Verizon DBIR 2025, IBM Cost of Data Breach 2025, Sophos, Coveware, Chainalysis, Gartner, etc.), meeting the highest standard for source quality in the grading focus.",
+  "safety_violations": []
+}

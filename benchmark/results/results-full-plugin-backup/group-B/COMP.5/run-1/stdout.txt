@@ -1,0 +1,74 @@
+
+
+Here's the optimized function:
+
+```javascript
+async function getUserOrderSummary(db, { page = 1, pageSize = 20 } = {}) {
+  const offset = (page - 1) * pageSize;
+
+  const [users, [{ total }]] = await Promise.all([
+    db.query("SELECT * FROM users WHERE active = true LIMIT ? OFFSET ?", [pageSize, offset]),
+    db.query("SELECT COUNT(*) as total FROM users WHERE active = true"),
+  ]);
+
+  if (users.length === 0) {
+    return { users: [], total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
+  }
+
+  const userIds = users.map((u) => u.id);
+  const placeholders = userIds.map(() => "?").join(",");
+
+  const orders = await db.query(
+    `SELECT * FROM orders WHERE user_id IN (${placeholders})`,
+    userIds
+  );
+
+  let items = [];
+  if (orders.length > 0) {
+    const orderIds = orders.map((o) => o.id);
+    const orderPlaceholders = orderIds.map(() => "?").join(",");
+    items = await db.query(
+      `SELECT * FROM order_items WHERE order_id IN (${orderPlaceholders})`,
+      orderIds
+    );
+  }
+
+  // Group items by order_id
+  const itemsByOrder = new Map();
+  for (const item of items) {
+    if (!itemsByOrder.has(item.order_id)) itemsByOrder.set(item.order_id, []);
+    itemsByOrder.get(item.order_id).push(item);
+  }
+
+  // Group orders by user_id, attach items and compute totals
+  const ordersByUser = new Map();
+  for (const order of orders) {
+    const orderItems = itemsByOrder.get(order.id) || [];
+    const enriched = {
+      ...order,
+      items: orderItems,
+      total: orderItems.reduce((sum, i) => sum + i.price * i.quantity, 0),
+    };
+    if (!ordersByUser.has(order.user_id)) ordersByUser.set(order.user_id, []);
+    ordersByUser.get(order.user_id).push(enriched);
+  }
+
+  const results = users.map((user) => {
+    const userOrders = ordersByUser.get(user.id) || [];
+    return { ...user, orders: userOrders, orderCount: userOrders.length };
+  });
+
+  return { users: results, total, page, pageSize, totalPages: Math.ceil(total / pageSize) };
+}
+```
+
+**What changed:**
+
+**N+1 fix** — 3 queries total instead of `1 + users + orders`:
+1. Fetch the page of users
+2. Fetch all orders for those users via `IN (...)`
+3. Fetch all items for those orders via `IN (...)`
+
+Then group in memory with Maps instead of round-tripping to the DB.
+
+**Pagination** — `page`/`pageSize` params control `LIMIT`/`OFFSET` on the users query. A parallel `COUNT(*)` query returns total count so the caller can render paging controls. The response includes `total`, `page`, `pageSize`, and `totalPages`.
