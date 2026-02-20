@@ -1,18 +1,20 @@
 #!/usr/bin/env node
 
 /**
- * Post-Tool Audit — Non-blocking audit logger for every tool operation.
+ * Post-Tool Audit — Non-blocking audit logger + behavioral sequence detection.
  *
  * This PostToolUse hook:
  *   1. Reads the tool execution result from stdin
- *   2. Logs the operation to the JSONL audit trail
- *   3. Always exits 0 (never blocks)
+ *   2. Runs behavioral sequence detection across the session (Change 3 — OpenClaw learnings)
+ *   3. Logs the operation + any behavioral warnings to the JSONL audit trail
+ *   4. Always exits 0 (never blocks)
  *
- * This provides full auditability of every Claude Code operation.
+ * This provides full auditability and cross-tool-call pattern detection.
  */
 
 import { readStdinJSON, isResearchFile, failOpen } from './lib/utils.mjs';
 import { logPostTool } from './lib/audit-logger.mjs';
+import { trackAndDetect } from './lib/behavior-tracker.mjs';
 
 await failOpen(async () => {
   const input = await readStdinJSON();
@@ -47,7 +49,13 @@ await failOpen(async () => {
       : 'Cycles 1-3';
   }
 
-  // Log the tool use
+  // Run behavioral sequence detection (SecureClaw-inspired cross-tool-call analysis)
+  const behaviorWarnings = trackAndDetect(toolName, toolInput);
+  if (behaviorWarnings.length > 0) {
+    metadata.behaviorWarnings = behaviorWarnings;
+  }
+
+  // Log the tool use (includes any behavioral warnings)
   logPostTool(toolName, metadata);
 
   // Always exit cleanly — never block

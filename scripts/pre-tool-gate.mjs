@@ -122,11 +122,19 @@ function extractContent(toolName, toolInput) {
     };
   }
 
-  // MCP tools (prefixed with mcp__) — verify all input values
+  // MCP tools (prefixed with mcp__) — verify all input values + enhanced validation
   if (normalized.startsWith('mcp__') || normalized.startsWith('mcp_')) {
     const values = Object.values(toolInput)
       .filter(v => typeof v === 'string')
       .join('\n');
+
+    // Enhanced MCP validation (Change 4 — OpenClaw learnings)
+    const mcpWarnings = validateMcpInput(toolInput, config);
+    if (mcpWarnings.length > 0) {
+      // MCP-specific warnings are appended to content so Cycle 2 rules can also fire
+      process.stderr.write(mcpWarnings.map(w => `[quadruple-verify][mcp] WARNING: ${w}\n`).join(''));
+    }
+
     return {
       content: values,
       context: 'mcp',
@@ -137,4 +145,51 @@ function extractContent(toolName, toolInput) {
 
   // Unknown tool — nothing to verify
   return { content: '', context: 'unknown', fileExt: '', filePath: '' };
+}
+
+/**
+ * Enhanced MCP tool input validation (Change 4 — OpenClaw/ClawHavoc learnings).
+ *
+ * Checks:
+ *   1. Sensitive data in MCP inputs (API keys, tokens, credentials)
+ *   2. Input size limits (flag suspiciously large payloads)
+ */
+const MCP_SENSITIVE_PATTERNS = [
+  { name: 'API key', pattern: /(?:api[_-]?key|api[_-]?secret)\s*[:=]\s*\S{8,}/i },
+  { name: 'Bearer token', pattern: /Bearer\s+[A-Za-z0-9._~+/=-]{20,}/i },
+  { name: 'Authorization header', pattern: /Authorization:\s*\S{10,}/i },
+  { name: 'Private key block', pattern: /-----BEGIN\s+(?:RSA\s+)?PRIVATE\s+KEY-----/i },
+  { name: 'AWS credential', pattern: /(?:AKIA|ASIA)[A-Z0-9]{16}/i },
+  { name: 'Password field', pattern: /(?:password|passwd|pwd)\s*[:=]\s*\S{4,}/i },
+];
+
+function validateMcpInput(toolInput, config) {
+  const warnings = [];
+  const mcpConfig = config.mcp || {};
+  const maxInputSize = mcpConfig.maxInputSizeBytes || 10240; // 10 KB default
+
+  // Collect all string values from the input
+  const allValues = Object.entries(toolInput)
+    .filter(([, v]) => typeof v === 'string')
+    .map(([k, v]) => ({ key: k, value: v }));
+
+  const concatenated = allValues.map(e => e.value).join('');
+
+  // Check 1: Sensitive data detection
+  for (const { key, value } of allValues) {
+    for (const { name, pattern } of MCP_SENSITIVE_PATTERNS) {
+      if (pattern.test(value)) {
+        warnings.push(`MCP input field "${key}" appears to contain a ${name}. Verify this is intentional and not leaking credentials.`);
+        break; // one warning per field is enough
+      }
+    }
+  }
+
+  // Check 2: Input size limit
+  const totalSize = Buffer.byteLength(concatenated, 'utf-8');
+  if (totalSize > maxInputSize) {
+    warnings.push(`MCP input payload is ${(totalSize / 1024).toFixed(1)} KB (limit: ${(maxInputSize / 1024).toFixed(1)} KB). Large payloads may indicate data exfiltration.`);
+  }
+
+  return warnings;
 }

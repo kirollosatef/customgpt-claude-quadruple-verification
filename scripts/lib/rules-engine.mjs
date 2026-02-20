@@ -60,6 +60,47 @@ const CYCLE1_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
     message: 'Code throws a "not implemented" error. Implement the actual functionality.'
+  },
+  // ─── OpenClaw-inspired: Completeness Detection (Change 5) ───────────────
+  {
+    id: 'no-empty-catch',
+    description: 'Block empty catch/except blocks that silently swallow errors',
+    pattern: /catch\s*\([^)]*\)\s*\{\s*\}/,
+    appliesTo: 'file-write',
+    fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
+    message: 'Empty catch block silently swallows errors. Add proper error handling logic.'
+  },
+  {
+    id: 'no-bare-except',
+    description: 'Block bare except clauses in Python that catch all exceptions',
+    pattern: /\bexcept\s*:/,
+    appliesTo: 'file-write',
+    fileExtensions: ['.py', '.pyi'],
+    message: 'Bare except: clause catches all exceptions including KeyboardInterrupt and SystemExit. Specify the exception type (e.g. except ValueError:).'
+  },
+  {
+    id: 'no-console-only-error',
+    description: 'Block catch blocks that only console.log the error without handling it',
+    pattern: /catch\s*\(\s*(\w+)\s*\)\s*\{\s*console\.(log|error|warn)\s*\(\s*\1\s*\)\s*;?\s*\}/,
+    appliesTo: 'file-write',
+    fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
+    message: 'Catch block only logs the error without handling it. Add recovery logic, rethrow, or return an error response.'
+  },
+  {
+    id: 'no-empty-function-body',
+    description: 'Block empty function bodies in JS/TS',
+    pattern: /(?:function\s+\w+|(?:const|let|var)\s+\w+\s*=\s*(?:async\s+)?(?:function|\([^)]*\)\s*=>))\s*[^{]*\{\s*\}/,
+    appliesTo: 'file-write',
+    fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
+    message: 'Function has an empty body. Write the complete implementation.'
+  },
+  {
+    id: 'no-any-type',
+    description: 'Block TypeScript "any" type usage (configurable — disabled by default)',
+    pattern: /:\s*any\b/,
+    appliesTo: 'file-write',
+    fileExtensions: ['.ts', '.tsx'],
+    message: 'TypeScript code uses the "any" type which bypasses type safety. Use a specific type or "unknown" instead.'
   }
 ];
 
@@ -153,6 +194,47 @@ const CYCLE2_RULES = [
     appliesTo: 'web',
     fileExtensions: null,
     message: 'URL uses insecure HTTP instead of HTTPS. Use HTTPS for all non-localhost connections.'
+  },
+  // ─── OpenClaw/ClawHavoc-inspired: Agentic Security Rules (Change 2) ────
+  {
+    id: 'no-system-prompt-leak',
+    description: 'Block patterns that could leak system prompts or agent instructions',
+    pattern: /(?:print|echo|console\.log|logger?\.\w+)\s*\(.*(?:system[_\s]?prompt|CLAUDE\.md|instructions|<system>)/i,
+    appliesTo: 'file-write',
+    fileExtensions: null,
+    message: 'Code appears to output system prompt or agent instruction content. This is a context window exfiltration risk (OWASP ASI-10).'
+  },
+  {
+    id: 'no-base64-exfil',
+    description: 'Block base64-encoded payloads in bash commands (credential exfiltration vector)',
+    pattern: /(?:echo|printf)\s+['"]?[A-Za-z0-9+/]{40,}={0,2}['"]?\s*\|\s*(?:base64|curl|nc|wget)/,
+    appliesTo: 'bash',
+    fileExtensions: null,
+    message: 'Command contains a long base64 string piped to an external tool. This pattern is associated with credential exfiltration (ClawHavoc attack #2).'
+  },
+  {
+    id: 'no-env-dump',
+    description: 'Block commands that dump all environment variables (may expose secrets)',
+    pattern: /(?:^|\||\&\&|\;)\s*(?:env|printenv|set)\s*(?:$|\||>|;)/m,
+    appliesTo: 'bash',
+    fileExtensions: null,
+    message: 'Command dumps all environment variables which may expose API keys and secrets. Access specific variables instead (e.g. echo $PATH).'
+  },
+  {
+    id: 'no-data-exfil-redirect',
+    description: 'Block sending local file contents to remote URLs',
+    pattern: /(?:curl\s+.*-d\s+@|curl\s+.*--data-binary\s+@|wget\s+.*--post-file|nc\s+(?!localhost|127\.0\.0\.1))/,
+    appliesTo: 'bash',
+    fileExtensions: null,
+    message: 'Command sends local file data to a remote endpoint. This is a data exfiltration pattern (ClawHavoc attack #2). Verify the destination is trusted.'
+  },
+  {
+    id: 'no-pickle-load',
+    description: 'Block pickle deserialization (arbitrary code execution vector)',
+    pattern: /\bpickle\.(?:load|loads)\s*\(/,
+    appliesTo: 'file-write',
+    fileExtensions: ['.py', '.pyi'],
+    message: 'Code uses pickle.load/loads which can execute arbitrary code during deserialization (OWASP ASI-04). Use json, msgpack, or other safe formats.'
   }
 ];
 
