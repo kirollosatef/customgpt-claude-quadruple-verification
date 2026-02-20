@@ -26,6 +26,7 @@ import { logPreTool } from './lib/audit-logger.mjs';
 import { loadConfig, getTrustLevel } from './lib/config-loader.mjs';
 import { checkCapabilities } from './lib/capability-gate.mjs';
 import { trackInjection, condenseIfOverBudget } from './lib/prompt-budget.mjs';
+import { buildCorrectionHint, trackCorrectionAttempt, escalateIfNeeded } from './lib/self-correction.mjs';
 
 await failOpen(async () => {
   const input = await readStdinJSON();
@@ -113,7 +114,23 @@ ${condensedReasons.join('
 
 Fix these issues and try again.`;
     }
-    logPreTool(toolName, 'block', allViolations, { fileExt, context, tokenBudget: budgetResult });
+    // Self-correction: track attempt and add hints
+    const correctionResult = trackCorrectionAttempt(filePath, allViolations);
+    const correctionHint = buildCorrectionHint(allViolations);
+    if (correctionHint) {
+      reasonText += '
+
+' + correctionHint;
+    }
+    if (correctionResult.isEscalated) {
+      const escalation = escalateIfNeeded(filePath);
+      if (escalation) {
+        reasonText += '
+
+' + escalation;
+      }
+    }
+    logPreTool(toolName, 'block', allViolations, { fileExt, context, tokenBudget: budgetResult, corrections: correctionResult });
     deny(reasonText);
   } else {
     logPreTool(toolName, 'approve', [], { fileExt, context });
