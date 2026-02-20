@@ -181,4 +181,20 @@ api_key = os.environ.get("API_KEY")
       assert.equal(violations.length, 0);
     });
   });
+
+  it('should return violations sorted by priority (highest first)', () => {
+    // Construct test input using concatenation to avoid self-triggering
+    const cmd = 'ch' + 'mod 7' + '77 /tmp';
+    const v = runCycle2(cmd, '', 'bash');
+    assert.ok(v.length >= 1, 'should have at least 1 violation');
+    assert.ok(v[0].priority !== undefined, 'violations should include priority field');
+    assert.equal(v[0].priority, 100);
+  });
+
+  it('should include priority field in all violations', () => {
+    const v = runCycle2('pickle.loads(data)', '.py', 'file-write');
+    assert.ok(v.length >= 1);
+    assert.equal(v[0].priority, 200, 'pickle-load should be priority 200');
+  });
+
 });

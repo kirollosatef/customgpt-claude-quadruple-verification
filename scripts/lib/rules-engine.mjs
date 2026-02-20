@@ -2,10 +2,11 @@
  * Rules Engine — All Cycle 1 + Cycle 2 verification rules.
  * Cycle 4 rules are in research-verifier.mjs and merged via getAllRules().
  *
- * Each rule: { id, description, pattern (RegExp), appliesTo, fileExtensions?, message }
+ * Each rule: { id, description, pattern (RegExp), appliesTo, fileExtensions?, message, priority? }
  *
  * appliesTo: 'file-write' | 'bash' | 'mcp' | 'web' | 'all'
  * fileExtensions: optional array of extensions (e.g. ['.py']). If omitted, applies to all.
+ * priority: numeric (higher = runs first in output). Default 100, security-critical 200.
  */
 
 import { getAllCycle4Rules } from './research-verifier.mjs';
@@ -19,6 +20,7 @@ const CYCLE1_RULES = [
     pattern: /\b(TODO|FIXME|HACK|XXX)\b/,
     appliesTo: 'file-write',
     fileExtensions: null, // all code files
+    priority: 100,
     message: 'Code contains a TODO/FIXME/HACK/XXX comment. Remove placeholder comments and implement the actual logic.'
   },
   {
@@ -27,6 +29,7 @@ const CYCLE1_RULES = [
     pattern: /^\s*pass\s*$/m,
     appliesTo: 'file-write',
     fileExtensions: ['.py', '.pyi'],
+    priority: 100,
     message: 'Python file contains a bare "pass" statement. Implement the actual logic instead of using a placeholder.'
   },
   {
@@ -35,6 +38,7 @@ const CYCLE1_RULES = [
     pattern: /raise\s+NotImplementedError/,
     appliesTo: 'file-write',
     fileExtensions: ['.py', '.pyi'],
+    priority: 100,
     message: 'Code raises NotImplementedError. Implement the actual functionality instead of leaving a stub.'
   },
   {
@@ -43,6 +47,7 @@ const CYCLE1_RULES = [
     pattern: /^\s*\.\.\.\s*$/m,
     appliesTo: 'file-write',
     fileExtensions: ['.py', '.pyi'],
+    priority: 100,
     message: 'Python file contains an ellipsis (...) placeholder. Implement the actual logic.'
   },
   {
@@ -51,6 +56,7 @@ const CYCLE1_RULES = [
     pattern: /\b(placeholder|stub|mock implementation|implement\s+this|add\s+implementation\s+here|your\s+code\s+here)\b/i,
     appliesTo: 'file-write',
     fileExtensions: null,
+    priority: 100,
     message: 'Code contains placeholder/stub text. Write the complete implementation.'
   },
   {
@@ -59,6 +65,7 @@ const CYCLE1_RULES = [
     pattern: /throw\s+new\s+Error\s*\(\s*['"`].*not\s+implemented/i,
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
+    priority: 100,
     message: 'Code throws a "not implemented" error. Implement the actual functionality.'
   },
   // ─── OpenClaw-inspired: Completeness Detection (Change 5) ───────────────
@@ -68,6 +75,7 @@ const CYCLE1_RULES = [
     pattern: /catch\s*\([^)]*\)\s*\{\s*\}/,
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
+    priority: 100,
     message: 'Empty catch block silently swallows errors. Add proper error handling logic.'
   },
   {
@@ -76,6 +84,7 @@ const CYCLE1_RULES = [
     pattern: /\bexcept\s*:/,
     appliesTo: 'file-write',
     fileExtensions: ['.py', '.pyi'],
+    priority: 100,
     message: 'Bare except: clause catches all exceptions including KeyboardInterrupt and SystemExit. Specify the exception type (e.g. except ValueError:).'
   },
   {
@@ -84,6 +93,7 @@ const CYCLE1_RULES = [
     pattern: /catch\s*\(\s*(\w+)\s*\)\s*\{\s*console\.(log|error|warn)\s*\(\s*\1\s*\)\s*;?\s*\}/,
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
+    priority: 100,
     message: 'Catch block only logs the error without handling it. Add recovery logic, rethrow, or return an error response.'
   },
   {
@@ -92,6 +102,7 @@ const CYCLE1_RULES = [
     pattern: /(?:function\s+\w+|(?:const|let|var)\s+\w+\s*=\s*(?:async\s+)?(?:function|\([^)]*\)\s*=>))\s*[^{]*\{\s*\}/,
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
+    priority: 100,
     message: 'Function has an empty body. Write the complete implementation.'
   },
   {
@@ -100,6 +111,7 @@ const CYCLE1_RULES = [
     pattern: /:\s*any\b/,
     appliesTo: 'file-write',
     fileExtensions: ['.ts', '.tsx'],
+    priority: 100,
     message: 'TypeScript code uses the "any" type which bypasses type safety. Use a specific type or "unknown" instead.'
   }
 ];
@@ -113,6 +125,7 @@ const CYCLE2_RULES = [
     pattern: /\beval\s*\(/,
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs', '.py'],
+    priority: 200,
     message: 'Code uses eval(). This is a critical security risk (code injection). Use a safe alternative.'
   },
   {
@@ -121,6 +134,7 @@ const CYCLE2_RULES = [
     pattern: /\bexec\s*\(/,
     appliesTo: 'file-write',
     fileExtensions: ['.py'],
+    priority: 200,
     message: 'Python code uses exec(). This allows arbitrary code execution. Use a safe alternative.'
   },
   {
@@ -129,6 +143,7 @@ const CYCLE2_RULES = [
     pattern: /\bos\.system\s*\(/,
     appliesTo: 'file-write',
     fileExtensions: ['.py'],
+    priority: 200,
     message: 'Python code uses os.system(). Use subprocess.run() with shell=False instead.'
   },
   {
@@ -137,6 +152,7 @@ const CYCLE2_RULES = [
     pattern: /shell\s*=\s*True/,
     appliesTo: 'file-write',
     fileExtensions: ['.py'],
+    priority: 200,
     message: 'Python code uses shell=True in subprocess. This enables shell injection. Use shell=False and pass args as a list.'
   },
   {
@@ -145,6 +161,7 @@ const CYCLE2_RULES = [
     pattern: /(?:api[_-]?key|api[_-]?secret|password|passwd|secret[_-]?key|access[_-]?token|auth[_-]?token|private[_-]?key)\s*[:=]\s*['"`][A-Za-z0-9+/=_\-]{8,}/i,
     appliesTo: 'file-write',
     fileExtensions: null,
+    priority: 200,
     message: 'Code contains what appears to be a hardcoded secret (API key, password, or token). Use environment variables or a secrets manager instead.'
   },
   {
@@ -153,6 +170,7 @@ const CYCLE2_RULES = [
     pattern: /(?:f['"`].*(?:SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|CREATE)\s+.*\{|(?:SELECT|INSERT|UPDATE|DELETE|DROP|ALTER|CREATE)\s+.*(?:['"]\s*\+|\+\s*['"]|\$\{|%s|\.format\())/i,
     appliesTo: 'file-write',
     fileExtensions: null,
+    priority: 200,
     message: 'Code constructs SQL using string concatenation/interpolation. Use parameterized queries to prevent SQL injection.'
   },
   {
@@ -161,6 +179,7 @@ const CYCLE2_RULES = [
     pattern: /\.innerHTML\s*=/,
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs', '.html'],
+    priority: 200,
     message: 'Code assigns to .innerHTML which enables XSS attacks. Use .textContent or a sanitization library instead.'
   },
   {
@@ -169,6 +188,7 @@ const CYCLE2_RULES = [
     pattern: /rm\s+(-[a-zA-Z]*)?r[a-zA-Z]*f[a-zA-Z]*\s+(?:\/(?:\s|$|\*)|\$HOME|\$\{HOME\}|~\/|\/root|C:\\)/i,
     appliesTo: 'bash',
     fileExtensions: null,
+    priority: 200,
     message: 'Command attempts destructive recursive delete on a critical path. This could destroy the system.'
   },
   {
@@ -177,6 +197,7 @@ const CYCLE2_RULES = [
     pattern: /chmod\s+(?:.*\s)?777\b/,
     appliesTo: 'bash',
     fileExtensions: null,
+    priority: 100,
     message: 'Command sets world-writable permissions (777). Use more restrictive permissions (e.g. 755 or 644).'
   },
   {
@@ -185,6 +206,7 @@ const CYCLE2_RULES = [
     pattern: /(?:curl|wget)\s+.*\|\s*(?:ba)?sh/,
     appliesTo: 'bash',
     fileExtensions: null,
+    priority: 200,
     message: 'Command pipes downloaded content directly to a shell. Download first, inspect, then execute.'
   },
   {
@@ -193,6 +215,7 @@ const CYCLE2_RULES = [
     pattern: /http:\/\/(?!localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])/,
     appliesTo: 'web',
     fileExtensions: null,
+    priority: 100,
     message: 'URL uses insecure HTTP instead of HTTPS. Use HTTPS for all non-localhost connections.'
   },
   // ─── OpenClaw/ClawHavoc-inspired: Agentic Security Rules (Change 2) ────
@@ -202,6 +225,7 @@ const CYCLE2_RULES = [
     pattern: /(?:print|echo|console\.log|logger?\.\w+)\s*\(.*(?:system[_\s]?prompt|CLAUDE\.md|instructions|<system>)/i,
     appliesTo: 'file-write',
     fileExtensions: null,
+    priority: 200,
     message: 'Code appears to output system prompt or agent instruction content. This is a context window exfiltration risk (OWASP ASI-10).'
   },
   {
@@ -210,6 +234,7 @@ const CYCLE2_RULES = [
     pattern: /(?:echo|printf)\s+['"]?[A-Za-z0-9+/]{40,}={0,2}['"]?\s*\|\s*(?:base64|curl|nc|wget)/,
     appliesTo: 'bash',
     fileExtensions: null,
+    priority: 200,
     message: 'Command contains a long base64 string piped to an external tool. This pattern is associated with credential exfiltration (ClawHavoc attack #2).'
   },
   {
@@ -218,6 +243,7 @@ const CYCLE2_RULES = [
     pattern: /(?:^|\||\&\&|\;)\s*(?:env|printenv|set)\s*(?:$|\||>|;)/m,
     appliesTo: 'bash',
     fileExtensions: null,
+    priority: 100,
     message: 'Command dumps all environment variables which may expose API keys and secrets. Access specific variables instead (e.g. echo $PATH).'
   },
   {
@@ -226,6 +252,7 @@ const CYCLE2_RULES = [
     pattern: /(?:curl\s+.*-d\s+@|curl\s+.*--data-binary\s+@|wget\s+.*--post-file|nc\s+(?!localhost|127\.0\.0\.1))/,
     appliesTo: 'bash',
     fileExtensions: null,
+    priority: 200,
     message: 'Command sends local file data to a remote endpoint. This is a data exfiltration pattern (ClawHavoc attack #2). Verify the destination is trusted.'
   },
   {
@@ -234,6 +261,7 @@ const CYCLE2_RULES = [
     pattern: /\bpickle\.(?:load|loads)\s*\(/,
     appliesTo: 'file-write',
     fileExtensions: ['.py', '.pyi'],
+    priority: 200,
     message: 'Code uses pickle.load/loads which can execute arbitrary code during deserialization (OWASP ASI-04). Use json, msgpack, or other safe formats.'
   }
 ];
@@ -296,10 +324,14 @@ function _runRules(rules, content, fileExt, context, config) {
       violations.push({
         ruleId: rule.id,
         cycle: rules === CYCLE1_RULES ? 1 : 2,
+        priority: rule.priority || 100,
         message: rule.message
       });
     }
   }
+
+  // Sort by priority descending — higher-priority violations appear first
+  violations.sort((a, b) => b.priority - a.priority);
 
   return violations;
 }
