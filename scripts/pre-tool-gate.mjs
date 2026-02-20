@@ -28,6 +28,7 @@ import { checkCapabilities } from './lib/capability-gate.mjs';
 import { trackInjection, condenseIfOverBudget } from './lib/prompt-budget.mjs';
 import { buildCorrectionHint, trackCorrectionAttempt, escalateIfNeeded } from './lib/self-correction.mjs';
 import { determineVerificationLevel, getVerificationConfig } from './lib/model-router.mjs';
+import { prioritizeMessages, analyzeEffectiveness } from './lib/context-optimizer.mjs';
 
 await failOpen(async () => {
   const input = await readStdinJSON();
@@ -125,6 +126,9 @@ ${condensedReasons.join('
 
 Fix these issues and try again.`;
     }
+    // Context optimization: prioritize violations by effectiveness
+    allViolations = prioritizeMessages(allViolations);
+
     // Self-correction: track attempt and add hints
     const correctionResult = trackCorrectionAttempt(filePath, allViolations);
     const correctionHint = buildCorrectionHint(allViolations);
