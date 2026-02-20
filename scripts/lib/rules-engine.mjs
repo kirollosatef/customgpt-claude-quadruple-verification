@@ -21,6 +21,9 @@ const CYCLE1_RULES = [
     appliesTo: 'file-write',
     fileExtensions: null, // all code files
     priority: 100,
+    severity: 'warn',
+    code: 'quality.todo',
+    remediation: 'Remove the comment and write the actual logic.',
     message: 'Code contains a TODO/FIXME/HACK/XXX comment. Remove placeholder comments and implement the actual logic.'
   },
   {
@@ -30,6 +33,9 @@ const CYCLE1_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.py', '.pyi'],
     priority: 100,
+    severity: 'warn',
+    code: 'quality.empty-pass',
+    remediation: 'Replace pass with the actual implementation.',
     message: 'Python file contains a bare "pass" statement. Implement the actual logic instead of using a placeholder.'
   },
   {
@@ -39,6 +45,9 @@ const CYCLE1_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.py', '.pyi'],
     priority: 100,
+    severity: 'warn',
+    code: 'quality.not-implemented',
+    remediation: 'Write the actual function body instead of raising.',
     message: 'Code raises NotImplementedError. Implement the actual functionality instead of leaving a stub.'
   },
   {
@@ -48,6 +57,9 @@ const CYCLE1_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.py', '.pyi'],
     priority: 100,
+    severity: 'warn',
+    code: 'quality.ellipsis',
+    remediation: 'Replace ... with the actual implementation.',
     message: 'Python file contains an ellipsis (...) placeholder. Implement the actual logic.'
   },
   {
@@ -57,6 +69,9 @@ const CYCLE1_RULES = [
     appliesTo: 'file-write',
     fileExtensions: null,
     priority: 100,
+    severity: 'warn',
+    code: 'quality.incomplete-text',
+    remediation: 'Write the complete implementation.',
     message: 'Code contains placeholder/stub text. Write the complete implementation.'
   },
   {
@@ -66,6 +81,9 @@ const CYCLE1_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
     priority: 100,
+    severity: 'warn',
+    code: 'quality.throw-not-impl',
+    remediation: 'Write the function body instead of throwing.',
     message: 'Code throws a "not implemented" error. Implement the actual functionality.'
   },
   // ─── OpenClaw-inspired: Completeness Detection (Change 5) ───────────────
@@ -76,6 +94,9 @@ const CYCLE1_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
     priority: 100,
+    severity: 'warn',
+    code: 'quality.empty-catch',
+    remediation: 'Add error handling logic or rethrow.',
     message: 'Empty catch block silently swallows errors. Add proper error handling logic.'
   },
   {
@@ -85,6 +106,9 @@ const CYCLE1_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.py', '.pyi'],
     priority: 100,
+    severity: 'warn',
+    code: 'quality.bare-except',
+    remediation: 'Specify the exception type (e.g. except ValueError).',
     message: 'Bare except: clause catches all exceptions including KeyboardInterrupt and SystemExit. Specify the exception type (e.g. except ValueError:).'
   },
   {
@@ -94,6 +118,9 @@ const CYCLE1_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
     priority: 100,
+    severity: 'warn',
+    code: 'quality.console-only-error',
+    remediation: 'Add recovery logic, rethrow, or return an error.',
     message: 'Catch block only logs the error without handling it. Add recovery logic, rethrow, or return an error response.'
   },
   {
@@ -103,6 +130,9 @@ const CYCLE1_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
     priority: 100,
+    severity: 'warn',
+    code: 'quality.empty-function',
+    remediation: 'Write the function implementation.',
     message: 'Function has an empty body. Write the complete implementation.'
   },
   {
@@ -112,6 +142,9 @@ const CYCLE1_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.ts', '.tsx'],
     priority: 100,
+    severity: 'info',
+    code: 'quality.any-type',
+    remediation: 'Use a specific type or unknown instead of any.',
     message: 'TypeScript code uses the "any" type which bypasses type safety. Use a specific type or "unknown" instead.'
   }
 ];
@@ -126,6 +159,9 @@ const CYCLE2_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs', '.py'],
     priority: 200,
+    severity: 'critical',
+    code: 'security.eval',
+    remediation: 'Use a safe parser (JSON.parse, ast.literal_eval).',
     message: 'Code uses eval(). This is a critical security risk (code injection). Use a safe alternative.'
   },
   {
@@ -135,6 +171,9 @@ const CYCLE2_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.py'],
     priority: 200,
+    severity: 'critical',
+    code: 'security.exec-call',
+    remediation: 'Use a safe alternative.',
     message: 'Python code uses exec(). This allows arbitrary code execution. Use a safe alternative.'
   },
   {
@@ -144,6 +183,9 @@ const CYCLE2_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.py'],
     priority: 200,
+    severity: 'critical',
+    code: 'security.os-system',
+    remediation: 'Use subprocess.run() with shell=False.',
     message: 'Python code uses os.system(). Use subprocess.run() with shell=False instead.'
   },
   {
@@ -153,6 +195,9 @@ const CYCLE2_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.py'],
     priority: 200,
+    severity: 'critical',
+    code: 'security.shell-true',
+    remediation: 'Use shell=False and pass args as a list.',
     message: 'Python code uses shell=True in subprocess. This enables shell injection. Use shell=False and pass args as a list.'
   },
   {
@@ -162,6 +207,9 @@ const CYCLE2_RULES = [
     appliesTo: 'file-write',
     fileExtensions: null,
     priority: 200,
+    severity: 'critical',
+    code: 'security.hardcoded-secrets',
+    remediation: 'Use environment variables or a secrets manager.',
     message: 'Code contains what appears to be a hardcoded secret (API key, password, or token). Use environment variables or a secrets manager instead.'
   },
   {
@@ -171,6 +219,9 @@ const CYCLE2_RULES = [
     appliesTo: 'file-write',
     fileExtensions: null,
     priority: 200,
+    severity: 'critical',
+    code: 'security.sql-injection',
+    remediation: 'Use parameterized queries.',
     message: 'Code constructs SQL using string concatenation/interpolation. Use parameterized queries to prevent SQL injection.'
   },
   {
@@ -180,6 +231,9 @@ const CYCLE2_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs', '.html'],
     priority: 200,
+    severity: 'critical',
+    code: 'security.xss-innerhtml',
+    remediation: 'Use .textContent or a sanitization library.',
     message: 'Code assigns to .innerHTML which enables XSS attacks. Use .textContent or a sanitization library instead.'
   },
   {
@@ -189,6 +243,9 @@ const CYCLE2_RULES = [
     appliesTo: 'bash',
     fileExtensions: null,
     priority: 200,
+    severity: 'critical',
+    code: 'security.destructive-delete',
+    remediation: 'Use targeted paths, not recursive root delete.',
     message: 'Command attempts destructive recursive delete on a critical path. This could destroy the system.'
   },
   {
@@ -198,6 +255,9 @@ const CYCLE2_RULES = [
     appliesTo: 'bash',
     fileExtensions: null,
     priority: 100,
+    severity: 'warn',
+    code: 'security.chmod-777',
+    remediation: 'Use 755 or 644 instead of 777.',
     message: 'Command sets world-writable permissions (777). Use more restrictive permissions (e.g. 755 or 644).'
   },
   {
@@ -207,6 +267,9 @@ const CYCLE2_RULES = [
     appliesTo: 'bash',
     fileExtensions: null,
     priority: 200,
+    severity: 'critical',
+    code: 'security.curl-pipe-sh',
+    remediation: 'Download first, inspect, then run separately.',
     message: 'Command pipes downloaded content directly to a shell. Download first, inspect, then execute.'
   },
   {
@@ -216,6 +279,9 @@ const CYCLE2_RULES = [
     appliesTo: 'web',
     fileExtensions: null,
     priority: 100,
+    severity: 'warn',
+    code: 'security.insecure-url',
+    remediation: 'Use HTTPS instead of HTTP.',
     message: 'URL uses insecure HTTP instead of HTTPS. Use HTTPS for all non-localhost connections.'
   },
   // ─── OpenClaw/ClawHavoc-inspired: Agentic Security Rules (Change 2) ────
@@ -226,6 +292,9 @@ const CYCLE2_RULES = [
     appliesTo: 'file-write',
     fileExtensions: null,
     priority: 200,
+    severity: 'critical',
+    code: 'security.prompt-leak',
+    remediation: 'Do not output system prompts or agent instructions.',
     message: 'Code appears to output system prompt or agent instruction content. This is a context window exfiltration risk (OWASP ASI-10).'
   },
   {
@@ -235,6 +304,9 @@ const CYCLE2_RULES = [
     appliesTo: 'bash',
     fileExtensions: null,
     priority: 200,
+    severity: 'critical',
+    code: 'security.base64-exfil',
+    remediation: 'Do not pipe encoded data to external tools.',
     message: 'Command contains a long base64 string piped to an external tool. This pattern is associated with credential exfiltration (ClawHavoc attack #2).'
   },
   {
@@ -244,6 +316,9 @@ const CYCLE2_RULES = [
     appliesTo: 'bash',
     fileExtensions: null,
     priority: 100,
+    severity: 'warn',
+    code: 'security.env-dump',
+    remediation: 'Access specific variables instead of dumping all.',
     message: 'Command dumps all environment variables which may expose API keys and secrets. Access specific variables instead (e.g. echo $PATH).'
   },
   {
@@ -253,6 +328,9 @@ const CYCLE2_RULES = [
     appliesTo: 'bash',
     fileExtensions: null,
     priority: 200,
+    severity: 'critical',
+    code: 'security.data-exfil',
+    remediation: 'Verify the remote destination is trusted.',
     message: 'Command sends local file data to a remote endpoint. This is a data exfiltration pattern (ClawHavoc attack #2). Verify the destination is trusted.'
   },
   {
@@ -262,6 +340,9 @@ const CYCLE2_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.py', '.pyi'],
     priority: 200,
+    severity: 'critical',
+    code: 'security.pickle',
+    remediation: 'Use json, msgpack, or other safe serialization.',
     message: 'Code uses pickle.load/loads which can execute arbitrary code during deserialization (OWASP ASI-04). Use json, msgpack, or other safe formats.'
   }
 ];
@@ -325,6 +406,9 @@ function _runRules(rules, content, fileExt, context, config) {
         ruleId: rule.id,
         cycle: rules === CYCLE1_RULES ? 1 : 2,
         priority: rule.priority || 100,
+        severity: rule.severity || 'warn',
+        code: rule.code || rule.id,
+        remediation: rule.remediation || '',
         message: rule.message
       });
     }

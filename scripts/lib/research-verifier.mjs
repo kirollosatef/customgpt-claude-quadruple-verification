@@ -66,18 +66,27 @@ const SOURCE_PROXIMITY = 300; // characters
 const CYCLE4_RULES = [
   {
     id: 'no-vague-claims',
+    severity: 'warn',
+    code: 'research.vague-claims',
+    remediation: 'Name the study, author, institution, and year.',
     description: 'Block vague unsourced language like "studies show", "experts say"',
     appliesTo: 'research-md',
     message: 'Research file contains vague language (e.g. "studies show", "experts say"). Replace with specific, sourced claims: name the study, author, institution, and year, then link the source.'
   },
   {
     id: 'no-unverified-claims',
+    severity: 'warn',
+    code: 'research.unverified-claims',
+    remediation: 'Verify claims via Perplexity MCP and add the PERPLEXITY_VERIFIED tag.',
     description: 'Block statistical/factual claims without PERPLEXITY_VERIFIED tag',
     appliesTo: 'research-md',
     message: 'Research file contains statistical or factual claims but is missing the <!-- PERPLEXITY_VERIFIED --> tag. Verify all claims using Perplexity MCP tools and add the tag to confirm verification.'
   },
   {
     id: 'no-unsourced-claims',
+    severity: 'info',
+    code: 'research.unsourced-claims',
+    remediation: 'Add a URL or [Source:] marker near each claim.',
     description: 'Block claims that lack a nearby source URL (within 300 chars)',
     appliesTo: 'research-md',
     message: 'Research file has the PERPLEXITY_VERIFIED tag but some claims lack a source URL within 300 characters. Add a markdown link, bare URL, or [Source:]/[Ref:]/[Verified:] marker near each claim.'
