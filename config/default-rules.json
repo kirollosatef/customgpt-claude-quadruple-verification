@@ -45,5 +45,6 @@
     "failClosed": true,
     "description": "Capability declaration enforcement \u2014 tools must declare resource access"
   },
-  "trustLevel": "standard"
+  "trustLevel": "standard",
+  "maxVerificationTokens": 500
 }

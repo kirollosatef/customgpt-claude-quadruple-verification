@@ -25,6 +25,7 @@ import { runCycle4 } from './lib/research-verifier.mjs';
 import { logPreTool } from './lib/audit-logger.mjs';
 import { loadConfig, getTrustLevel } from './lib/config-loader.mjs';
 import { checkCapabilities } from './lib/capability-gate.mjs';
+import { trackInjection, condenseIfOverBudget } from './lib/prompt-budget.mjs';
 
 await failOpen(async () => {
   const input = await readStdinJSON();
@@ -98,7 +99,21 @@ await failOpen(async () => {
     );
     const reasonText = `Quadruple Verification BLOCKED this operation:\n\n${reasons.join('\n\n')}\n\nFix these issues and try again.`;
 
-    logPreTool(toolName, 'block', allViolations, { fileExt, context });
+    // Track token budget usage for this block message
+    const budgetResult = trackInjection('block-message', reasonText, config);
+    if (budgetResult.overBudget) {
+      allViolations = condenseIfOverBudget(allViolations, config);
+      const condensedReasons = allViolations.map(v =>
+        `[Cycle ${v.cycle} - ${v.ruleId}] ${v.message}`
+      );
+      reasonText = `Quadruple Verification BLOCKED (condensed):
+
+${condensedReasons.join('
+')}
+
+Fix these issues and try again.`;
+    }
+    logPreTool(toolName, 'block', allViolations, { fileExt, context, tokenBudget: budgetResult });
     deny(reasonText);
   } else {
     logPreTool(toolName, 'approve', [], { fileExt, context });
