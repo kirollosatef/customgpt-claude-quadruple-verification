@@ -5,6 +5,9 @@ node_modules/
 Thumbs.db
 nul
 .claude
+.planning/
 benchmark/results/group-A/
 benchmark/results/group-B/
 benchmark/__pycache__/
+python/__pycache__/
+tests/__pycache__/
