@@ -1,18 +1,22 @@
 #!/usr/bin/env node
 
 /**
- * Post-Tool Audit — Non-blocking audit logger for every tool operation.
+ * Post-Tool Audit — Non-blocking audit logger + behavioral sequence detection.
  *
  * This PostToolUse hook:
  *   1. Reads the tool execution result from stdin
- *   2. Logs the operation to the JSONL audit trail
- *   3. Always exits 0 (never blocks)
+ *   2. Runs behavioral sequence detection across the session (Change 3 — OpenClaw learnings)
+ *   3. Logs the operation + any behavioral warnings to the JSONL audit trail
+ *   4. Always exits 0 (never blocks)
  *
- * This provides full auditability of every Claude Code operation.
+ * This provides full auditability and cross-tool-call pattern detection.
  */
 
 import { readStdinJSON, isResearchFile, failOpen } from './lib/utils.mjs';
 import { logPostTool } from './lib/audit-logger.mjs';
+import { trackAndDetect } from './lib/behavior-tracker.mjs';
+import { detectInjectionPatterns } from './lib/content-boundary.mjs';
+import { detectSensitiveAccess, captureSystemState, logSystemEvent } from './lib/system-monitor.mjs';
 
 await failOpen(async () => {
   const input = await readStdinJSON();
@@ -47,7 +51,46 @@ await failOpen(async () => {
       : 'Cycles 1-3';
   }
 
-  // Log the tool use
+  const normalized = toolName.toLowerCase();
+
+  // Run behavioral sequence detection (SecureClaw-inspired cross-tool-call analysis)
+  const behaviorWarnings = trackAndDetect(toolName, toolInput);
+  if (behaviorWarnings.length > 0) {
+    metadata.behaviorWarnings = behaviorWarnings;
+  }
+
+  // System monitoring for Bash commands (sensitive path detection + process snapshot)
+  if (normalized === 'bash' && toolInput.command) {
+    const sensitiveHits = detectSensitiveAccess(toolInput.command);
+    if (sensitiveHits.length > 0) {
+      metadata.sensitiveAccess = sensitiveHits;
+      process.stderr.write(sensitiveHits.map(d =>
+        '[quadruple-verify][system-monitor] WARNING: Sensitive path access detected: ' + d.description + '\n'
+      ).join(''));
+      // Capture process state after sensitive access for audit trail
+      const systemState = captureSystemState();
+      metadata.systemState = systemState;
+      logSystemEvent('sensitive-access', { command: toolInput.command.slice(0, 200), detections: sensitiveHits, systemState }, (name, data) => {
+        // Already logged via logPostTool below
+      });
+    }
+  }
+
+  // Scan external content for injection patterns (WebFetch/WebSearch/MCP results)
+  if (normalized === 'webfetch' || normalized === 'websearch' || normalized.startsWith('mcp__') || normalized.startsWith('mcp_')) {
+    const contentToScan = toolInput.content || toolInput.result || toolInput.output || '';
+    if (contentToScan) {
+      const injections = detectInjectionPatterns(contentToScan);
+      if (injections.length > 0) {
+        metadata.injectionWarnings = injections;
+        process.stderr.write(injections.map(d =>
+          `[quadruple-verify][boundary] WARNING: Injection pattern "${d.id}" detected: ${d.description}\n`
+        ).join(''));
+      }
+    }
+  }
+
+  // Log the tool use (includes any behavioral warnings)
   logPostTool(toolName, metadata);
 
   // Always exit cleanly — never block

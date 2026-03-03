@@ -86,6 +86,7 @@ export function logEntry(entry, config = {}) {
 /**
  * Log a pre-tool verification result.
  */
+// Violations now include severity, code, and remediation fields
 export function logPreTool(tool, decision, violations = [], metadata = {}, config = {}) {
   logEntry({
     event: 'pre-tool',

@@ -63,7 +63,7 @@ describe('Cycle 2 — Security Rules', () => {
     });
 
     it('should block hardcoded access token', () => {
-      const violations = runCycle2('const access_token = "ghp_xxxxxxxxxxxx"', '.js', 'file-write');
+      const violations = runCycle2('const access_token = "ghp_R3alL00kingT0ken99X1"', '.js', 'file-write');
       assert.ok(violations.some(v => v.ruleId === 'no-hardcoded-secrets'));
     });
 

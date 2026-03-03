@@ -91,7 +91,8 @@ export function findProjectRoot(startDir) {
  * Get the plugin's own root directory (two levels up from scripts/lib/).
  */
 export function getPluginRoot() {
-  return resolve(dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', '..');
+  const rawPath = decodeURIComponent(new URL(import.meta.url).pathname).replace(/^\/([A-Za-z]:)/, '$1');
+  return resolve(dirname(rawPath), '..', '..');
 }
 
 /**
