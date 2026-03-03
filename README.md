@@ -9,8 +9,7 @@ LLM-powered intelligent verification on every Claude Code operation. Regex fast 
 
 Built by [CustomGPT.ai](https://customgpt.ai) for production teams running Claude Code at scale.
 
-<!-- TODO: Replace with actual demo GIF after recording -->
-<!-- ![Demo](demo/demo.gif) -->
+![Demo — eval() blocked, research claims blocked, clean code passes](demo/demo.gif)
 
 ## What It Does
 
