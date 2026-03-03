@@ -28,6 +28,17 @@ jobs:
         with:
           node-version: '20'
           registry-url: 'https://registry.npmjs.org'
-      - run: npm publish --access public --provenance
+      - name: Check if version exists
+        id: check
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if npm view "@customgpt/claude-quadruple-verification@${PKG_VERSION}" version 2>/dev/null; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Publish to npm
+        if: steps.check.outputs.exists == 'false'
+        run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
