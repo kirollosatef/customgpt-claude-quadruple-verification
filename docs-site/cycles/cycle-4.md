@@ -6,7 +6,7 @@ Cycle 4 runs on **Write** and **Edit** of research `.md` files, and also scans r
 
 ## Why This Matters
 
-AI can confidently generate statistics, citations, and claims that sound authoritative but are fabricated. Cycle 4 enforces a verification workflow: every claim must be checked via Perplexity MCP tools and include a source URL.
+AI can confidently generate statistics, citations, and claims that sound authoritative but are fabricated. Cycle 4 enforces a verification workflow: every claim must be checked via available search tools (Perplexity, WebSearch, or WebFetch) and include a source URL.
 
 ## What Counts as a Research File
 
@@ -41,9 +41,16 @@ The Stanford HAI 2023 Index measured a 35% increase in enterprise AI deployments
 
 ---
 
-### `no-unverified-claims` — Block claims without verification tag
+### `no-unverified-claims` — Block statistical/factual claims without a verification tag
 
-Any research file containing statistical or factual claims must include a `<!-- PERPLEXITY_VERIFIED -->` HTML comment tag. This tag proves all claims were checked using Perplexity MCP tools.
+Any research file containing statistical or factual claims must include a verification HTML comment tag. This tag proves all claims were checked using available search tools. Multiple tags are accepted:
+
+- `<!-- VERIFIED -->` (recommended)
+- `<!-- PERPLEXITY_VERIFIED -->` (legacy)
+- `<!-- WEBSEARCH_VERIFIED -->`
+- `<!-- CLAIMS_VERIFIED -->`
+
+If a claim is blocked, add `<!-- VERIFIED -->` to confirm you have checked the claim.
 
 **Blocked:**
 ```markdown
@@ -53,24 +60,39 @@ The AI market grew by 35% in 2023 and reached $150 billion.
 
 **Allowed:**
 ```markdown
-<!-- PERPLEXITY_VERIFIED -->
+<!-- VERIFIED -->
 
 # Market Report
 The AI market grew by 35% in 2023 according to [IDC](https://www.idc.com/report).
+```
+
+Accepted tags are configurable via `cycle4.acceptedVerificationTags` in your configuration file:
+
+```json
+{
+  "cycle4": {
+    "acceptedVerificationTags": [
+      "VERIFIED",
+      "PERPLEXITY_VERIFIED",
+      "WEBSEARCH_VERIFIED",
+      "CLAIMS_VERIFIED"
+    ]
+  }
+}
 ```
 
 ---
 
 ### `no-unsourced-claims` — Block claims lacking a source URL
 
-Even with the `<!-- PERPLEXITY_VERIFIED -->` tag, each claim must have a source URL within 300 characters. Valid sources include:
+Even with a verification tag, each claim must have a source URL within 300 characters. Valid sources include:
 - Markdown links: `[text](url)`
 - Bare URLs: `https://...`
 - Source markers: `[Source:]`, `[Ref:]`, `[Verified:]`
 
 **Blocked:**
 ```markdown
-<!-- PERPLEXITY_VERIFIED -->
+<!-- VERIFIED -->
 
 The AI market grew by 35% in 2023.
 
@@ -79,7 +101,7 @@ The AI market grew by 35% in 2023.
 
 **Allowed:**
 ```markdown
-<!-- PERPLEXITY_VERIFIED -->
+<!-- VERIFIED -->
 
 The AI market grew by 35% in 2023 [Source: https://www.idc.com/ai-spending-guide].
 Revenue reached $150.2 billion per the [IDC Worldwide AI Spending Guide](https://www.idc.com/promo/ai-spending-guide).
@@ -90,9 +112,9 @@ Revenue reached $150.2 billion per the [IDC Worldwide AI Spending Guide](https:/
 The recommended workflow for writing research documents:
 
 1. **Draft your claims** — Write the content with placeholder claims
-2. **Verify with Perplexity** — Use `mcp__perplexity__perplexity_search` or `mcp__perplexity__perplexity_research` to verify each claim
+2. **Verify with search tools** — Use any available search tool (Perplexity, WebSearch, or WebFetch) to verify each claim
 3. **Add source URLs** — Include links from the verification results near each claim
-4. **Add the verification tag** — Place `<!-- PERPLEXITY_VERIFIED -->` at the top of the file
+4. **Add the verification tag** — Place `<!-- VERIFIED -->` at the top of the file
 5. **Write the file** — The plugin will verify that all claims have nearby sources
 
 ## Stop Gate (Session End Scan)

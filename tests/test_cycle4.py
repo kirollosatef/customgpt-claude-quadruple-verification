@@ -238,6 +238,77 @@ class TestIsResearchFile(unittest.TestCase):
         self.assertFalse(_is_research_file(""))
 
 
+# ─── Verification Tag Cascade ─────────────────────────────────────────────────
+
+class TestCycle4VerificationTagCascade(unittest.TestCase):
+    def _verified_with_tag(self, tag: str, body: str) -> str:
+        return f"{tag}\n\n{body}"
+
+    def test_accepts_verified_tag(self):
+        content = self._verified_with_tag(
+            "<!-- VERIFIED -->",
+            "The AI market grew by 35% in 2023 [Source: https://example.com/report].",
+        )
+        v = _run_cycle4(content, "research/market.md", set())
+        self.assertEqual(len(v), 0)
+
+    def test_accepts_websearch_verified_tag(self):
+        content = self._verified_with_tag(
+            "<!-- WEBSEARCH_VERIFIED -->",
+            "The AI market grew by 35% in 2023 [Source: https://example.com/report].",
+        )
+        v = _run_cycle4(content, "research/market.md", set())
+        self.assertEqual(len(v), 0)
+
+    def test_accepts_claims_verified_tag(self):
+        content = self._verified_with_tag(
+            "<!-- CLAIMS_VERIFIED -->",
+            "The AI market grew by 35% in 2023 [Source: https://example.com/report].",
+        )
+        v = _run_cycle4(content, "research/market.md", set())
+        self.assertEqual(len(v), 0)
+
+    def test_still_accepts_legacy_perplexity_verified_tag(self):
+        content = self._verified_with_tag(
+            "<!-- PERPLEXITY_VERIFIED -->",
+            "The AI market grew by 35% in 2023 [Source: https://example.com/report].",
+        )
+        v = _run_cycle4(content, "research/market.md", set())
+        self.assertEqual(len(v), 0)
+
+    def test_supports_custom_tags_via_config(self):
+        content = self._verified_with_tag(
+            "<!-- CUSTOM_VERIFIED -->",
+            "The AI market grew by 35% in 2023 [Source: https://example.com/report].",
+        )
+        config = {"cycle4": {"acceptedVerificationTags": ["<!-- CUSTOM_VERIFIED -->"]}}
+        v = _run_cycle4(content, "research/market.md", set(), config)
+        self.assertEqual(len(v), 0)
+
+    def test_blocks_when_no_accepted_tag_present(self):
+        content = "<!-- SOME_OTHER_TAG -->\n\nThe AI market grew by 35% in 2023."
+        v = _run_cycle4(content, "research/market.md", set())
+        self.assertEqual(len(v), 1)
+        self.assertEqual(v[0]["rule_id"], "no-unverified-claims")
+
+
+# ─── Backward Compatibility ──────────────────────────────────────────────────
+
+class TestCycle4BackwardCompatibility(unittest.TestCase):
+    def test_works_with_empty_config(self):
+        content = "<!-- VERIFIED -->\n\nRevenue grew 45% [Source: https://example.com/data]."
+        v = _run_cycle4(content, "research/report.md", set(), {})
+        self.assertEqual(len(v), 0)
+
+    def test_works_with_old_style_config_without_cycle4_key(self):
+        content = (
+            "<!-- PERPLEXITY_VERIFIED -->\n\n"
+            "Revenue grew 45% [Source: https://example.com/data]."
+        )
+        v = _run_cycle4(content, "research/report.md", set(), {"disabledRules": []})
+        self.assertEqual(len(v), 0)
+
+
 # ─── getAllCycle4Rules ────────────────────────────────────────────────────────
 
 class TestGetAllCycle4Rules(unittest.TestCase):

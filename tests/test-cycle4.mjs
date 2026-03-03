@@ -239,6 +239,85 @@ describe('isResearchFile()', () => {
   });
 });
 
+// ─── Verification Tag Cascade ─────────────────────────────────────────────────
+
+describe('Cycle 4 — Verification Tag Cascade', () => {
+  it('accepts <!-- VERIFIED --> tag', () => {
+    const content = `<!-- VERIFIED -->
+
+The AI market grew by 35% in 2023 [Source: https://example.com/report].`;
+    const violations = runCycle4(content, 'research/market.md');
+    assert.equal(violations.length, 0);
+  });
+
+  it('accepts <!-- WEBSEARCH_VERIFIED --> tag', () => {
+    const content = `<!-- WEBSEARCH_VERIFIED -->
+
+The AI market grew by 35% in 2023 [Source: https://example.com/report].`;
+    const violations = runCycle4(content, 'research/market.md');
+    assert.equal(violations.length, 0);
+  });
+
+  it('accepts <!-- CLAIMS_VERIFIED --> tag', () => {
+    const content = `<!-- CLAIMS_VERIFIED -->
+
+The AI market grew by 35% in 2023 [Source: https://example.com/report].`;
+    const violations = runCycle4(content, 'research/market.md');
+    assert.equal(violations.length, 0);
+  });
+
+  it('still accepts legacy <!-- PERPLEXITY_VERIFIED --> tag', () => {
+    const content = `<!-- PERPLEXITY_VERIFIED -->
+
+The AI market grew by 35% in 2023 [Source: https://example.com/report].`;
+    const violations = runCycle4(content, 'research/market.md');
+    assert.equal(violations.length, 0);
+  });
+
+  it('supports custom tags via config override', () => {
+    const content = `<!-- CUSTOM_VERIFIED -->
+
+The AI market grew by 35% in 2023 [Source: https://example.com/report].`;
+    const config = {
+      cycle4: {
+        acceptedVerificationTags: ['<!-- CUSTOM_VERIFIED -->']
+      }
+    };
+    const violations = runCycle4(content, 'research/market.md', config);
+    assert.equal(violations.length, 0);
+  });
+
+  it('blocks when no accepted tag is present', () => {
+    const content = `<!-- SOME_OTHER_TAG -->
+
+The AI market grew by 35% in 2023.`;
+    const violations = runCycle4(content, 'research/market.md');
+    assert.equal(violations.length, 1);
+    assert.equal(violations[0].ruleId, 'no-unverified-claims');
+  });
+});
+
+// ─── Backward Compatibility ──────────────────────────────────────────────────
+
+describe('Cycle 4 — Backward Compatibility', () => {
+  it('works with empty config (uses defaults)', () => {
+    const content = `<!-- VERIFIED -->
+
+Revenue grew 45% [Source: https://example.com/data].`;
+    const violations = runCycle4(content, 'research/report.md', {});
+    assert.equal(violations.length, 0);
+  });
+
+  it('works with old-style config without cycle4 key', () => {
+    const content = `<!-- PERPLEXITY_VERIFIED -->
+
+Revenue grew 45% [Source: https://example.com/data].`;
+    const config = { disabledRules: [] };
+    const violations = runCycle4(content, 'research/report.md', config);
+    assert.equal(violations.length, 0);
+  });
+});
+
 // ─── getAllCycle4Rules ────────────────────────────────────────────────────────
 
 describe('getAllCycle4Rules()', () => {

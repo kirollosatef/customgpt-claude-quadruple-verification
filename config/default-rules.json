@@ -1,30 +1,46 @@
 {
-  "version": "1.1.0",
+  "version": "2.0.0",
   "failMode": "open",
   "disabledRules": [],
   "cycle1": {
-    "enabled": true,
-    "description": "Code quality verification — blocks TODO, placeholder, stub code"
+    "enabled": true
   },
   "cycle2": {
-    "enabled": true,
-    "description": "Security verification — blocks eval, hardcoded secrets, injection patterns"
+    "enabled": true
   },
   "cycle3": {
     "enabled": true,
-    "description": "Output quality verification — second AI reviews completeness and correctness"
+    "sections": {
+      "codeQuality": true,
+      "security": true,
+      "research": true,
+      "completeness": true
+    }
   },
   "cycle4": {
     "enabled": true,
-    "description": "Research claim verification — blocks vague language, unverified statistics, and missing source URLs in research files"
+    "acceptedVerificationTags": [
+      "<!-- PERPLEXITY_VERIFIED -->",
+      "<!-- VERIFIED -->",
+      "<!-- WEBSEARCH_VERIFIED -->",
+      "<!-- CLAIMS_VERIFIED -->"
+    ]
   },
   "audit": {
     "enabled": true,
-    "logDir": null,
-    "description": "Full operation audit trail in JSONL format"
+    "logDir": null
   },
   "strictness": {
     "blockOnFirstViolation": false,
     "reportAllViolations": true
+  },
+  "output": {
+    "quiet": true
+  },
+  "llm": {
+    "enabled": false,
+    "model": "claude-haiku-4-5-20251001",
+    "advisoryMode": true,
+    "maxLatencyMs": 5000
   }
 }

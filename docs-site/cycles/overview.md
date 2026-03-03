@@ -39,7 +39,7 @@ User Request → Claude generates code
 |-------|------|-----------|------------|-------|
 | **1** | [Code Quality](cycles/cycle-1.md) | PreToolUse | Yes | 6 rules |
 | **2** | [Security](cycles/cycle-2.md) | PreToolUse | Yes | 11 rules |
-| **3** | [Output Quality](cycles/cycle-3.md) | Stop | Yes (prompt) | AI review |
+| **3** | [Output Quality](cycles/cycle-3.md) | Stop | Yes (prompt) | AI multi-section review |
 | **4** | [Research Claims](cycles/cycle-4.md) | PreToolUse + Stop | Yes | 3 rules |
 
 ## How Blocking Works

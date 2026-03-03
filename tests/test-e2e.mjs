@@ -161,7 +161,7 @@ describe('E2E: Pre-Tool Gate — Cycle 4 Research', () => {
       tool_input: { file_path: 'docs/research/stats.md', content: '# Stats\n\nRevenue grew by 45% in Q4 2024.' }
     });
     assert.equal(result.decision, 'block');
-    assert.ok(result.reason.includes('PERPLEXITY_VERIFIED'));
+    assert.ok(result.reason.includes('verification tag'));
   });
 
   it('blocks research file with unsourced claims (tag but no URLs)', () => {
@@ -282,7 +282,7 @@ describe('E2E: Pre-Tool Gate — Edge Cases', () => {
       }
     });
     assert.equal(result.decision, 'block');
-    assert.ok(result.reason.includes('PERPLEXITY_VERIFIED'));
+    assert.ok(result.reason.includes('verification tag'));
   });
 
   it('research file with "Since 2020" (capital S) triggers Cycle 4', () => {

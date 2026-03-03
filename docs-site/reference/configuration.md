@@ -63,7 +63,7 @@ Disable rules by adding their IDs to the `disabledRules` array:
 
 **Cycle 4 — Research Claims:**
 - `no-vague-claims` — Block vague language
-- `no-unverified-claims` — Block unverified statistics
+- `no-unverified-claims` — Block claims without verification tag
 - `no-unsourced-claims` — Block claims without source URLs
 
 ### Audit Configuration
@@ -74,6 +74,67 @@ Control audit logging:
 {
   "audit": {
     "enabled": true
+  }
+}
+```
+
+### Cycle 3 Sections
+
+Control which sections of the Cycle 3 review prompt are active. Set any section to `false` to skip it.
+
+```json
+{
+  "cycle3": {
+    "sections": {
+      "codeQuality": true,
+      "security": true,
+      "research": true,
+      "completeness": true
+    }
+  }
+}
+```
+
+### Cycle 4 Verification Tags
+
+Customize which HTML comment tags are accepted as proof of claim verification. The default list supports Perplexity, WebSearch, WebFetch, and manual verification. Add custom tags as needed.
+
+```json
+{
+  "cycle4": {
+    "acceptedVerificationTags": [
+      "<!-- PERPLEXITY_VERIFIED -->",
+      "<!-- VERIFIED -->",
+      "<!-- WEBSEARCH_VERIFIED -->",
+      "<!-- CLAIMS_VERIFIED -->"
+    ]
+  }
+}
+```
+
+### Quiet Mode
+
+When enabled (default), Cycle 3 produces minimal output ("**Verification**: PASS") when all checks pass. Set to `false` for verbose output.
+
+```json
+{
+  "output": {
+    "quiet": true
+  }
+}
+```
+
+### Optional LLM Advisory
+
+Opt-in deeper analysis via Claude Haiku API. Requires `ANTHROPIC_API_KEY` environment variable. Findings are advisory only (never block operations) and logged to the audit trail. `maxLatencyMs` controls the timeout.
+
+```json
+{
+  "llm": {
+    "enabled": false,
+    "model": "claude-haiku-4-5-20251001",
+    "advisoryMode": true,
+    "maxLatencyMs": 5000
   }
 }
 ```

@@ -2,7 +2,7 @@
 
 ## Overview
 
-CustomGPT Quadruple Verification is a Claude Code plugin that intercepts every tool operation through the hook system. It runs four verification cycles and an audit logger, all implemented in Node.js with zero npm dependencies.
+CustomGPT Quadruple Verification v2.0.0 is a Claude Code plugin that intercepts every tool operation through the hook system. It uses a two-tier architecture: **Tier 1 (Regex Fast Gate)** runs instant pattern-matching rules in PreToolUse, while **Tier 2 (LLM-Powered Smart Review)** injects a multi-section intelligent review prompt at the Stop hook. An optional **Tier 3 (LLM Advisory)** provides non-blocking Claude Haiku analysis in PostToolUse. All core functionality is implemented in Node.js with zero npm dependencies.
 
 ## Design Principles
 
@@ -91,17 +91,19 @@ Runs security-focused pattern matching. Catches:
 - `curl | sh` pipe-to-shell patterns
 - Non-HTTPS URLs (except localhost)
 
-### Cycle 3 — Output Quality (Stop)
+### Cycle 3 — Output Quality / LLM-Powered Smart Review (Stop)
 
 **Triggers:** Before Claude completes any response
-**Type:** Prompt hook
+**Type:** Prompt hook (Tier 2)
 
-Injects a review prompt that asks Claude to self-verify:
-1. Completeness — No placeholders or stubs left behind
-2. Quality — Production-ready code with proper error handling
-3. Correctness — Implementation actually solves the problem
-4. Security — No hardcoded secrets or injection risks
-5. Tests — If tests were expected, they exist and pass
+Injects a multi-section intelligent review prompt that asks Claude to self-verify across four configurable sections (controlled via `cycle3.sections`):
+
+1. **Code Quality** — No placeholders, stubs, or incomplete implementations; production-ready code with proper error handling; implementation actually solves the stated problem
+2. **Security** — No hardcoded secrets, injection risks, or insecure patterns; authentication and authorization are correct
+3. **Research Claims** — Any factual or statistical claims are sourced and verified; no vague language ("studies show", "experts say")
+4. **Completeness** — All requested features are implemented; tests exist if expected; no missing edge cases
+
+Each section produces a pass/fail assessment with specific findings, replacing the previous simple 4-row table format.
 
 ### Cycle 4 — Research Claim Verification (PreToolUse + Stop)
 
@@ -115,7 +117,7 @@ Scans for 14 vague phrases like "studies show", "experts say", "data suggests". 
 
 **Pass 2 — Claim Extraction + Source Proximity:**
 1. Extracts statistical/factual claims (percentages, dollar amounts, multipliers, study references, etc.)
-2. Requires `<!-- PERPLEXITY_VERIFIED -->` tag — proves claims were checked via Perplexity MCP tools
+2. Requires a verification tag — accepts multiple configurable tags (via `cycle4.acceptedVerificationTags`): `<!-- PERPLEXITY_VERIFIED -->`, `<!-- VERIFIED -->`, `<!-- WEBSEARCH_VERIFIED -->`, `<!-- CLAIMS_VERIFIED -->`. Any one of these proves claims were checked via a search or verification tool.
 3. Each claim must have a source URL (markdown link, bare URL, or `[Source:]`/`[Ref:]`/`[Verified:]` marker) within 300 characters
 
 The **Stop gate** also scans `docs/research/`, `research/`, and `docs/` directories at session end for any research files that may have been written without going through the PreToolUse gate.
@@ -132,6 +134,15 @@ Logs every operation to a JSONL file for full auditability. Each entry includes:
 - Decision (approve/block/log-only)
 - Violations found (if any)
 - Metadata (file path, command, URL)
+
+### Optional LLM Advisory (PostToolUse)
+
+**Triggers:** All tool calls (when enabled)
+**Type:** Command hook (non-blocking, Tier 3)
+**Module:** `scripts/lib/llm-advisor.mjs`
+**Default:** Disabled
+
+Provides optional AI-powered advisory analysis by calling the Claude Haiku API in PostToolUse. When enabled via the `llm` config block, it sends tool output to Claude Haiku for a lightweight quality/security review and appends advisory findings to the audit log. Uses Node.js built-in `https` module (no npm dependencies). This tier is strictly advisory — it never blocks operations, even if it detects potential issues.
 
 ## File Structure
 
@@ -150,6 +161,7 @@ scripts/
     ├── research-verifier.mjs  # Cycle 4 research claim verification engine
     ├── audit-logger.mjs       # JSONL structured logging
     ├── config-loader.mjs      # Multi-source config merge
+    ├── llm-advisor.mjs        # Optional LLM advisory (Tier 3, Claude Haiku)
     └── utils.mjs              # Stdin reader, helpers, isResearchFile()
 hooks/
 └── hooks.json                 # Hook configuration (event-keyed)
@@ -186,9 +198,19 @@ stdin (JSON) → pre-tool-gate.mjs
 Stop hook (session end):
               stop-gate.mjs
                     ↓
+              Inject multi-section review prompt (Cycle 3)
+              Sections (configurable via cycle3.sections):
+                • Code Quality — no placeholders/stubs, production-ready
+                • Security — no secrets, injection risks, insecure patterns
+                • Research Claims — sourced/verified facts, no vague language
+                • Completeness — all features implemented, tests exist
+                    ↓
               Find research .md files in docs/research/, research/, docs/
                     ↓
               runCycle4() on each file
+              (accepts multiple verification tags via cycle4.acceptedVerificationTags:
+               <!-- PERPLEXITY_VERIFIED -->, <!-- VERIFIED -->,
+               <!-- WEBSEARCH_VERIFIED -->, <!-- CLAIMS_VERIFIED -->)
                     ↓
               violations?
               ├── YES → deny() with per-file summary
