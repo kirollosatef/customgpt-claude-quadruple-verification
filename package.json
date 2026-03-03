@@ -19,7 +19,7 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "test": "node --test tests/test-*.mjs",
+    "test": "node --test tests/test-cycle1.mjs tests/test-cycle2.mjs tests/test-cycle4.mjs tests/test-audit.mjs tests/test-config.mjs tests/test-e2e.mjs tests/test-edge-cases.mjs tests/test-enhanced-prompt.mjs tests/test-llm-advisor.mjs",
     "test:cycle1": "node --test tests/test-cycle1.mjs",
     "test:cycle2": "node --test tests/test-cycle2.mjs",
     "test:audit": "node --test tests/test-audit.mjs",

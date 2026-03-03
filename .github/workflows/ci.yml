@@ -18,5 +18,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm test
-      - run: node install/verify.mjs
+      - name: Run tests
+        shell: bash
+        run: node --test tests/test-cycle1.mjs tests/test-cycle2.mjs tests/test-cycle4.mjs tests/test-audit.mjs tests/test-config.mjs tests/test-e2e.mjs tests/test-edge-cases.mjs tests/test-enhanced-prompt.mjs tests/test-llm-advisor.mjs
+      - name: Smoke test
+        shell: bash
+        run: node install/verify.mjs
