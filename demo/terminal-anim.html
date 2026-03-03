@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0d1117; display: flex; justify-content: center; align-items: center; height: 100vh; }
+  .terminal { width: 820px; background: #1e1e2e; border-radius: 10px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+  .titlebar { background: #313244; padding: 10px 16px; display: flex; align-items: center; gap: 8px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot-r { background: #f38ba8; } .dot-y { background: #f9e2af; } .dot-g { background: #a6e3a1; }
+  .title { flex: 1; text-align: center; color: #cdd6f4; font-size: 12px; font-weight: 600; font-family: 'Cascadia Code','SF Mono','Consolas',monospace; }
+  .content { padding: 20px; min-height: 410px; font-family: 'Cascadia Code','SF Mono','Consolas',monospace; font-size: 13px; line-height: 1.7; }
+  .prompt { color: #89b4fa; font-weight: bold; }
+  .text { color: #cdd6f4; }
+  .dim { color: #585b70; }
+  .code-block { background: #181825; border-radius: 5px; padding: 12px 14px; margin: 8px 0; }
+  .kw { color: #cba6f7; } .fn { color: #a6e3a1; } .danger { color: #f38ba8; }
+  .stat { color: #f9e2af; }
+  .banner { border-radius: 6px; padding: 0; margin-top: 14px; overflow: hidden; }
+  .banner-header { padding: 8px 16px; font-weight: bold; font-size: 14px; }
+  .banner-body { padding: 12px 16px; }
+  .blocked .banner-header { background: #f38ba8; color: #1e1e2e; }
+  .blocked { background: #2a1525; border: 2px solid #f38ba8; }
+  .passed .banner-header { background: #a6e3a1; color: #1e1e2e; }
+  .passed { background: #152515; border: 2px solid #a6e3a1; }
+  .rule { color: #f38ba8; font-weight: bold; }
+  .fix { color: #a6e3a1; }
+  .check { color: #a6e3a1; }
+  .bottom { background: #313244; padding: 8px 16px; display: flex; justify-content: space-between; border-top: 2px solid #45475a; }
+  .bottom span { color: #585b70; font-size: 11px; font-family: 'Cascadia Code','SF Mono','Consolas',monospace; }
+  .scene { display: none; }
+  .scene.active { display: block; }
+  .cursor { display: inline-block; width: 8px; height: 15px; background: #f5e0dc; margin-left: 4px; vertical-align: middle; border-radius: 1px; }
+  .cursor.blink { animation: blink 1s step-end infinite; }
+  @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }
+  .animate-in { animation: fadeUp 0.4s ease forwards; }
+</style>
+</head>
+<body>
+<div class="terminal">
+  <div class="titlebar">
+    <div class="dot dot-r"></div>
+    <div class="dot dot-y"></div>
+    <div class="dot dot-g"></div>
+    <div class="title">Quadruple Verification — Live Demo</div>
+  </div>
+
+  <div class="content" id="content">
+    <!-- Scene 1 -->
+    <div class="scene" id="scene1">
+      <div><span class="prompt">claude&gt;</span> <span class="text">"Write a function using eval()"</span><span class="cursor blink"></span></div>
+      <div class="dim" style="margin-top:10px">Claude tries to write:</div>
+      <div class="code-block">
+        <span class="kw">def</span> <span class="fn">parse_input</span><span class="text">(user_input):</span><br>
+        <span class="text">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">return</span> <span class="danger">eval</span><span class="text">(user_input)</span><br>
+        <span class="dim">&nbsp;&nbsp;&nbsp;&nbsp;# Dangerous! Arbitrary code execution</span>
+      </div>
+      <div class="banner blocked" id="banner1" style="opacity:0">
+        <div class="banner-header">BLOCKED — PreToolUse:Write hook</div>
+        <div class="banner-body">
+          <div class="rule">Cycle 2 — Security Violation</div>
+          <div style="margin-top:8px"><span class="stat">Rule:</span> <span class="text">no-eval — eval() detected on line 2</span></div>
+          <div style="margin-top:5px"><span class="fix">Fix:</span> <span class="text">Use JSON.parse() for JSON, or ast.literal_eval() for Python</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 2 -->
+    <div class="scene" id="scene2">
+      <div><span class="prompt">claude&gt;</span> <span class="text">"Write about AI adoption rates"</span><span class="cursor blink"></span></div>
+      <div class="dim" style="margin-top:10px">Claude tries to write research.md:</div>
+      <div class="code-block">
+        <span class="text">## AI Adoption in Enterprise</span><br>
+        <span class="danger">Studies show</span><span class="text"> that </span><span class="stat">80% of enterprises</span><span class="text"> have adopted AI</span><br>
+        <span class="text">tools in their development workflow...</span>
+      </div>
+      <div class="banner blocked" id="banner2" style="opacity:0">
+        <div class="banner-header">BLOCKED — PreToolUse:Write hook</div>
+        <div class="banner-body">
+          <div class="rule">Cycle 4 — Research Claim Violations (2 issues)</div>
+          <div style="margin-top:8px"><span class="stat">1.</span> <span class="text">Vague language: "Studies show" — cite a specific study</span></div>
+          <div style="margin-top:5px"><span class="stat">2.</span> <span class="text">Unverified statistic: "80%" — add source URL within 300 chars</span></div>
+          <div style="margin-top:5px"><span class="fix">Fix:</span> <span class="text">Add &lt;!-- VERIFIED --&gt; tag and cite source URL for each claim</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scene 3 -->
+    <div class="scene" id="scene3">
+      <div><span class="prompt">claude&gt;</span> <span class="text">"Create a safe data processing function"</span><span class="cursor blink"></span></div>
+      <div class="dim" style="margin-top:10px">Claude writes clean code:</div>
+      <div class="code-block">
+        <span class="kw">def</span> <span class="fn">process_data</span><span class="text">(data: list[dict]) -&gt; list[dict]:</span><br>
+        <span class="text">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">if not</span><span class="text"> data:</span><br>
+        <span class="text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">return</span><span class="text"> []</span><br>
+        <span class="text">&nbsp;&nbsp;&nbsp;&nbsp;</span><span class="kw">return</span><span class="text"> [i </span><span class="kw">for</span><span class="text"> i </span><span class="kw">in</span><span class="text"> data </span><span class="kw">if</span><span class="text"> i.get(</span><span class="fn">"active"</span><span class="text">)]</span>
+      </div>
+      <div class="banner passed" id="banner3" style="opacity:0">
+        <div class="banner-header">PASSED — All 4 verification cycles clear</div>
+        <div class="banner-body">
+          <div><span class="check">&#x2714;</span> <span class="text">Cycle 1 — Code Quality: No placeholders or TODOs</span></div>
+          <div style="margin-top:4px"><span class="check">&#x2714;</span> <span class="text">Cycle 2 — Security: No eval, secrets, or injection risks</span></div>
+          <div style="margin-top:4px"><span class="check">&#x2714;</span> <span class="text">Cycle 3 — Output Quality: AI self-review passed</span></div>
+          <div style="margin-top:4px"><span class="check">&#x2714;</span> <span class="text">Cycle 4 — Audit logged to .claude/quadruple-verify-audit/</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <span>customgpt-claude-quadruple-verification v2.0.0</span>
+    <span>28 rules &nbsp;|&nbsp; 4 cycles &nbsp;|&nbsp; 0 deps</span>
+  </div>
+</div>
+
+<script>
+  const scenes = ['scene1','scene2','scene3'];
+  let current = 0;
+
+  function showScene(idx) {
+    scenes.forEach((id, i) => {
+      const el = document.getElementById(id);
+      el.classList.toggle('active', i === idx);
+    });
+    // Animate banner after delay
+    setTimeout(() => {
+      const banner = document.getElementById('banner' + (idx + 1));
+      if (banner) {
+        banner.style.opacity = '1';
+        banner.classList.add('animate-in');
+      }
+    }, 1500);
+  }
+
+  function nextScene() {
+    // Reset all banners
+    [1,2,3].forEach(i => {
+      const b = document.getElementById('banner' + i);
+      b.style.opacity = '0';
+      b.classList.remove('animate-in');
+    });
+    current = (current + 1) % scenes.length;
+    showScene(current);
+  }
+
+  showScene(0);
+  setInterval(nextScene, 5000);
+</script>
+</body>
+</html>
