@@ -1,6 +1,6 @@
 # CustomGPT Quadruple Verification for Claude Code
 
-Automatic quadruple verification on every Claude Code operation. Blocks placeholder code, security vulnerabilities, and ensures output quality — before anything ships.
+LLM-powered intelligent verification on every Claude Code operation. Regex fast gates block obvious violations instantly, while an AI-driven multi-section review ensures code quality, security, research accuracy, and completeness — before anything ships.
 
 Built by [CustomGPT.ai](https://customgpt.ai) for production teams running Claude Code at scale.
 
@@ -10,11 +10,11 @@ Four verification cycles run automatically on every Claude Code operation:
 
 | Cycle | When | What |
 |-------|------|------|
-| **Cycle 1 — Code Quality** | Before file write/edit | Blocks TODO, placeholder, stub, and incomplete code |
-| **Cycle 2 — Security** | Before write/edit/bash/MCP | Blocks eval(), hardcoded secrets, SQL injection, XSS, destructive commands |
-| **Cycle 3 — Output Quality** | Before Claude finishes | Second AI review ensures completeness and correctness |
+| **Cycle 1 — Code Quality** | Before file write/edit | Regex gate blocks TODO, placeholder, stub, and incomplete code |
+| **Cycle 2 — Security** | Before write/edit/bash/MCP | Regex gate blocks eval(), hardcoded secrets, SQL injection, XSS, destructive commands |
+| **Cycle 3 — Output Quality** | Before Claude finishes | AI multi-section review: code quality, security, research claims, completeness |
 | **Cycle 4 — Research Claims** | Before write/edit of research .md | Blocks vague language, unverified stats, missing source URLs |
-| **Audit Trail** | After every operation | Full JSONL audit log of all operations |
+| **Audit Trail** | After every operation | Full JSONL audit log + optional LLM advisory analysis |
 
 ## Quick Start
 
@@ -175,7 +175,7 @@ See [docs/RULES.md](docs/RULES.md) for the complete list of verification rules w
 
 ### Cycle 4 — Research Claims
 - `no-vague-claims` — Block "studies show", "experts say", and similar vague language
-- `no-unverified-claims` — Block claims without `<!-- PERPLEXITY_VERIFIED -->` tag
+- `no-unverified-claims` — Block claims without a verification tag (`<!-- VERIFIED -->`, `<!-- PERPLEXITY_VERIFIED -->`, etc.)
 - `no-unsourced-claims` — Block claims lacking a source URL within 300 characters
 
 ## Development

@@ -373,6 +373,123 @@ nav {
   line-height: 1.6;
 }
 
+/* ── Persona section ── */
+.personas {
+  padding: 6rem 0 8rem;
+  background: var(--bg-light);
+}
+
+.personas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.persona-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2.5rem 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.persona-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--magenta), var(--purple));
+  transform: scaleX(0);
+  transition: transform 0.4s;
+  border-radius: 12px 12px 0 0;
+}
+
+.persona-card:hover::before { transform: scaleX(1); }
+
+.persona-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--magenta-glow);
+  box-shadow: 0 20px 60px -20px var(--magenta-dim);
+}
+
+.persona-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+}
+
+.persona-icon svg {
+  width: 32px;
+  height: 32px;
+  stroke: var(--magenta);
+  fill: none;
+  stroke-width: 1.5;
+}
+
+.persona-card h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+}
+
+.persona-tagline {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--purple);
+  font-weight: 500;
+  font-style: italic;
+  margin-bottom: 1.2rem;
+}
+
+.persona-card p {
+  font-size: 0.9rem;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.persona-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.persona-features li {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  padding: 0.3rem 0;
+  padding-left: 1.4rem;
+  position: relative;
+}
+
+.persona-features li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.65rem;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--magenta);
+}
+
+@media (max-width: 900px) {
+  .cycles-grid { grid-template-columns: repeat(2, 1fr); }
+  .personas-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .cycles-grid { grid-template-columns: 1fr; }
+}
+
 /* ── Terminal demo ── */
 .demo {
   padding: 6rem 0 8rem;
@@ -1204,8 +1321,8 @@ footer a:hover { text-decoration: underline; }
 <section class="hero">
   <div class="container hero-content">
     <div class="hero-label">Claude Code Plugin</div>
-    <h1><span class="accent">Quadruple Verification</span><br>for Claude Code</h1>
-    <p class="hero-tagline">Claude sometimes ships TODOs as finished code, hardcodes API keys, or makes up statistics. This plugin catches those issues automatically — before bad code reaches your codebase.</p>
+    <h1><span class="accent">Ship AI-Generated Code</span><br>With Confidence</h1>
+    <p class="hero-tagline">58% of AI-generated code has security vulnerabilities. 41% of all new code is AI-generated. Quadruple Verification catches issues at the moment of generation — before bad code reaches your codebase.</p>
     <a href="#install" class="hero-cta">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
       Get Started
@@ -1219,12 +1336,12 @@ footer a:hover { text-decoration: underline; }
   <div class="container">
     <div class="stats-grid reveal">
       <div class="stat-item">
-        <div class="stat-number">4</div>
-        <div class="stat-label">Verification Cycles</div>
+        <div class="stat-number">58%</div>
+        <div class="stat-label">of AI code has vulnerabilities</div>
       </div>
       <div class="stat-item">
-        <div class="stat-number">20</div>
-        <div class="stat-label">Built-in Rules</div>
+        <div class="stat-number">4</div>
+        <div class="stat-label">Verification Cycles</div>
       </div>
       <div class="stat-item">
         <div class="stat-number">0</div>
@@ -1245,7 +1362,7 @@ footer a:hover { text-decoration: underline; }
   <div class="container">
     <div class="section-header reveal">
       <div class="section-tag">Four Gates</div>
-      <h2>Every Operation. Quadruple Checked.</h2>
+      <h2>Verified at Generation. Not at PR Review.</h2>
     </div>
     <div class="cycles-grid">
       <div class="cycle-card reveal reveal-delay-1">
@@ -1270,7 +1387,7 @@ footer a:hover { text-decoration: underline; }
           <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><path d="M10 16l4 4 8-8" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
         <h3>Output Quality Gate</h3>
-        <p>Checks completeness, correctness, production-readiness, and security of Claude's final response using a second AI review pass before delivery.</p>
+        <p>Multi-section intelligent review of Claude's final response — checks code quality, security, research claims, and completeness before delivery.</p>
       </div>
       <div class="cycle-card reveal reveal-delay-4">
         <div class="cycle-number">Cycle 04</div>
@@ -1279,6 +1396,62 @@ footer a:hover { text-decoration: underline; }
         </div>
         <h3>Research Claims Gate</h3>
         <p>Checks for vague phrases like "studies show" and "experts say", unverified statistics &amp; percentages, and missing source URLs within 300 characters of each claim.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Personas -->
+<section class="personas" id="personas">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">Built For You</div>
+      <h2>Move Fast. Stay Safe.</h2>
+    </div>
+    <div class="personas-grid">
+      <div class="persona-card reveal reveal-delay-1">
+        <div class="persona-icon">
+          <svg viewBox="0 0 32 32"><path d="M16 4a4 4 0 100 8 4 4 0 000-8z"/><path d="M8 28v-4a8 8 0 0116 0v4"/><path d="M22 14l3 3 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h3>Solo Developers</h3>
+        <div class="persona-tagline">"Ship AI-generated code with confidence."</div>
+        <p>AI code is "mostly correct" — but reviewing it is cognitively harder than writing it yourself. This plugin verifies automatically so you can keep your speed.</p>
+        <ul class="persona-features">
+          <li>Catches TODOs and stubs before they ship</li>
+          <li>&lt;50ms regex checks — zero slowdown</li>
+          <li>One-command install, zero configuration</li>
+          <li>AI self-review catches what you'd miss at 2am</li>
+        </ul>
+      </div>
+      <div class="persona-card reveal reveal-delay-2">
+        <div class="persona-icon">
+          <svg viewBox="0 0 32 32"><path d="M12 4a3 3 0 100 6 3 3 0 000-6z"/><path d="M20 4a3 3 0 100 6 3 3 0 000-6z"/><path d="M6 28v-3a6 6 0 016-6h0"/><path d="M26 28v-3a6 6 0 00-6-6h0"/><path d="M12 19h8"/></svg>
+        </div>
+        <h3>Team Leads</h3>
+        <div class="persona-tagline">"Move fast — without compromising security."</div>
+        <p>41% of all new code is AI-generated. Roll out consistent verification across your entire team with one config file — before "AI generated it" becomes an excuse.</p>
+        <ul class="persona-features">
+          <li>One <code>settings.json</code> enables for everyone</li>
+          <li>Full JSONL audit trail for every operation</li>
+          <li>Configurable rules per project</li>
+          <li>Auto-updates via marketplace — zero maintenance</li>
+        </ul>
+      </div>
+      <div class="persona-card reveal reveal-delay-3">
+        <div class="persona-icon">
+          <svg viewBox="0 0 32 32"><path d="M16 3L4 9v8c0 7.3 5.1 14.1 12 16 6.9-1.9 12-8.7 12-16V9L16 3z"/><path d="M16 16v6"/><circle cx="16" cy="12" r="2"/></svg>
+        </div>
+        <h3>Security Teams</h3>
+        <div class="persona-tagline">"Sleep at night knowing every operation is verified."</div>
+        <p>58% of AI code has security vulnerabilities. Your pipeline catches them after merge. We catch them at generation — before vulnerable patterns scale at machine speed.</p>
+        <ul class="persona-features">
+          <li>11 security rules covering OWASP patterns</li>
+          <li>AI-powered review catches context-dependent risks</li>
+          <li>Fail-open design — never blocks developer workflow</li>
+          <li>Zero dependencies — no supply chain risk</li>
+        </ul>
       </div>
     </div>
   </div>
@@ -1504,7 +1677,7 @@ footer a:hover { text-decoration: underline; }
           <span class="chevron">&#x25BC;</span>
         </div>
         <div class="faq-a">
-          <div class="faq-a-inner">&lt;50ms per operation for Cycles 1, 2, and 4 (regex pattern matching). Cycle 3 uses a prompt hook, which adds a second AI review pass before Claude completes its response. Cycle 4 also runs a session-end scan of research files.</div>
+          <div class="faq-a-inner">&lt;50ms per operation for Cycles 1, 2, and 4 (regex pattern matching). Cycle 3 uses a prompt hook with multi-section intelligent review (code quality, security, research claims, completeness) before Claude completes its response. Cycle 4 also runs a session-end scan of research files. Optional LLM advisory mode available for deeper analysis.</div>
         </div>
       </div>
       <div class="faq-item">
@@ -1536,11 +1709,11 @@ footer a:hover { text-decoration: underline; }
       </div>
       <div class="faq-item">
         <div class="faq-q" onclick="toggleFaq(this)">
-          What is the PERPLEXITY_VERIFIED tag?
+          What are verification tags?
           <span class="chevron">&#x25BC;</span>
         </div>
         <div class="faq-a">
-          <div class="faq-a-inner">Cycle 4 requires research <code>.md</code> files to include a <code>&lt;!-- PERPLEXITY_VERIFIED --&gt;</code> HTML comment, proving that factual claims were checked using Perplexity MCP tools. Without it, any file containing statistics, percentages, or dollar amounts will be blocked.</div>
+          <div class="faq-a-inner">Cycle 4 requires research <code>.md</code> files to include a verification tag (e.g. <code>&lt;!-- VERIFIED --&gt;</code>) proving that factual claims were checked using available search tools. Accepted tags: <code>&lt;!-- VERIFIED --&gt;</code>, <code>&lt;!-- PERPLEXITY_VERIFIED --&gt;</code>, <code>&lt;!-- WEBSEARCH_VERIFIED --&gt;</code>, <code>&lt;!-- CLAIMS_VERIFIED --&gt;</code>. Custom tags can be configured.</div>
         </div>
       </div>
       <div class="faq-item">
@@ -1678,11 +1851,10 @@ footer a:hover { text-decoration: underline; }
           </div>
           <div class="example-line">
             <div class="code-snippet" style="background: transparent; border-color: #238636;">
-              <div><span class="check">✓</span> <span style="color: #c9d1d9;">Completeness</span> <span style="color: #8b949e;">— All requirements implemented</span></div>
-              <div><span class="check">✓</span> <span style="color: #c9d1d9;">Quality</span> <span style="color: #8b949e;">— Production-ready with error handling</span></div>
-              <div><span class="check">✓</span> <span style="color: #c9d1d9;">Correctness</span> <span style="color: #8b949e;">— Logic verified, no bugs found</span></div>
+              <div><span class="check">✓</span> <span style="color: #c9d1d9;">Code Quality</span> <span style="color: #8b949e;">— No stubs, placeholders, or incomplete logic</span></div>
               <div><span class="check">✓</span> <span style="color: #c9d1d9;">Security</span> <span style="color: #8b949e;">— No hardcoded secrets or injection risks</span></div>
-              <div><span class="check">✓</span> <span style="color: #c9d1d9;">Best Practices</span> <span style="color: #8b949e;">— Follows coding standards and patterns</span></div>
+              <div><span class="check">✓</span> <span style="color: #c9d1d9;">Research Claims</span> <span style="color: #8b949e;">— All claims sourced with URLs</span></div>
+              <div><span class="check">✓</span> <span style="color: #c9d1d9;">Completeness</span> <span style="color: #8b949e;">— All requirements fully implemented</span></div>
             </div>
           </div>
           <div class="example-line">
@@ -1729,7 +1901,7 @@ footer a:hover { text-decoration: underline; }
             <span class="message">[no-vague-claims] Contains "studies show" — name the study, author, and link the source</span>
           </div>
           <div class="example-line">
-            <span class="message" style="color: #58a6ff;">→ Verify claims with Perplexity, add sources, include &lt;!-- PERPLEXITY_VERIFIED --&gt; tag</span>
+            <span class="message" style="color: #58a6ff;">→ Verify claims with available search tools, add sources, include &lt;!-- VERIFIED --&gt; tag</span>
           </div>
         </div>
       </div>

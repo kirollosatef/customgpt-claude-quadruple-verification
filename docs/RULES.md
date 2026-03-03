@@ -281,11 +281,10 @@ http://127.0.0.1:8080
 
 The Stop hook uses a prompt-based review. Claude self-verifies before completing:
 
-1. **Completeness** — All requirements implemented, no stubs
-2. **Quality** — Production-ready, proper error handling
-3. **Correctness** — Logic is sound, solves the actual problem
-4. **Security** — No secrets, no injection risks
-5. **Tests** — If expected, tests exist and are meaningful
+1. **Code Quality** — No stubs, placeholders, or incomplete implementations
+2. **Security** — No secrets, injection risks, or insecure patterns
+3. **Research Claims** — All statistics and factual claims are sourced and verified
+4. **Completeness** — All requirements addressed, production-ready with proper error handling
 
 ---
 
@@ -293,7 +292,7 @@ The Stop hook uses a prompt-based review. Claude self-verifies before completing
 
 These rules run on `Write` and `Edit` tool calls for research `.md` files (files in a `/research/` directory or with "research" in the filename). They also run via the Stop gate at session end.
 
-A research file must include a `<!-- PERPLEXITY_VERIFIED -->` HTML comment tag to prove all claims were verified using Perplexity MCP tools.
+A research file must include a verification tag (such as `<!-- VERIFIED -->`) to prove claims were checked using available search tools.
 
 ### `no-vague-claims`
 **Block vague unsourced language like "studies show", "experts say"**
@@ -313,7 +312,7 @@ The Stanford HAI 2023 Index measured a 35% increase in enterprise AI deployments
 ```
 
 ### `no-unverified-claims`
-**Block statistical/factual claims without `<!-- PERPLEXITY_VERIFIED -->` tag**
+**Block statistical/factual claims without a verification tag**
 
 Blocked:
 ```markdown
@@ -323,7 +322,7 @@ The AI market grew by 35% in 2023 and reached $150 billion.
 
 Allowed:
 ```markdown
-<!-- PERPLEXITY_VERIFIED -->
+<!-- VERIFIED -->
 
 # Market Report
 The AI market grew by 35% in 2023 according to [IDC](https://www.idc.com/report).
@@ -332,11 +331,11 @@ The AI market grew by 35% in 2023 according to [IDC](https://www.idc.com/report)
 ### `no-unsourced-claims`
 **Block claims that lack a source URL within 300 characters**
 
-Even with the `<!-- PERPLEXITY_VERIFIED -->` tag, each claim must have a nearby source — a markdown link `[text](url)`, a bare URL `https://...`, or a marker like `[Source:]`, `[Ref:]`, or `[Verified:]`.
+Even with a verification tag, each claim must have a nearby source — a markdown link `[text](url)`, a bare URL `https://...`, or a marker like `[Source:]`, `[Ref:]`, or `[Verified:]`.
 
 Blocked:
 ```markdown
-<!-- PERPLEXITY_VERIFIED -->
+<!-- VERIFIED -->
 
 The AI market grew by 35% in 2023.
 
@@ -345,16 +344,16 @@ The AI market grew by 35% in 2023.
 
 Allowed:
 ```markdown
-<!-- PERPLEXITY_VERIFIED -->
+<!-- VERIFIED -->
 
 The AI market grew by 35% in 2023 [Source: https://www.idc.com/ai-spending-guide].
 Revenue reached $150.2 billion per the [IDC Worldwide AI Spending Guide](https://www.idc.com/promo/ai-spending-guide).
 ```
 
-### Perplexity MCP Workflow
+### Verification Workflow
 
 To verify research claims:
-1. Use `mcp__perplexity__perplexity_search` or `mcp__perplexity__perplexity_research` to verify each claim
+1. Use available search tools (Perplexity MCP, WebSearch, or WebFetch) to verify each claim
 2. Add source URLs from the verification results near each claim
-3. Add `<!-- PERPLEXITY_VERIFIED -->` at the top of the file
+3. Add a verification tag (e.g. `<!-- VERIFIED -->`) at the top of the file
 4. The plugin will then check that all claims have nearby sources

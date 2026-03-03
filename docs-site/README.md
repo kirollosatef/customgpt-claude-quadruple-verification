@@ -12,9 +12,9 @@ Four verification cycles run automatically on every Claude Code operation:
 |-------|------|------|
 | **[Cycle 1 — Code Quality](cycles/cycle-1.md)** | Before file write/edit | Blocks TODO, placeholder, stub, and incomplete code |
 | **[Cycle 2 — Security](cycles/cycle-2.md)** | Before write/edit/bash/MCP | Blocks eval(), hardcoded secrets, SQL injection, XSS, destructive commands |
-| **[Cycle 3 — Output Quality](cycles/cycle-3.md)** | Before Claude finishes | Second AI review ensures completeness and correctness |
+| **[Cycle 3 — Output Quality](cycles/cycle-3.md)** | Before Claude finishes | Multi-section AI review: code quality, security, research claims, completeness |
 | **[Cycle 4 — Research Claims](cycles/cycle-4.md)** | Before write/edit of research .md | Blocks vague language, unverified stats, missing source URLs |
-| **Audit Trail** | After every operation | Full JSONL audit log of all operations |
+| **Audit Trail** | After every operation | Full JSONL audit log with optional LLM advisory analysis |
 
 ## Quick Install
 
@@ -87,7 +87,7 @@ User Request → Claude generates code
                      ↓
               ┌─────────────┐
               │  Cycle 3    │  Stop (prompt hook)
-              │  Output QA  │  Second AI reviews final output
+              │  Output QA  │  Multi-section intelligent review
               └──────┬──────┘
                      ↓
               ┌─────────────┐

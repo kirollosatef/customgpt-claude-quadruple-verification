@@ -2,7 +2,7 @@
 
 ## Overview
 
-CustomGPT Quadruple Verification is a Claude Code plugin that intercepts every tool operation through the hook system. It runs four verification cycles and an audit logger, all implemented in Node.js with zero npm dependencies.
+CustomGPT Quadruple Verification v2.0.0 is a Claude Code plugin that intercepts every tool operation through the hook system. It uses a two-tier architecture: **Tier 1 (Regex Fast Gate)** runs instant pattern-matching rules in PreToolUse, while **Tier 2 (LLM-Powered Smart Review)** injects a multi-section intelligent review prompt at the Stop hook. An optional **Tier 3 (LLM Advisory)** provides non-blocking Claude Haiku analysis in PostToolUse. All core functionality is implemented in Node.js with zero npm dependencies.
 
 ## Design Principles
 
@@ -29,6 +29,7 @@ scripts/
     ├── research-verifier.mjs  # Cycle 4 research claim verification engine
     ├── audit-logger.mjs       # JSONL structured logging
     ├── config-loader.mjs      # Multi-source config merge
+    ├── llm-advisor.mjs        # Optional LLM advisory (Tier 3, Claude Haiku)
     └── utils.mjs              # Stdin reader, helpers, isResearchFile()
 hooks/
 └── hooks.json                 # Hook configuration (event-keyed)
@@ -69,22 +70,32 @@ stdin (JSON) → pre-tool-gate.mjs
               └── NO  → approve() + logPreTool('approve')
 ```
 
-### Stop (Cycles 3 and 4)
+### Stop (Cycles 3 and 4) — Tier 2: LLM-Powered Smart Review
 
 ```
 Stop hook (session end):
               stop-gate.mjs
                     ↓
+              Inject multi-section review prompt (Cycle 3)
+              Sections (configurable via cycle3.sections):
+                • Code Quality — no placeholders/stubs, production-ready
+                • Security — no secrets, injection risks, insecure patterns
+                • Research Claims — sourced/verified facts, no vague language
+                • Completeness — all features implemented, tests exist
+                    ↓
               Find research .md files in docs/research/, research/, docs/
                     ↓
               runCycle4() on each file
+              (accepts multiple verification tags via cycle4.acceptedVerificationTags:
+               <!-- PERPLEXITY_VERIFIED -->, <!-- VERIFIED -->,
+               <!-- WEBSEARCH_VERIFIED -->, <!-- CLAIMS_VERIFIED -->)
                     ↓
               violations?
               ├── YES → deny() with per-file summary
               └── NO  → approve()
 ```
 
-### PostToolUse (Audit)
+### PostToolUse (Audit + Optional LLM Advisory)
 
 ```
 stdin (JSON) → post-tool-audit.mjs
@@ -92,6 +103,11 @@ stdin (JSON) → post-tool-audit.mjs
               Extract tool name, decision, metadata
                     ↓
               Append JSONL entry to audit log
+                    ↓
+              If llm.enabled → llm-advisor.mjs (Tier 3)
+              │   Calls Claude Haiku API via Node.js built-in https
+              │   Advisory only — never blocks, findings appended to audit log
+              │   Disabled by default (opt-in via llm config block)
                     ↓
               exit 0 (never blocks)
 ```

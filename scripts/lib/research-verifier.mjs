@@ -2,8 +2,14 @@
  * Research Verifier — Cycle 4 (Research Claim Verification).
  *
  * Blocks research .md files containing vague claims, unverified statistics,
- * or missing source URLs. Requires a <!-- PERPLEXITY_VERIFIED --> tag proving
- * claims were actually checked via Perplexity MCP tools.
+ * or missing source URLs. Requires a verification tag proving claims were
+ * checked via available search tools (Perplexity MCP, WebSearch, WebFetch).
+ *
+ * Accepted verification tags (configurable via cycle4.acceptedVerificationTags):
+ *   <!-- PERPLEXITY_VERIFIED -->  (legacy, still supported)
+ *   <!-- VERIFIED -->             (generic, recommended)
+ *   <!-- WEBSEARCH_VERIFIED -->   (WebSearch tool)
+ *   <!-- CLAIMS_VERIFIED -->      (manual verification)
  *
  * Two-pass verification:
  *   Pass 1 — Vague language detection (instant block)
@@ -58,7 +64,12 @@ const SOURCE_PATTERNS = [
   /\[(Source|Ref|Verified):?[^\]]*\]/i  // [Source: ...], [Ref: ...], [Verified: ...] marker
 ];
 
-const VERIFICATION_TAG = '<!-- PERPLEXITY_VERIFIED -->';
+const DEFAULT_VERIFICATION_TAGS = [
+  '<!-- PERPLEXITY_VERIFIED -->',
+  '<!-- VERIFIED -->',
+  '<!-- WEBSEARCH_VERIFIED -->',
+  '<!-- CLAIMS_VERIFIED -->'
+];
 const SOURCE_PROXIMITY = 300; // characters
 
 // ─── Rule Definitions ───────────────────────────────────────────────────────
@@ -72,9 +83,9 @@ const CYCLE4_RULES = [
   },
   {
     id: 'no-unverified-claims',
-    description: 'Block statistical/factual claims without PERPLEXITY_VERIFIED tag',
+    description: 'Block statistical/factual claims without a verification tag',
     appliesTo: 'research-md',
-    message: 'Research file contains statistical or factual claims but is missing the <!-- PERPLEXITY_VERIFIED --> tag. Verify all claims using Perplexity MCP tools and add the tag to confirm verification.'
+    message: 'Research file contains statistical or factual claims but is missing a verification tag. Verify claims using available search tools (Perplexity, WebSearch, or WebFetch) and add <!-- VERIFIED --> to confirm.'
   },
   {
     id: 'no-unsourced-claims',
@@ -91,11 +102,12 @@ const CYCLE4_RULES = [
  *
  * @param {string} content - The markdown content to verify
  * @param {string} filePath - The file path (for context in messages)
- * @param {object} config - Configuration with disabledRules array
+ * @param {object} config - Configuration with disabledRules array and cycle4.acceptedVerificationTags
  * @returns {Array<{ruleId: string, cycle: number, message: string}>}
  */
 export function runCycle4(content, filePath = '', config = {}) {
   const disabledRules = (config && config.disabledRules) || [];
+  const acceptedTags = (config && config.cycle4 && config.cycle4.acceptedVerificationTags) || DEFAULT_VERIFICATION_TAGS;
   const violations = [];
 
   if (!content || typeof content !== 'string') return violations;
@@ -118,8 +130,8 @@ export function runCycle4(content, filePath = '', config = {}) {
   const claims = extractClaims(content);
   if (claims.length === 0) return violations;
 
-  // Check for PERPLEXITY_VERIFIED tag
-  const hasVerificationTag = content.includes(VERIFICATION_TAG);
+  // Check for any accepted verification tag
+  const hasVerificationTag = acceptedTags.some(tag => content.includes(tag));
 
   if (!hasVerificationTag && !disabledRules.includes('no-unverified-claims')) {
     violations.push({

@@ -26,7 +26,9 @@ from __future__ import annotations
 import json
 import os
 import re
+import ssl
 import sys
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -264,7 +266,12 @@ _SOURCE_PATTERNS = [
     re.compile(r"\[(Source|Ref|Verified):?[^\]]*\]", re.IGNORECASE),
 ]
 
-_VERIFICATION_TAG = "<!-- PERPLEXITY_VERIFIED -->"
+_DEFAULT_VERIFICATION_TAGS = [
+    "<!-- PERPLEXITY_VERIFIED -->",
+    "<!-- VERIFIED -->",
+    "<!-- WEBSEARCH_VERIFIED -->",
+    "<!-- CLAIMS_VERIFIED -->",
+]
 _SOURCE_PROXIMITY = 300
 
 
@@ -318,9 +325,14 @@ def _has_nearby_source(content: str, claim_index: int) -> bool:
     return any(p.search(window) for p in _SOURCE_PATTERNS)
 
 
-def _run_cycle4(content: str, file_path: str, disabled: set = None) -> list:
+def _run_cycle4(content: str, file_path: str, disabled: set = None, config: dict = None) -> list:
     violations = []
     disabled = disabled or set()
+    config = config or {}
+    accepted_tags = (
+        config.get("cycle4", {}).get("acceptedVerificationTags")
+        or _DEFAULT_VERIFICATION_TAGS
+    )
 
     if not content or not isinstance(content, str):
         return violations
@@ -343,16 +355,17 @@ def _run_cycle4(content: str, file_path: str, disabled: set = None) -> list:
     if not claims:
         return violations
 
-    has_tag = _VERIFICATION_TAG in content
+    has_tag = any(tag in content for tag in accepted_tags)
 
     if not has_tag and "no-unverified-claims" not in disabled:
         violations.append({
             "cycle": 4,
             "rule_id": "no-unverified-claims",
             "message": (
-                f"Research file contains statistical or factual claims but is missing the "
-                f"{_VERIFICATION_TAG} tag. Verify all claims using Perplexity MCP tools "
-                f"and add the tag to confirm verification.\n\nFound {len(claims)} claim(s)."
+                "Research file contains statistical or factual claims but is missing a "
+                "verification tag. Verify claims using available search tools (Perplexity, "
+                "WebSearch, or WebFetch) and add <!-- VERIFIED --> to confirm."
+                f"\n\nFound {len(claims)} claim(s) without verification tag."
             ),
         })
         return violations
@@ -364,9 +377,9 @@ def _run_cycle4(content: str, file_path: str, disabled: set = None) -> list:
                 "cycle": 4,
                 "rule_id": "no-unsourced-claims",
                 "message": (
-                    f"Research file has the {_VERIFICATION_TAG} tag but some claims lack a "
+                    "Research file has a verification tag but some claims lack a "
                     "source URL within 300 characters. Add a markdown link, bare URL, or "
-                    f"[Source:]/[Ref:]/[Verified:] marker near each claim.\n\n"
+                    "[Source:]/[Ref:]/[Verified:] marker near each claim.\n\n"
                     f"Found {len(unsourced)} unsourced claim(s)."
                 ),
             })
@@ -377,7 +390,7 @@ def _run_cycle4(content: str, file_path: str, disabled: set = None) -> list:
 # Cycle 4 rule definitions — mirrors getAllCycle4Rules() in research-verifier.mjs
 _CYCLE4_RULES = [
     {"id": "no-vague-claims", "description": 'Block vague unsourced language like "studies show", "experts say"', "applies_to": "research-md"},
-    {"id": "no-unverified-claims", "description": "Block statistical/factual claims without PERPLEXITY_VERIFIED tag", "applies_to": "research-md"},
+    {"id": "no-unverified-claims", "description": "Block statistical/factual claims without a verification tag", "applies_to": "research-md"},
     {"id": "no-unsourced-claims", "description": "Block claims that lack a nearby source URL (within 300 chars)", "applies_to": "research-md"},
 ]
 
@@ -584,7 +597,7 @@ def _make_pre_tool_hook(config: dict):
             violations: list = []
 
             if _is_research_file(file_path) and cycle4_on:
-                violations = _run_cycle4(content, file_path, disabled)
+                violations = _run_cycle4(content, file_path, disabled, config)
             else:
                 if cycle1_on:
                     violations += _run_cycle1(content, file_ext, ctx, disabled)
@@ -640,11 +653,114 @@ def _make_post_tool_hook(config: dict):
             if tool_input.get("pattern"):
                 metadata["pattern"] = tool_input["pattern"]
             _log_entry("post-tool", tool_name, "log-only", [], metadata, config)
+
+            # Optional: LLM advisory analysis
+            if config.get("llm", {}).get("enabled") and tool_input.get("content"):
+                try:
+                    findings = _run_llm_advisory(tool_input["content"], config, metadata)
+                    if findings:
+                        _log_entry("llm-advisory", tool_name, "advisory", findings, metadata, config)
+                except Exception as e:
+                    print(f"[quadruple-verify] LLM advisory error: {e}", file=sys.stderr)
         except Exception as e:
             print(f"[quadruple-verify] post-tool error: {e}", file=sys.stderr)
         return {}
 
     return post_tool_hook
+
+
+# ─── LLM Advisory (Optional) ─────────────────────────────────────────────────
+
+_LLM_ADVISORY_PROMPT = (
+    "You are a code security and quality reviewer. Analyze the following code for:\n"
+    "1. Security vulnerabilities (injection, auth issues, data exposure)\n"
+    "2. Logic errors or potential bugs\n"
+    "3. Performance concerns\n"
+    "4. Missing error handling\n\n"
+    "Return a JSON array of findings. Each finding should have:\n"
+    '- "severity": "high" | "medium" | "low"\n'
+    '- "category": "security" | "quality" | "performance" | "error-handling"\n'
+    '- "description": brief description of the issue\n'
+    '- "line_hint": approximate location if identifiable\n\n'
+    "If no issues found, return an empty array: []\n"
+    "Return ONLY the JSON array, no other text."
+)
+
+
+def _run_llm_advisory(content: str, config: dict, metadata: dict = None) -> list:
+    """Run optional LLM advisory analysis on code content.
+
+    Returns a list of advisory findings (empty on failure or when disabled).
+    Uses Python's built-in urllib.request — zero dependencies.
+    """
+    llm_config = config.get("llm", {})
+    if not llm_config.get("enabled"):
+        return []
+
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        return []
+
+    if not content or len(content) < 50:
+        return []
+
+    model = llm_config.get("model", "claude-haiku-4-5-20251001")
+    timeout_s = llm_config.get("maxLatencyMs", 5000) / 1000
+
+    # Truncate to avoid excessive costs
+    truncated = content[:4000] + "\n... (truncated)" if len(content) > 4000 else content
+    context_prefix = f"File: {metadata['filePath']}\n\n" if metadata and metadata.get("filePath") else ""
+
+    try:
+        body = json.dumps({
+            "model": model,
+            "max_tokens": 1024,
+            "system": _LLM_ADVISORY_PROMPT,
+            "messages": [{"role": "user", "content": f"{context_prefix}{truncated}"}],
+        }).encode("utf-8")
+
+        req = urllib.request.Request(
+            "https://api.anthropic.com/v1/messages",
+            data=body,
+            headers={
+                "Content-Type": "application/json",
+                "x-api-key": api_key,
+                "anthropic-version": "2023-06-01",
+            },
+            method="POST",
+        )
+
+        ctx = ssl.create_default_context()
+        with urllib.request.urlopen(req, timeout=timeout_s, context=ctx) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+
+        text = data.get("content", [{}])[0].get("text", "")
+        return _parse_advisory_findings(text)
+    except Exception as e:
+        print(f"[quadruple-verify] LLM advisory error: {e}", file=sys.stderr)
+        return []
+
+
+def _parse_advisory_findings(text: str) -> list:
+    """Parse Claude's response into a findings list."""
+    if not text:
+        return []
+    try:
+        trimmed = text.strip()
+        if trimmed.startswith("["):
+            return json.loads(trimmed)
+        # Try code block
+        import re as _re
+        m = _re.search(r"```(?:json)?\s*\n?([\s\S]*?)\n?```", trimmed)
+        if m:
+            return json.loads(m.group(1).strip())
+        # Try finding array
+        m = _re.search(r"\[[\s\S]*\]", trimmed)
+        if m:
+            return json.loads(m.group(0))
+        return []
+    except Exception:
+        return []
 
 
 def _make_stop_hook(config: dict):
@@ -676,7 +792,7 @@ def _make_stop_hook(config: dict):
                         continue
                     try:
                         content = md_file.read_text(encoding="utf-8")
-                        file_violations = _run_cycle4(content, str(md_file), disabled)
+                        file_violations = _run_cycle4(content, str(md_file), disabled, config)
                         if file_violations:
                             all_violations.append({"file": str(md_file), "violations": file_violations})
                     except Exception:
@@ -735,24 +851,46 @@ def _find_markdown_files(directory: Path, max_depth: int, _depth: int = 0) -> li
 
 CYCLE3_SYSTEM_MESSAGE = """\
 When your response includes code changes, file modifications, or research content, \
-perform a self-check before finishing and append a brief quality summary.
+perform the following verification before finishing. Skip entirely when returning \
+structured data (JSON, API responses) or answering simple conversational questions.
 
-Skip this check entirely when returning structured data (JSON, API responses) \
-or answering simple conversational questions.
+=== CODE QUALITY REVIEW ===
+Review all code you wrote or modified:
+- Any incomplete implementations, stubs, or placeholder logic?
+- Functions that log/print but don't implement real logic?
+- Missing error handling for failure cases?
+- Edge cases not handled (empty inputs, null values, boundaries)?
+- Does the code match what was requested, or were parts skipped?
+If issues found: fix them before presenting.
 
-When the check applies, append after your response:
+=== SECURITY REVIEW ===
+Review all code and commands for security risks:
+- Hardcoded credentials, API keys, tokens, or passwords?
+- Injection vulnerabilities (SQL, command, XSS, template injection)?
+- Unsafe deserialization (pickle, yaml.load, eval)?
+- Insecure cryptography (MD5/SHA1 for security, JWT none algorithm)?
+- Path traversal, SSRF, or prototype pollution risks?
+- Overly permissive permissions, CORS, or file access?
+Consider context: test files and examples have different risk profiles than production code.
+If issues found: fix them before presenting.
 
----
-**Quality Check**
+=== RESEARCH CLAIMS ===
+If you wrote documentation or research content (.md files):
+- Are statistical claims (percentages, dollar amounts, growth rates) sourced with URLs?
+- Are factual assertions specific (named study, author, year) rather than vague?
+- If you have search tools available (Perplexity MCP, WebSearch, or WebFetch), verify key claims now.
+- After verifying, add <!-- VERIFIED --> to the file.
+- If no search tools are available, flag unverifiable claims clearly.
 
-| Check | Status |
-|-------|--------|
-| Completeness — addressed what was asked, no placeholders or stubs? | PASS / FAIL |
-| Quality — production-ready, error handling, edge cases? | PASS / FAIL |
-| Correctness — solves the actual problem, no logic errors? | PASS / FAIL |
-| Security — no hardcoded secrets, injection risks, unsafe patterns? | PASS / FAIL |
+=== COMPLETENESS CHECK ===
+- Did you fully implement what was asked, or only describe a plan?
+- Any files you mentioned but did not create?
+- Any steps you listed but did not execute?
+If incomplete: finish the work before presenting.
 
-If any check is FAIL, fix the issues before presenting the response.\
+When all checks pass, append: **Verification**: PASS
+When issues were found and fixed, briefly note what was fixed.
+Do not include a full table — keep output minimal.\
 """
 
 

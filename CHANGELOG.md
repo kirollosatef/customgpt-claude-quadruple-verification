@@ -2,6 +2,25 @@
 
 All notable changes to the CustomGPT Quadruple Verification plugin.
 
+## [2.0.0] - 2026-03-03
+
+### Added
+- **Enhanced Stop prompt (Cycle 3)**: Multi-section intelligent review replaces generic 4-row table. Now covers Code Quality, Security, Research Claims, and Completeness — each with detailed verification criteria
+- **Verification tag cascade (Cycle 4)**: Accepts multiple verification tags (`<!-- VERIFIED -->`, `<!-- PERPLEXITY_VERIFIED -->`, `<!-- WEBSEARCH_VERIFIED -->`, `<!-- CLAIMS_VERIFIED -->`). Removes hard dependency on Perplexity MCP
+- **Optional LLM Advisory mode**: Opt-in Claude Haiku API analysis for deeper security and quality review. Advisory only (never blocks). Enable via `config.llm.enabled`. Requires `ANTHROPIC_API_KEY` env var
+- **Quiet mode**: Minimal output when all checks pass ("**Verification**: PASS"). Enabled by default via `output.quiet`
+- **Configurable Cycle 3 sections**: Toggle individual review sections via `cycle3.sections` (codeQuality, security, research, completeness)
+- New `scripts/lib/llm-advisor.mjs` — LLM advisory module using Node.js built-in `https` (zero npm deps)
+
+### Changed
+- Cycle 3 prompt: detailed multi-section review with context-aware security checks (test files vs production code)
+- Cycle 4 rule messages: tool-agnostic language ("available search tools" instead of "Perplexity MCP tools")
+- `config/default-rules.json` updated to v2.0.0 with new config keys
+- Python port (`quadruple_verification.py`): mirrors all JS changes — tag cascade, enhanced prompt, LLM advisory
+
+### Fixed
+- Cycle 4 no longer requires Perplexity MCP specifically — any search tool can verify claims
+
 ## [1.1.0] - 2026-02-11
 
 ### Changed
