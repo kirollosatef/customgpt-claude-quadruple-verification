@@ -9,7 +9,11 @@ LLM-powered intelligent verification on every Claude Code operation. Regex fast 
 
 Built by [CustomGPT.ai](https://customgpt.ai) for production teams running Claude Code at scale.
 
-![Demo — eval() blocked, research claims blocked, clean code passes](demo/demo.gif)
+<p align="center">
+  <video src="https://github.com/kirollosatef/customgpt-claude-quadruple-verification/raw/master/demo/demo.webm" width="820" autoplay loop muted playsinline>
+    <img src="demo/demo.gif" alt="Demo — eval() blocked, research claims blocked, clean code passes" width="820">
+  </video>
+</p>
 
 ## What It Does
 
