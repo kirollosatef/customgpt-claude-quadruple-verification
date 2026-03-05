@@ -112,7 +112,7 @@ _CYCLE2_RULES = [
         "extensions": {".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs", ".py"},
         "message": (
             "Code uses eval(). This is a critical security risk (code injection). "
-            "Use a safe alternative."
+            "Use a safe alternative. "
             "Use JSON.parse() or ast.literal_eval()"
         ),
     },

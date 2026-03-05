@@ -217,10 +217,12 @@ function _runRules(rules, content, fileExt, context, config) {
 
     // Test pattern against content
     if (rule.pattern.test(content)) {
+      const fixSuffix = rule.fix ? `\n  Fix: ${rule.fix}` : '';
       violations.push({
         ruleId: rule.id,
         cycle: rules === CYCLE1_RULES ? 1 : 2,
-        message: rule.message
+        message: `${rule.message}${fixSuffix}`,
+        fix: rule.fix || null
       });
     }
   }
