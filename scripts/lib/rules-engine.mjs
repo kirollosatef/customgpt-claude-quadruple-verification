@@ -168,7 +168,7 @@ const CYCLE2_RULES = [
  * @param {string} fileExt - File extension (e.g. '.py')
  * @param {string} context - 'file-write' | 'bash' | 'mcp' | 'web'
  * @param {object} config - Configuration with enabled/disabled rules
- * @returns {Array<{ruleId: string, message: string}>} - Array of violations
+ * @returns {Array<{ruleId: string, message: string, fix?: string}>} - Array of violations
  */
 export function runCycle1(content, fileExt, context, config = {}) {
   return _runRules(CYCLE1_RULES, content, fileExt, context, config);
@@ -180,7 +180,7 @@ export function runCycle1(content, fileExt, context, config = {}) {
  * @param {string} fileExt - File extension (e.g. '.py')
  * @param {string} context - 'file-write' | 'bash' | 'mcp' | 'web'
  * @param {object} config - Configuration with enabled/disabled rules
- * @returns {Array<{ruleId: string, message: string}>} - Array of violations
+ * @returns {Array<{ruleId: string, message: string, fix?: string}>} - Array of violations
  */
 export function runCycle2(content, fileExt, context, config = {}) {
   return _runRules(CYCLE2_RULES, content, fileExt, context, config);
