@@ -68,6 +68,30 @@ const CYCLE1_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
     message: 'Code contains console.log() which should not be in production code. Use a proper logger or console.error/warn for important messages.'
+  },
+  {
+    id: 'no-debugger-js',
+    description: 'Block debugger statements in JavaScript/TypeScript',
+    pattern: /\bdebugger\b/,
+    appliesTo: 'file-write',
+    fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
+    message: 'Code contains a debugger statement. Remove debug statements before committing.'
+  },
+  {
+    id: 'no-debugger-py',
+    description: 'Block debug statements in Python (pdb.set_trace, breakpoint)',
+    pattern: /\b(?:pdb\.set_trace|breakpoint)\s*\(/,
+    appliesTo: 'file-write',
+    fileExtensions: ['.py', '.pyi'],
+    message: 'Code contains a Python debug statement (pdb.set_trace or breakpoint). Remove debug statements before committing.'
+  },
+  {
+    id: 'no-debugger-rb',
+    description: 'Block binding.pry debug statements in Ruby',
+    pattern: /\bbinding\.pry\b/,
+    appliesTo: 'file-write',
+    fileExtensions: ['.rb'],
+    message: 'Code contains a Ruby binding.pry debug statement. Remove debug statements before committing.'
   }
 ];
 
