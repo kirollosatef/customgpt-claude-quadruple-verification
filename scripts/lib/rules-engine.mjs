@@ -62,6 +62,14 @@ const CYCLE1_RULES = [
     message: 'Code throws a "not implemented" error. Implement the actual functionality.'
   },
   {
+    id: 'no-console-log',
+    description: 'Block console.log() in production code (console.error/warn/info are allowed)',
+    pattern: /\bconsole\.log\s*\(/,
+    appliesTo: 'file-write',
+    fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
+    message: 'Code contains console.log() which should not be in production code. Use a proper logger or console.error/warn for important messages.'
+  },
+  {
     id: 'no-debugger-js',
     description: 'Block debugger statements in JavaScript/TypeScript',
     pattern: /\bdebugger\b/,
