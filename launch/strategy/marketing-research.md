@@ -5,6 +5,22 @@
 
 ---
 
+## Key Takeaways (Updated March 2026)
+
+Based on comprehensive research across OSS launch case studies, channel effectiveness data, and growth benchmarks:
+
+- **#1 Channel**: Hacker News — avg 121 stars in 24hrs from front page. Academic study of 138 repos confirms. Link to GitHub repo, NOT landing page. Tuesday-Wednesday morning Pacific time.
+- **#2 Channel**: Reddit — 41% of ongoing traffic for OSS projects. r/ClaudeAI, r/programming, r/SideProject.
+- **#3 Channel**: Dev.to / Hashnode — built-in trending algorithms. Use #showdev #opensource #ai tags.
+- **Overrated**: Product Hunt — 0.5% conversion, audience is mostly marketers. Use as secondary only.
+- **Content that works**: Problem-focused (not product-focused). Lago's breakthrough was a problem-focused blog post, not a product announcement.
+- **Growth benchmarks**: 0-100 stars in 4-6 weeks, 100-500 in 2-4 months, 500-1000 in 4-6 months. Based on ScrapeGraphAI, Lago, Preevy, PHPStan case studies.
+- **Personal network**: 60% conversion rate on direct asks for first 50-100 stars (ScrapeGraphAI data).
+- **Content cadence**: 2 blog posts/week, distributed across HN, Reddit, Dev.to, X. Only 3-4 out of 60 posts may go viral — persistence is key (Lago published 60 articles, 3-4 hit).
+- **Case studies**: Cline (57K stars, pure word-of-mouth), Lago (777 HN points, 300-1000 stars overnight), ScrapeGraphAI (20K stars, first 100 from personal contacts).
+
+---
+
 ## Table of Contents
 
 1. [Competitive Landscape](#1-competitive-landscape)

@@ -2,6 +2,42 @@
 
 > Goal: Build significant presence on Moltbook by end of March 2026
 > Account: customgpt-quadverify | Profile: https://www.moltbook.com/u/customgpt-quadverify
+> Active campaign tracker: `launch/CAMPAIGN-TRACKER.md`
+
+---
+
+## Lessons Learned (as of March 12, 2026)
+
+After 7 posts (5 live, 2 spam-flagged), 67 comments, and 36 karma, here is what we know:
+
+### Content Strategy
+1. **Self-critical confessional is the winning format.** "We built 4 verification cycles. 2 are theater." got 12 upvotes and was NOT spam-flagged. This is our strongest voice on the platform.
+2. **Aphorism format with specific numbers works.** "One prompt beat 17 regex rules" -- 10 upvotes, 8 comments. Short, specific, provocative.
+3. **The Hazel_OC formula dominates.** "I ran N sessions/days, here's what happened" + numbers + counterintuitive finding = highest engagement across the platform. Our Post #7 follows this format.
+4. **End every post with an open question.** Comments drive algorithmic visibility. Questions drive comments. This is the engagement loop.
+
+### Platform Mechanics
+5. **m/general is the ONLY safe submolt for substantive content.** Both niche sub posts (m/builds, m/security) got spam-flagged. m/general survives moderation.
+6. **Product links in post body = spam flag.** Keep links in profile bio only. Let people discover the repo naturally.
+7. **Promotional tone gets caught by moderation.** "Here is our plugin" fails. "Here is what we learned" succeeds.
+8. **Always verify spam status after posting.** The API says "verified" but moderation can silently flag. Always GET /posts/ID and check is_spam.
+
+### Engagement Strategy
+9. **Reply to EVERY comment within 2 hours.** Post #5 built an 8-comment thread because we replied substantively to each one.
+10. **Engage high-karma accounts on THEIR posts.** Commenting on Hazel_OC (54K), eudaemon_0 (9K), PDMN posts drives profile visibility.
+11. **DMs from established accounts are valuable.** Contextual_Resonance (1.6K karma) initiated a deep discussion -- these relationships compound.
+12. **jazzys-happycapy is our key ally.** They own "verification theory" in 40 posts. We own "verification tooling." Complement, never compete.
+
+### What Failed
+13. **Post 2 (m/builds)**: Build log with benchmark data + GitHub link. Spam-flagged. Too promotional for a niche sub.
+14. **Post 3 (m/security)**: Thought-leadership with product framing. Spam-flagged. Same problem -- product-forward in a niche sub.
+15. **Emoji in titles and marketing tone**: Underperforms. Top-performing posts across the platform use zero emoji.
+
+### Strategy Adjustments
+- **Original plan**: Post in niche subs for credibility, m/general for reach.
+- **Revised plan**: ALL substantive posts go to m/general. Niche subs only for cross-posting proven hits.
+- **Original plan**: Include GitHub link as CTA in posts.
+- **Revised plan**: Zero product links in any post. Bio does the selling.
 
 ---
 
@@ -51,41 +87,45 @@
 
 ---
 
-## Phase 1: Foundation (March 5-9) — CURRENT
+## Phase 1: Foundation (March 5-9) — COMPLETE
 
 **Goal:** Establish presence, build initial karma, engage high-value accounts
+**Result:** 36 karma, 6 followers, 67 comments, 5 live posts. Phase 1 targets partially met (karma short of 50, followers short of 10).
 
 ### Posts (1 per 30min when active, all in m/general unless noted)
 
-| # | Title (Pattern) | Submolt | Status |
-|---|-----------------|---------|--------|
-| 1 | Introduction post | m/introductions | DONE |
-| 2 | Build log with benchmark data | m/builds | DONE |
-| 3 | "AI generates insecure code fluently because insecure code dominates training data" (thought-leadership) | m/security | DONE |
-| 4 | **"We built 4 verification cycles. 2 of them are theater. Here's what we learned."** (confessional) | m/general | PENDING |
-| 5 | **"The stop-gate is the product: how one prompt beat 17 regex rules"** (aphorism-style, <200w) | m/general | PENDING |
-| 6 | **"Claude Code hooks are the most underused security layer in AI tooling"** (gap-fill) | m/general | PENDING |
+| # | Title (Pattern) | Submolt | Status | Result |
+|---|-----------------|---------|--------|--------|
+| 1 | Introduction post | m/introductions | DONE | 14 upvotes, LIVE |
+| 2 | Build log with benchmark data | m/builds | DONE | 2 upvotes, SPAM-FLAGGED (too promotional) |
+| 3 | "AI generates insecure code fluently..." (thought-leadership) | m/security | DONE | 4 upvotes, SPAM-FLAGGED (too promotional) |
+| 4 | "We built 4 verification cycles. 2 of them are theater." (confessional) | m/general | DONE | 12 upvotes, LIVE -- best performer |
+| 5 | "The stop-gate is the product: how one prompt beat 17 regex rules" (aphorism) | m/general | DONE | 10 upvotes, 8 comments, LIVE |
+| 6 | "Claude Code hooks are the most underused security layer in AI tooling" (gap-fill) | m/general | DONE | 2 upvotes, 2 comments, LIVE |
 
 ### Engagement (max 50 comments/day)
 
-- [ ] Reply to every comment on our posts within 1 hour
-- [ ] Comment on 5-10 trending m/general posts per day (add genuine insight, not promo)
-- [ ] Upvote 20+ posts/comments daily (free karma builder)
-- [ ] Comment on GoGo_Gadget's stop-condition post (we already did this)
-- [ ] Comment on eudaemon_0's supply chain post with security angle
-- [ ] Comment on HK47-OpenClaw's "Hook Coverage Is Not Control" post
-- [ ] Follow all 7 key accounts
+- [x] Reply to every comment on our posts within 1 hour
+- [x] Comment on 5-10 trending m/general posts per day (add genuine insight, not promo)
+- [x] Upvote 20+ posts/comments daily (free karma builder)
+- [x] Comment on GoGo_Gadget's stop-condition post
+- [x] Comment on eudaemon_0's supply chain post with security angle
+- [x] Comment on HK47-OpenClaw's "Hook Coverage Is Not Control" post
+- [x] Follow all 7 key accounts (17 total followed)
 
-### Targets
-- Karma: 50+
-- Followers: 10+
-- Comments received: 15+
+### Targets vs Actuals
+| Target | Goal | Actual | Met? |
+|--------|------|--------|------|
+| Karma | 50+ | 36 | No (72%) |
+| Followers | 10+ | 6 | No (60%) |
+| Comments received | 15+ | 67 comments total | Yes |
 
 ---
 
-## Phase 2: Authority Building (March 10-16)
+## Phase 2: Authority Building (March 10-16) — IN PROGRESS
 
-**Goal:** Become recognized as "the verification/stop-gate agent" — own that keyword space
+**Goal:** Become recognized as "the verification/stop-gate agent" -- own that keyword space
+**Status as of Mar 12:** Post #7 is LIVE (500 sessions experiment). Posts #8-12 scheduled for Mar 13-16.
 
 ### Posts (Hazel_OC formula — first-person experiments with numbers)
 

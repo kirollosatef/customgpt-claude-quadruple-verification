@@ -2,7 +2,26 @@
 
 ---
 
-## POST 1: Solo Developers (Speed + Safety)
+## Posting Tips (from research)
+
+- **Best days:** Tuesday-Thursday. Monday and Friday see 20-30% lower engagement.
+- **Best times:** 7:30-10:00 AM EST. Post before your audience starts deep work.
+- **Format:** Use line breaks aggressively -- LinkedIn rewards readability and "See more" clicks.
+- **First line is everything:** It shows in the feed preview. Make it a hook that forces the click.
+- **Reply to every comment within 1 hour:** LinkedIn's algorithm heavily rewards fast engagement. Each reply bumps the post.
+- **Tag relevant companies:** Tag @CustomGPT.ai company page in each post for amplification.
+- **Carousel format:** For technical content (Post 5 especially), consider a carousel/PDF with architecture diagrams. Carousels get 3x more engagement than text posts on LinkedIn.
+- **Hashtags:** 3-5 per post max. Put them at the very end, not inline.
+- **Ask a question at the end:** Drives comments, which is the #1 algorithm signal.
+- **Cross-promote:** After posting, share to relevant LinkedIn groups (AI/ML, Developer Tools, DevSecOps).
+- **Do NOT post on weekends:** LinkedIn engagement drops 50%+ on Saturday/Sunday. Reschedule to Monday if needed.
+
+---
+
+## POST 1: Solo Developers (Speed + Safety) -- POSTED
+
+> **STATUS: POSTED** on LinkedIn (March 11, 2026)
+> Track impressions and engagement in CAMPAIGN-TRACKER.md
 
 **Hook image idea:** Terminal screenshot showing BLOCKED banner (use frame-01.png)
 
@@ -269,22 +288,39 @@ Hooks > prompts. Deterministic > advisory. Enforcement > suggestion.
 
 ---
 
-## POSTING SCHEDULE
+## POSTING SCHEDULE (Revised)
 
-| Day | Post | Persona | Best Time (EST) |
-|-----|------|---------|-----------------|
-| Day 1 (Launch) | Post 4: Founder Story | Broad | 8:00 AM Tue/Wed |
-| Day 2 | Post 1: Solo Developers | Individual devs | 9:00 AM |
-| Day 3 | Post 2: Team Leads | Engineering managers | 7:30 AM |
-| Day 5 | Post 3: Security Teams | AppSec/DevSecOps | 8:00 AM |
-| Day 7 | Post 5: Technical Deep-Dive | Senior engineers | 10:00 AM |
+| Date | Day | Post | Persona | Time (EST) | Status |
+|------|-----|------|---------|------------|--------|
+| Mar 11 (Tue) | Day 1 | Post 1: Solo Developers | Individual devs | 9:00 AM | **POSTED** |
+| Mar 14 (Fri) | Day 4 | Post 2: Team Leads | Engineering managers | 7:30 AM | SCHEDULED |
+| Mar 16 (Sun) | Day 6 | Post 3: Security Teams | AppSec/DevSecOps | 10:00 AM | SCHEDULED (note: Sunday -- consider moving to Mon Mar 17) |
+| Mar 19 (Wed) | Day 9 | Post 4: Founder Story | Broad | 8:00 AM | SCHEDULED |
+| Mar 20 (Thu) | Day 10 | Post 5: Technical Deep-Dive | Senior engineers | 10:00 AM | SCHEDULED |
 
-## TIPS
+**Important:** Posts 3 is currently scheduled for Sunday. LinkedIn engagement drops 50%+ on weekends.
+Consider moving Post 3 to Monday Mar 17 at 8:00 AM EST for better reach.
 
-- Post between 7:30-10:00 AM EST (Tue-Thu perform best)
-- First line must hook — it shows in the feed preview
-- Use line breaks aggressively (LinkedIn rewards readability)
-- Reply to every comment within 1 hour (boosts algorithm)
-- After posting, share to relevant LinkedIn groups
+## TIPS (Research-Backed)
+
+**Timing:**
+- Post between 7:30-10:00 AM EST -- this is when professionals scroll before deep work
+- Tuesday-Thursday perform best. Monday is OK. Friday and weekends underperform.
+- Never post on Saturday/Sunday -- engagement drops 50%+
+
+**Content format:**
+- First line must hook -- it shows in the feed preview. This is the most important line.
+- Use line breaks aggressively -- LinkedIn rewards readability and "See more" clicks
+- For technical content (especially Post 5), consider carousel/PDF format -- 3x more engagement than text
+- 3-5 hashtags max, always at the very end of the post
+
+**Engagement:**
+- Reply to every comment within 1 hour -- this is the #1 algorithm signal
+- Each reply bumps the post in feeds of the commenter's connections
+- Ask a question at the end to drive comments
+- After posting, share to relevant LinkedIn groups (AI/ML, Developer Tools, DevSecOps)
+
+**Amplification:**
 - Tag @CustomGPT.ai company page in each post
-- Ask a question at the end to drive comments (engagement signal)
+- If someone shares your post, comment on their share to extend reach
+- DM 3-5 connections after posting and ask them to comment (not just like)
