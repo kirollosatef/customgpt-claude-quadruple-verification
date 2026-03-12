@@ -5,7 +5,7 @@
 
 import { existsSync, mkdirSync, cpSync, readFileSync, rmSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
-import { homedir, platform } from 'node:os';
+import { homedir } from 'node:os';
 import { execSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 

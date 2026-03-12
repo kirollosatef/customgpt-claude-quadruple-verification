@@ -105,7 +105,7 @@ const CYCLE4_RULES = [
  * @param {object} config - Configuration with disabledRules array and cycle4.acceptedVerificationTags
  * @returns {Array<{ruleId: string, cycle: number, message: string}>}
  */
-export function runCycle4(content, filePath = '', config = {}) {
+export function runCycle4(content, _filePath = '', config = {}) {
   const disabledRules = (config && config.disabledRules) || [];
   const acceptedTags = (config && config.cycle4 && config.cycle4.acceptedVerificationTags) || DEFAULT_VERIFICATION_TAGS;
   const violations = [];

@@ -24,3 +24,47 @@ jobs:
       - name: Smoke test
         shell: bash
         run: node install/verify.mjs
+
+  test-python:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ['3.10', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run Python tests
+        shell: bash
+        run: python -m pytest tests/test_*.py -v
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci || true
+      - name: Lint
+        run: npx eslint scripts/ bin/ tests/
+
+  pack-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify npm pack output
+        shell: bash
+        run: |
+          FILES=$(npm pack --dry-run 2>&1)
+          echo "$FILES"
+          # Fail if internal files would be included
+          if echo "$FILES" | grep -qE '(conversation\.txt|research\.md|\.planning|benchmark|python/)'; then
+            echo "::error::Internal files found in npm pack output!"
+            exit 1
+          fi

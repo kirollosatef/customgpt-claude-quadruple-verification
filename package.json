@@ -25,6 +25,7 @@
     "test:audit": "node --test tests/test-audit.mjs",
     "test:cycle4": "node --test tests/test-cycle4.mjs",
     "test:config": "node --test tests/test-config.mjs",
+    "lint": "eslint scripts/ bin/ tests/",
     "verify": "node install/verify.mjs",
     "prepublishOnly": "npm test"
   },
@@ -34,8 +35,19 @@
     "code-quality",
     "security",
     "audit",
-    "customgpt"
+    "customgpt",
+    "ai",
+    "llm",
+    "anthropic",
+    "claude",
+    "hooks",
+    "code-review",
+    "static-analysis"
   ],
+  "devDependencies": {
+    "eslint": "^9.39.4",
+    "globals": "^17.4.0"
+  },
   "author": "CustomGPT.ai",
   "license": "MIT",
   "repository": {
