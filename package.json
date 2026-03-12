@@ -1,6 +1,6 @@
 {
   "name": "@customgpt/claude-quadruple-verification",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Quadruple verification plugin for Claude Code — blocks placeholder code, security vulnerabilities, and ensures output quality before every operation.",
   "type": "module",
   "bin": {
