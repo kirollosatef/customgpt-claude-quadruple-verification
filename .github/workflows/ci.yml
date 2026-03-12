@@ -49,9 +49,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm ci || true
+      - run: npm ci
       - name: Lint
-        run: npx eslint scripts/ bin/ tests/
+        run: npm run lint
 
   pack-check:
     runs-on: ubuntu-latest
