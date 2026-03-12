@@ -1,7 +1,7 @@
 # Campaign Tracker — Quadruple Verification
 
 > **Single source of truth.** Update this file every session.
-> Last updated: 2026-03-12
+> Last updated: 2026-03-12 (Session 3)
 
 ---
 
@@ -9,9 +9,9 @@
 
 | Metric | Current | Target (Week 4) |
 |--------|---------|-----------------|
-| GitHub Stars | **7** | 100 |
+| GitHub Stars | **9** | 100 |
 | GitHub Forks | **4** | 15 |
-| GitHub Issues | **12** open | 20+ |
+| GitHub Issues | **17** open | 20+ |
 | GitHub Views (14d) | **162** (42 unique) | 500+ |
 | npm Downloads | -- | 50/week |
 | Moltbook Karma | **36** | 500 |
@@ -244,6 +244,18 @@ Copy this into each session and check off as you go:
 - Cleaned up redundant launch files (deprecated CAMPAIGN-CALENDAR.md, marked launch-checklist.md done)
 - Updated moltbook-campaign.md with lessons learned
 - Updated linkedin-posts.md (Post 1 marked POSTED, added posting tips from research)
+
+### Session 3 -- 2026-03-12
+- Executed Sprint 2 (CI/CD hardening): Python CI, ESLint, CodeQL, npm pack check, CODEOWNERS, least-privilege permissions
+- Executed Sprint 3 (Polish): OpenSSF Scorecard, FUNDING.yml, structured issue templates, migration guide, npm provenance badge, "Used by" section, GitHub Topics (13)
+- Fixed CodeRabbit PR review issues: `npm ci || true`, workflow permissions, rerun-safe releases, tighter test assertions
+- Dropped Node 18 from CI matrix (EOL April 2025)
+- GitHub social preview image uploaded manually
+- All 3 PRs merged (#32 Sprint 1, #37 Sprint 2, #38 Sprint 3)
+- Verified all campaign content — fixed stale numbers (28→24 rules, 244→486 tests, Node 18 dropped)
+- Updated COMPREHENSIVE-AUDIT.md: all 3 sprints marked COMPLETE, scorecard A+
+- **GitHub stats: 9 stars (+2), 4 forks, 17 open issues (+5)**
+- **Project is READY for campaign launch** across Reddit, HN, LinkedIn, Twitter
 
 ---
 

@@ -143,7 +143,7 @@ We needed a security gate that runs BEFORE the code exists — not after.
 
 So we built one. Open source.
 
-Quadruple Verification intercepts every Claude Code operation and enforces 28 security and quality rules:
+Quadruple Verification intercepts every Claude Code operation and enforces 24 security and quality rules:
 
 🔒 eval(), exec(), os.system() → BLOCKED
 🔒 Hardcoded secrets, API keys → BLOCKED
@@ -203,7 +203,7 @@ It's a Claude Code plugin that runs 4 verification cycles on every single operat
 3️⃣ Output Quality — AI reviews its own work before showing you
 4️⃣ Research Claims — blocks "studies show..." without sources
 
-28 rules. Zero dependencies. 110ms overhead.
+24 rules. Zero dependencies. 110ms overhead.
 
 The AI literally cannot write bad code.
 The operation gets blocked before the file is created.
@@ -244,7 +244,7 @@ Here's why we chose hooks over prompts:
 Our architecture has 3 tiers:
 
 Tier 1: Regex fast gates (instant, <1ms)
-  → 17 security + quality patterns
+  → 21 security + quality patterns
   → Runs on every Write, Edit, Bash, MCP call
 
 Tier 2: LLM Stop hook (at session end)
@@ -272,8 +272,8 @@ Design decisions:
 → 3-level config merge
   Plugin defaults → User overrides → Project overrides
 
-The result: 244 tests across 9 test suites.
-CI green on Ubuntu, macOS, Windows × Node 18, 20, 22.
+The result: 486 tests across 17 test suites.
+CI green on Ubuntu, macOS, Windows × Node 20, 22 + Python 3.10, 3.12.
 
 → Read the architecture:
   github.com/kirollosatef/customgpt-claude-quadruple-verification/blob/master/docs/ARCHITECTURE.md

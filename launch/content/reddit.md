@@ -78,7 +78,7 @@ By the time SonarQube or CodeRabbit sees the code, the AI has already moved on t
 
 I built **Quadruple Verification** -- a Claude Code plugin that hooks into the generation process itself:
 
-- **PreToolUse hooks** (Cycles 1, 2, 4): Regex fast-gates block writes containing TODO placeholders, eval(), hardcoded secrets, SQL injection, innerHTML XSS, rm -rf, unsourced research claims. 20 rules, <50ms.
+- **PreToolUse hooks** (Cycles 1, 2, 4): Regex fast-gates block writes containing TODO placeholders, eval(), hardcoded secrets, SQL injection, innerHTML XSS, rm -rf, unsourced research claims. 24 rules, <50ms.
 - **Stop hook** (Cycle 3): AI self-review of the complete response. Multi-section analysis covering code quality, security, research accuracy, completeness. This is the high-value component -- **+31.8% quality improvement** in a 45-test A/B benchmark.
 - **PostToolUse hook**: JSONL audit logger on every operation.
 

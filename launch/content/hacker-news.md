@@ -4,7 +4,7 @@
 
 ## Title
 ```
-Show HN: Real-time verification layer for AI-generated code (58% has security flaws)
+Show HN: Claude Code plugin that blocks insecure AI-generated code in real time
 ```
 
 ## URL
@@ -24,7 +24,7 @@ I built this because I noticed a gap in the AI code verification toolchain: ever
 
 Quadruple Verification is a Claude Code hook plugin that intercepts every operation in real-time:
 
-- Cycles 1, 2, 4: Regex fast-gates (<50ms). 20 rules covering OWASP patterns, placeholder code, unsourced research claims. They block violations before the file is written.
+- Cycles 1, 2, 4: Regex fast-gates (<50ms). 24 rules covering OWASP patterns, placeholder code, unsourced research claims. They block violations before the file is written.
 - Cycle 3: AI self-review stop-gate. Before Claude delivers a response, it reviews its own output across 4 dimensions: code quality, security, research accuracy, completeness.
 - Audit: Every operation logs to JSONL.
 
