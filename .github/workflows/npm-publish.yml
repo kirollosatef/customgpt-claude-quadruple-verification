@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   test:
@@ -22,6 +21,9 @@ jobs:
   publish:
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -42,3 +44,24 @@ jobs:
         run: npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  release:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release edit "$TAG" --latest
+          else
+            gh release create "$TAG" \
+              --title "$TAG" \
+              --generate-notes \
+              --latest
+          fi

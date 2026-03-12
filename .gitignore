@@ -11,3 +11,6 @@ benchmark/results/group-B/
 benchmark/__pycache__/
 python/__pycache__/
 tests/__pycache__/
+conversation.txt
+research.md
+.pytest_cache/

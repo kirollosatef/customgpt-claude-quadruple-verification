@@ -175,7 +175,7 @@ class TestE2EPreToolGateCycle4(E2EBase):
             "content": "# Stats\n\nRevenue grew by 45% in Q4 2024."
         })
         self.assertTrue(is_blocked(result))
-        self.assertIn("PERPLEXITY_VERIFIED", block_reason(result))
+        self.assertIn("<!-- VERIFIED -->", block_reason(result))
 
     def test_blocks_research_file_with_unsourced_claims_tag_but_no_urls(self):
         result = self.run_pre("write", {
@@ -261,7 +261,7 @@ class TestE2EPreToolGateEdgeCases(E2EBase):
             "content": "In 2024, the market shifted dramatically toward AI solutions."
         })
         self.assertTrue(is_blocked(result))
-        self.assertIn("PERPLEXITY_VERIFIED", block_reason(result))
+        self.assertIn("<!-- VERIFIED -->", block_reason(result))
 
     def test_research_file_with_since_2020_triggers_cycle4(self):
         result = self.run_pre("write", {
