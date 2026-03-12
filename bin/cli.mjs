@@ -7,7 +7,7 @@ import { existsSync, mkdirSync, cpSync, readFileSync, rmSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { homedir, platform } from 'node:os';
 import { execSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
@@ -157,7 +157,9 @@ function runInstall() {
       warn('Smoke test not found — skipping');
     }
   } catch {
-    warn('Smoke test had warnings — plugin still installed');
+    rmSync(dest, { recursive: true, force: true });
+    err('Smoke test failed — installation rolled back');
+    process.exit(1);
   }
 
   console.log();
@@ -177,24 +179,30 @@ function runInstall() {
 
 // ── Main ──
 
-const arg = process.argv[2];
+const isDirectExecution =
+  Boolean(process.argv[1]) &&
+  pathToFileURL(process.argv[1]).href === import.meta.url;
 
-switch (arg) {
-  case '--help':
-  case '-h':
-    showHelp();
-    break;
-  case '--version':
-  case '-v':
-    showVersion();
-    break;
-  case '--verify':
-    runVerify();
-    break;
-  case '--uninstall':
-    runUninstall();
-    break;
-  default:
-    runInstall();
-    break;
+if (isDirectExecution) {
+  const arg = process.argv[2];
+
+  switch (arg) {
+    case '--help':
+    case '-h':
+      showHelp();
+      break;
+    case '--version':
+    case '-v':
+      showVersion();
+      break;
+    case '--verify':
+      runVerify();
+      break;
+    case '--uninstall':
+      runUninstall();
+      break;
+    default:
+      runInstall();
+      break;
+  }
 }

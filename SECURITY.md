@@ -36,7 +36,7 @@ We follow a 90-day responsible disclosure policy. After a fix is released, we cr
 
 This plugin is designed with security in mind:
 
-- **Zero npm dependencies** — no supply chain risk
+- **Zero runtime npm dependencies** — reduces npm supply-chain exposure
 - **Fail-open design** — plugin crashes never block Claude Code
 - **No network access** required (LLM advisory is opt-in)
 - **No data collection** — all audit logs stay local
