@@ -1,8 +1,15 @@
 # CustomGPT Quadruple Verification for Claude Code
 
+[![CI](https://github.com/kirollosatef/customgpt-claude-quadruple-verification/actions/workflows/ci.yml/badge.svg)](https://github.com/kirollosatef/customgpt-claude-quadruple-verification/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/@customgpt/claude-quadruple-verification)](https://www.npmjs.com/package/@customgpt/claude-quadruple-verification)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](https://github.com/kirollosatef/customgpt-claude-quadruple-verification)
+
 LLM-powered intelligent verification on every Claude Code operation. Regex fast gates block obvious violations instantly, while an AI-driven multi-section review ensures code quality, security, research accuracy, and completeness — before anything ships.
 
 Built by [CustomGPT.ai](https://customgpt.ai) for production teams running Claude Code at scale.
+
+![Demo — eval() blocked, research claims blocked, clean code passes](demo/demo.gif)
 
 ## What It Does
 
@@ -206,6 +213,12 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed technical document
 ## Troubleshooting
 
 See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for common issues and solutions.
+
+## Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+Look for issues labeled [`good first issue`](https://github.com/kirollosatef/customgpt-claude-quadruple-verification/labels/good%20first%20issue) to get started.
 
 ## License
 

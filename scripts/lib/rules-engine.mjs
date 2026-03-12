@@ -2,7 +2,7 @@
  * Rules Engine — All Cycle 1 + Cycle 2 verification rules.
  * Cycle 4 rules are in research-verifier.mjs and merged via getAllRules().
  *
- * Each rule: { id, description, pattern (RegExp), appliesTo, fileExtensions?, message }
+ * Each rule: { id, description, pattern (RegExp), appliesTo, fileExtensions?, message, fix }
  *
  * appliesTo: 'file-write' | 'bash' | 'mcp' | 'web' | 'all'
  * fileExtensions: optional array of extensions (e.g. ['.py']). If omitted, applies to all.
@@ -60,6 +60,38 @@ const CYCLE1_RULES = [
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
     message: 'Code throws a "not implemented" error. Implement the actual functionality.'
+  },
+  {
+    id: 'no-console-log',
+    description: 'Block console.log() in production code (console.error/warn/info are allowed)',
+    pattern: /\bconsole\.log\s*\(/,
+    appliesTo: 'file-write',
+    fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
+    message: 'Code contains console.log() which should not be in production code. Use a proper logger or console.error/warn for important messages.'
+  },
+  {
+    id: 'no-debugger-js',
+    description: 'Block debugger statements in JavaScript/TypeScript',
+    pattern: /\bdebugger\b/,
+    appliesTo: 'file-write',
+    fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
+    message: 'Code contains a debugger statement. Remove debug statements before committing.'
+  },
+  {
+    id: 'no-debugger-py',
+    description: 'Block debug statements in Python (pdb.set_trace, breakpoint)',
+    pattern: /\b(?:pdb\.set_trace|breakpoint)\s*\(/,
+    appliesTo: 'file-write',
+    fileExtensions: ['.py', '.pyi'],
+    message: 'Code contains a Python debug statement (pdb.set_trace or breakpoint). Remove debug statements before committing.'
+  },
+  {
+    id: 'no-debugger-rb',
+    description: 'Block binding.pry debug statements in Ruby',
+    pattern: /\bbinding\.pry\b/,
+    appliesTo: 'file-write',
+    fileExtensions: ['.rb'],
+    message: 'Code contains a Ruby binding.pry debug statement. Remove debug statements before committing.'
   }
 ];
 
@@ -72,7 +104,8 @@ const CYCLE2_RULES = [
     pattern: /\beval\s*\(/,
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs', '.py'],
-    message: 'Code uses eval(). This is a critical security risk (code injection). Use a safe alternative.'
+    message: 'Code uses eval(). This is a critical security risk (code injection). Use a safe alternative.',
+    fix:  "Use JSON.parse() or ast.literal_eval()"
   },
   {
     id: 'no-exec',
@@ -88,7 +121,8 @@ const CYCLE2_RULES = [
     pattern: /\bos\.system\s*\(/,
     appliesTo: 'file-write',
     fileExtensions: ['.py'],
-    message: 'Python code uses os.system(). Use subprocess.run() with shell=False instead.'
+    message: 'Python code uses os.system(). Use subprocess.run() with shell=False instead.',
+    fix: 'Use subprocess.run() instead'
   },
   {
     id: 'no-shell-true',
@@ -96,8 +130,10 @@ const CYCLE2_RULES = [
     pattern: /shell\s*=\s*True/,
     appliesTo: 'file-write',
     fileExtensions: ['.py'],
-    message: 'Python code uses shell=True in subprocess. This enables shell injection. Use shell=False and pass args as a list.'
+    message: 'Python code uses shell=True in subprocess. This enables shell injection. Use shell=False and pass args as a list.',
+    fix: 'Use subprocess.run(["cmd", "arg"]) without shell=True'
   },
+
   {
     id: 'no-hardcoded-secrets',
     description: 'Block hardcoded API keys, passwords, and tokens',
@@ -120,7 +156,8 @@ const CYCLE2_RULES = [
     pattern: /\.innerHTML\s*=/,
     appliesTo: 'file-write',
     fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs', '.html'],
-    message: 'Code assigns to .innerHTML which enables XSS attacks. Use .textContent or a sanitization library instead.'
+    message: 'Code assigns to .innerHTML which enables XSS attacks. Use .textContent or a sanitization library instead.',
+    fix: 'Use textContent or a sanitization library like DOMPurify'
   },
   {
     id: 'no-rm-rf',
@@ -136,7 +173,8 @@ const CYCLE2_RULES = [
     pattern: /chmod\s+(?:.*\s)?777\b/,
     appliesTo: 'bash',
     fileExtensions: null,
-    message: 'Command sets world-writable permissions (777). Use more restrictive permissions (e.g. 755 or 644).'
+    message: 'Command sets world-writable permissions (777). Use more restrictive permissions (e.g. 755 or 644).',
+    fix: 'Use chmod 755 for directories, 644 for files'
   },
   {
     id: 'no-curl-pipe-sh',
@@ -162,7 +200,7 @@ const CYCLE2_RULES = [
  * @param {string} fileExt - File extension (e.g. '.py')
  * @param {string} context - 'file-write' | 'bash' | 'mcp' | 'web'
  * @param {object} config - Configuration with enabled/disabled rules
- * @returns {Array<{ruleId: string, message: string}>} - Array of violations
+ * @returns {Array<{ruleId: string, message: string, cycle: number|string, fix?: string}>} - Array of violations
  */
 export function runCycle1(content, fileExt, context, config = {}) {
   return _runRules(CYCLE1_RULES, content, fileExt, context, config);
@@ -174,7 +212,7 @@ export function runCycle1(content, fileExt, context, config = {}) {
  * @param {string} fileExt - File extension (e.g. '.py')
  * @param {string} context - 'file-write' | 'bash' | 'mcp' | 'web'
  * @param {object} config - Configuration with enabled/disabled rules
- * @returns {Array<{ruleId: string, message: string}>} - Array of violations
+ * @returns {Array<{ruleId: string, message: string, cycle: number|string, fix?: string}>} - Array of violations
  */
 export function runCycle2(content, fileExt, context, config = {}) {
   return _runRules(CYCLE2_RULES, content, fileExt, context, config);
@@ -211,10 +249,12 @@ function _runRules(rules, content, fileExt, context, config) {
 
     // Test pattern against content
     if (rule.pattern.test(content)) {
+      const fixSuffix = rule.fix ? `\n  Fix: ${rule.fix}` : '';
       violations.push({
         ruleId: rule.id,
         cycle: rules === CYCLE1_RULES ? 1 : 2,
-        message: rule.message
+        message: `${rule.message}${fixSuffix}`,
+        fix: rule.fix || null
       });
     }
   }

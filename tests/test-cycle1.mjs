@@ -98,6 +98,84 @@ describe('Cycle 1 — Code Quality Rules', () => {
     });
   });
 
+  describe('no-console-log', () => {
+    it('should block console.log() in JavaScript', () => {
+      const violations = runCycle1('console.log("debug message")', '.js', 'file-write');
+      assert.ok(violations.some(v => v.ruleId === 'no-console-log'));
+    });
+
+    it('should block console.log() in TypeScript', () => {
+      const violations = runCycle1('console.log(data)', '.ts', 'file-write');
+      assert.ok(violations.some(v => v.ruleId === 'no-console-log'));
+    });
+
+    it('should allow console.error()', () => {
+      const violations = runCycle1('console.error("error message")', '.js', 'file-write');
+      assert.ok(!violations.some(v => v.ruleId === 'no-console-log'));
+    });
+
+    it('should allow console.warn()', () => {
+      const violations = runCycle1('console.warn("warning")', '.js', 'file-write');
+      assert.ok(!violations.some(v => v.ruleId === 'no-console-log'));
+    });
+
+    it('should allow console.info()', () => {
+      const violations = runCycle1('console.info("info")', '.ts', 'file-write');
+      assert.ok(!violations.some(v => v.ruleId === 'no-console-log'));
+    });
+
+    it('should not trigger for Python files', () => {
+      const violations = runCycle1('console.log("test")', '.py', 'file-write');
+      assert.ok(!violations.some(v => v.ruleId === 'no-console-log'));
+    });
+  });
+
+  describe('no-debugger-js', () => {
+    it('should block debugger statement in JavaScript', () => {
+      const violations = runCycle1('debugger;', '.js', 'file-write');
+      assert.ok(violations.some(v => v.ruleId === 'no-debugger-js'));
+    });
+
+    it('should block debugger statement in TypeScript', () => {
+      const violations = runCycle1('function test() { debugger }', '.ts', 'file-write');
+      assert.ok(violations.some(v => v.ruleId === 'no-debugger-js'));
+    });
+
+    it('should not trigger for Python files', () => {
+      const violations = runCycle1('debugger', '.py', 'file-write');
+      assert.ok(!violations.some(v => v.ruleId === 'no-debugger-js'));
+    });
+  });
+
+  describe('no-debugger-py', () => {
+    it('should block pdb.set_trace() in Python', () => {
+      const violations = runCycle1('import pdb; pdb.set_trace()', '.py', 'file-write');
+      assert.ok(violations.some(v => v.ruleId === 'no-debugger-py'));
+    });
+
+    it('should block breakpoint() in Python', () => {
+      const violations = runCycle1('breakpoint()', '.py', 'file-write');
+      assert.ok(violations.some(v => v.ruleId === 'no-debugger-py'));
+    });
+
+    it('should not trigger for JavaScript files', () => {
+      const violations = runCycle1('breakpoint()', '.js', 'file-write');
+      assert.ok(!violations.some(v => v.ruleId === 'no-debugger-py'));
+    });
+  });
+
+  describe('no-debugger-rb', () => {
+    it('should block binding.pry in Ruby', () => {
+      const violations = runCycle1('binding.pry', '.rb', 'file-write');
+      assert.ok(violations.some(v => v.ruleId === 'no-debugger-rb'));
+    });
+
+    it('should not trigger for JavaScript files', () => {
+      const violations = runCycle1('binding.pry', '.js', 'file-write');
+      assert.ok(!violations.some(v => v.ruleId === 'no-debugger-rb'));
+    });
+  });
+
   describe('context filtering', () => {
     it('should not run file-write rules in bash context', () => {
       const violations = runCycle1('TODO: fix this', '.sh', 'bash');

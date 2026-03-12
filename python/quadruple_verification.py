@@ -112,7 +112,8 @@ _CYCLE2_RULES = [
         "extensions": {".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs", ".py"},
         "message": (
             "Code uses eval(). This is a critical security risk (code injection). "
-            "Use a safe alternative."
+            "Use a safe alternative. "
+            "Use JSON.parse() or ast.literal_eval()"
         ),
     },
     {
@@ -130,7 +131,8 @@ _CYCLE2_RULES = [
         "pattern": re.compile(r"\bos\.system\s*\("),
         "applies_to": "file-write",
         "extensions": {".py"},
-        "message": "Python code uses os.system(). Use subprocess.run() with shell=False instead.",
+        "message": ("Python code uses os.system(). Use subprocess.run() with shell=False instead."),
+     
     },
     {
         "id": "no-shell-true",
@@ -141,6 +143,7 @@ _CYCLE2_RULES = [
             "Python code uses shell=True in subprocess. This enables shell injection. "
             "Use shell=False and pass args as a list."
         ),
+        
     },
     {
         "id": "no-hardcoded-secrets",
@@ -179,7 +182,7 @@ _CYCLE2_RULES = [
         "extensions": {".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs", ".html"},
         "message": (
             "Code assigns to .innerHTML which enables XSS attacks. "
-            "Use .textContent or a sanitization library instead."
+            "Use .textContent or a sanitization library, like DOMPurify, instead."
         ),
     },
     {
@@ -203,7 +206,7 @@ _CYCLE2_RULES = [
         "extensions": None,
         "message": (
             "Command sets world-writable permissions (777). "
-            "Use more restrictive permissions (e.g. 755 or 644)."
+            "Use more restrictive permissions (e.g. 755 for directories or 644 for files)"
         ),
     },
     {
