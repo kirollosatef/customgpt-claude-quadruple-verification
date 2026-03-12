@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 
-// CustomGPT Quadruple Verification — npx installer
-// Usage: npx @customgpt/claude-quadruple-verification
+// CustomGPT Quadruple Verification — CLI
+// Usage: npx @customgpt/claude-quadruple-verification [--help|--version|--verify|--uninstall]
 
-import { existsSync, mkdirSync, cpSync, readFileSync } from 'node:fs';
+import { existsSync, mkdirSync, cpSync, readFileSync, rmSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { homedir, platform } from 'node:os';
 import { execSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
@@ -23,16 +23,81 @@ function warn(msg){ console.log(`  \x1b[33m!\x1b[0m ${msg}`); }
 function err(msg) { console.error(`  \x1b[31m✗\x1b[0m ${msg}`); }
 
 function getPluginsDir() {
-  const home = homedir();
-  if (platform() === 'win32') {
-    return join(home, '.claude', 'plugins', PLUGIN_NAME);
-  }
-  return join(home, '.claude', 'plugins', PLUGIN_NAME);
+  return join(homedir(), '.claude', 'plugins', PLUGIN_NAME);
 }
 
-// ── Main ──
+function getVersion() {
+  try {
+    const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
+    return pkg.version;
+  } catch {
+    return 'unknown';
+  }
+}
 
-async function main() {
+// ── Commands ──
+
+function showHelp() {
+  const version = getVersion();
+  console.log(`
+  \x1b[1mCustomGPT Quadruple Verification\x1b[0m v${version}
+
+  Catch security bugs, placeholder code, and hallucinated claims
+  in AI-generated code — before it ships.
+
+  \x1b[1mUsage:\x1b[0m
+    npx @customgpt/claude-quadruple-verification [command]
+
+  \x1b[1mCommands:\x1b[0m
+    (no args)     Install the plugin to ~/.claude/plugins/
+    --help, -h    Show this help message
+    --version, -v Print version number
+    --verify      Run smoke test to check installation
+    --uninstall   Remove the plugin from ~/.claude/plugins/
+
+  \x1b[1mAlternative install (recommended):\x1b[0m
+    In Claude Code, run:
+    /plugin marketplace add ${REPO}
+
+  \x1b[1mDocs:\x1b[0m https://github.com/${REPO}
+`);
+}
+
+function showVersion() {
+  console.log(getVersion());
+}
+
+function runVerify() {
+  const verifyPath = join(ROOT, 'install', 'verify.mjs');
+  if (existsSync(verifyPath)) {
+    try {
+      execSync(`node "${verifyPath}"`, { stdio: 'inherit' });
+    } catch {
+      process.exit(1);
+    }
+  } else {
+    err('verify.mjs not found');
+    process.exit(1);
+  }
+}
+
+function runUninstall() {
+  const dest = getPluginsDir();
+  console.log();
+  console.log('  \x1b[1mCustomGPT Quadruple Verification\x1b[0m — Uninstall');
+  console.log('  ──────────────────────────────────────────────');
+  console.log();
+
+  if (existsSync(dest)) {
+    rmSync(dest, { recursive: true, force: true });
+    ok(`Removed ${dest}`);
+  } else {
+    warn(`Plugin not found at ${dest}`);
+  }
+  console.log();
+}
+
+function runInstall() {
   console.log();
   console.log('  \x1b[1mCustomGPT Quadruple Verification\x1b[0m — Installer');
   console.log('  ──────────────────────────────────────────────');
@@ -79,15 +144,12 @@ async function main() {
   // 5. Run smoke test
   log('Running verification...');
   try {
-    const verifyPath = join(dest, 'install', 'verify.mjs');
-    const verifyPathFromRoot = join(ROOT, 'install', 'verify.mjs');
-
-    // Copy install dir too for verification
     const installSrc = join(ROOT, 'install');
     if (existsSync(installSrc)) {
       cpSync(installSrc, join(dest, 'install'), { recursive: true });
     }
 
+    const verifyPath = join(dest, 'install', 'verify.mjs');
     if (existsSync(verifyPath)) {
       execSync(`node "${verifyPath}"`, { stdio: 'pipe' });
       ok('Smoke test passed');
@@ -95,7 +157,9 @@ async function main() {
       warn('Smoke test not found — skipping');
     }
   } catch {
-    warn('Smoke test had warnings — plugin still installed');
+    rmSync(dest, { recursive: true, force: true });
+    err('Smoke test failed — installation rolled back');
+    process.exit(1);
   }
 
   console.log();
@@ -113,7 +177,32 @@ async function main() {
   console.log();
 }
 
-main().catch(e => {
-  err(e.message);
-  process.exit(1);
-});
+// ── Main ──
+
+const isDirectExecution =
+  Boolean(process.argv[1]) &&
+  pathToFileURL(process.argv[1]).href === import.meta.url;
+
+if (isDirectExecution) {
+  const arg = process.argv[2];
+
+  switch (arg) {
+    case '--help':
+    case '-h':
+      showHelp();
+      break;
+    case '--version':
+    case '-v':
+      showVersion();
+      break;
+    case '--verify':
+      runVerify();
+      break;
+    case '--uninstall':
+      runUninstall();
+      break;
+    default:
+      runInstall();
+      break;
+  }
+}
