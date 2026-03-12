@@ -2,14 +2,22 @@
 
 [![CI](https://github.com/kirollosatef/customgpt-claude-quadruple-verification/actions/workflows/ci.yml/badge.svg)](https://github.com/kirollosatef/customgpt-claude-quadruple-verification/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/@customgpt/claude-quadruple-verification)](https://www.npmjs.com/package/@customgpt/claude-quadruple-verification)
+[![npm downloads](https://img.shields.io/npm/dm/@customgpt/claude-quadruple-verification)](https://www.npmjs.com/package/@customgpt/claude-quadruple-verification)
+[![GitHub stars](https://img.shields.io/github/stars/kirollosatef/customgpt-claude-quadruple-verification)](https://github.com/kirollosatef/customgpt-claude-quadruple-verification/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](https://github.com/kirollosatef/customgpt-claude-quadruple-verification)
 
-LLM-powered intelligent verification on every Claude Code operation. Regex fast gates block obvious violations instantly, while an AI-driven multi-section review ensures code quality, security, research accuracy, and completeness — before anything ships.
+Catch security bugs, placeholder code, and hallucinated claims in AI-generated code — before it ships.
 
 Built by [CustomGPT.ai](https://customgpt.ai) for production teams running Claude Code at scale.
 
 ![Demo — eval() blocked, research claims blocked, clean code passes](demo/demo.gif)
+
+## The Problem
+
+41% of all new code committed in 2026 is AI-generated — and [58% of it contains security vulnerabilities](https://www.veracode.com/blog/research/ai-code-security-2025). Every existing tool (SonarQube, Snyk, Semgrep, CodeRabbit) works **after** the code is written — at CI, PR review, or repo scan. Nothing catches issues at the moment of generation.
+
+Quadruple Verification intercepts Claude Code operations **in real time**, before code hits the filesystem. Regex fast-gates block obvious violations in <50ms. An AI self-review layer catches subtle issues across quality, security, research accuracy, and completeness.
 
 ## What It Does
 
@@ -129,6 +137,35 @@ User Request → Claude generates code
               └─────────────┘
 ```
 
+## Benchmarks
+
+Tested with a 45-scenario A/B benchmark across 6 categories (Feb 2026):
+
+| Category | Quality Change | Notes |
+|----------|---------------|-------|
+| **Agent SDK tasks** | **+31.8%** | Stop-gate prevents plan-only output |
+| Code Quality | +0.1% (neutral) | Regex gates add near-zero overhead |
+| Security tasks | +2.3% | Catches eval(), hardcoded secrets |
+| Research writing | +8.7% | Source verification enforced |
+| **Overall** | **+4.4%** | 1.5x latency, 1.3x tokens |
+
+The AI self-review stop-gate (Cycle 3) is where the measurable quality improvement comes from. Regex gates (Cycles 1, 2, 4) add <50ms and catch real but relatively rare violations.
+
+Full methodology: [docs/BENCHMARK-RESULTS.md](docs/BENCHMARK-RESULTS.md)
+
+## How It Compares
+
+| Feature | This Plugin | SonarQube | Snyk | CodeRabbit | Semgrep |
+|---------|:-----------:|:---------:|:----:|:----------:|:-------:|
+| **When it runs** | At generation | CI | Repo scan | PR review | CI |
+| **Blocks before file write** | Yes | No | No | No | No |
+| **AI-specific rules** (stubs, TODOs, hallucinations) | Yes | No | No | Partial | No |
+| **AI self-review** | Yes | No | No | Yes (PR) | No |
+| **Research claim verification** | Yes | No | No | No | No |
+| **Zero dependencies** | Yes | No | No | No | No |
+| **Free & open source** | Yes | Community | Free tier | $12-24/dev/mo | Free tier |
+| **Works at generation time** | Yes | No | No | No | No |
+
 ## Configuration
 
 Configuration merges from three sources (later overrides earlier):
@@ -219,6 +256,12 @@ See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for common issues and sol
 We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 Look for issues labeled [`good first issue`](https://github.com/kirollosatef/customgpt-claude-quadruple-verification/labels/good%20first%20issue) to get started.
+
+## Support
+
+If this plugin helps your team ship safer AI-generated code, please [star this repository](https://github.com/kirollosatef/customgpt-claude-quadruple-verification) — it helps others find it.
+
+Found a bug or want a new rule? [Open an issue](https://github.com/kirollosatef/customgpt-claude-quadruple-verification/issues).
 
 ## License
 
