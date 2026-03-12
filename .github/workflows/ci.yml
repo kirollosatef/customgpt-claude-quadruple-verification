@@ -70,3 +70,23 @@ jobs:
             echo "::error::Internal files found in npm pack output!"
             exit 1
           fi
+
+  version-check:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check version was bumped
+        shell: bash
+        run: |
+          PR_VERSION=$(node -p "require('./package.json').version")
+          BASE_VERSION=$(git show origin/${{ github.base_ref }}:package.json | node -p "JSON.parse(require('fs').readFileSync('/dev/stdin','utf8')).version")
+          echo "PR version:   $PR_VERSION"
+          echo "Base version:  $BASE_VERSION"
+          if [ "$PR_VERSION" = "$BASE_VERSION" ]; then
+            echo "::error::package.json version ($PR_VERSION) was not bumped. Every PR must include a version bump."
+            exit 1
+          fi
+          echo "Version bumped: $BASE_VERSION → $PR_VERSION"
