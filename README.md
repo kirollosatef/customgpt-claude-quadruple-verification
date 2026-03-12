@@ -6,6 +6,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/kirollosatef/customgpt-claude-quadruple-verification)](https://github.com/kirollosatef/customgpt-claude-quadruple-verification/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Zero Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](https://github.com/kirollosatef/customgpt-claude-quadruple-verification)
+[![npm provenance](https://img.shields.io/badge/provenance-verified-brightgreen?logo=npm)](https://www.npmjs.com/package/@customgpt/claude-quadruple-verification)
 
 Catch security bugs, placeholder code, and hallucinated claims in AI-generated code — before it ships.
 
@@ -256,6 +257,12 @@ See [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for common issues and sol
 We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 Look for issues labeled [`good first issue`](https://github.com/kirollosatef/customgpt-claude-quadruple-verification/labels/good%20first%20issue) to get started.
+
+## Used By
+
+- [CustomGPT.ai](https://customgpt.ai) — Production AI agent platform, internal Claude Code workflows
+
+*Using this plugin? [Open a PR](https://github.com/kirollosatef/customgpt-claude-quadruple-verification/pulls) to add your team here.*
 
 ## Support
 
