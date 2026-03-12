@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync, rmSync, existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { logEntry, logPreTool, logPostTool, logStop } from '../scripts/lib/audit-logger.mjs';
+import { logEntry, logPreTool, logPostTool } from '../scripts/lib/audit-logger.mjs';
 
 describe('Audit Logger', () => {
   let tempDir;
