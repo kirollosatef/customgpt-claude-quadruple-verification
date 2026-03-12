@@ -1,30 +1,20 @@
 # Dev.to Articles
 
-**Status:** NOT STARTED
+**Status:** 3 ARTICLES DRAFTED (ready for review)
 
-## Article 1: "How We Stopped Claude Code from Writing eval() in Production"
-- **Format:** Problem story + architecture walkthrough
-- **Angle:** Lead with the incident, show the solution
-- **Length:** 1500-2000 words with code examples
-- **Publish:** Week 2
+## Posting Order (recommended)
 
-## Article 2: "The 19% Tax: Why AI Tools Slow Down Experienced Developers"
-- **Format:** Data-driven essay
-- **Angle:** MIT study + our benchmark data + the stop-gate solution
-- **Length:** 1500-2000 words
-- **Publish:** Week 2
+| # | Article | File | Angle | Post Day |
+|---|---------|------|-------|----------|
+| 1 | "The 19% Tax: Why AI Tools Actually Slow Down Experienced Developers" | `devto-article-1.md` | Identity attack — validates the dev's suspicion | First (Mon/Thu) |
+| 2 | "We Benchmarked Our Own Tool. 2 of 4 Cycles Are Theater." | `devto-article-2.md` | Radical honesty — builds trust | 3-4 days later |
+| 3 | "How We Stopped Claude Code from Writing eval() in Production" | `devto-article-3.md` | Fear story — delivers the solution | 3-4 days later |
 
-## Article 3: "Building a Zero-Dependency Claude Code Plugin"
+## Article 4 (optional, not yet drafted): "Building a Zero-Dependency Claude Code Plugin"
 - **Format:** Technical deep-dive
 - **Angle:** Hook system, regex gates, fail-open design, lessons learned
 - **Length:** 2000+ words with code examples
-- **Publish:** Week 3
-
-## Article 4: "We Benchmarked Our Own Tool. 2 of 4 Cycles Are Theater."
-- **Format:** Confessional / honest take
-- **Angle:** The benchmark that showed regex gates add near-zero value
-- **Length:** 1500 words
-- **Publish:** Week 3-4
+- **Publish:** Week 3-4 if needed
 
 ## Tips
 - Publish Mon or Thu for best visibility
