@@ -100,6 +100,60 @@ Has anyone else tried building verification at the generation layer? What's been
 
 ---
 
+## r/ClaudeCode
+
+**Status:** NOT POSTED
+
+**Title:**
+```
+Claude Code wrote eval() in my production codebase and nobody caught it for 3 days. So I built something.
+```
+
+**Body:**
+```
+This actually happened. Claude Code generated a utility function that used eval() to parse dynamic config. Clean code. Tests passed. Two humans reviewed it. Nobody flagged it.
+
+Three days later I was grepping for something unrelated and saw it. eval(userInput). In production. Serving real traffic.
+
+That was the wake-up call. But eval() wasn't the only thing slipping through:
+
+- `subprocess.call(cmd, shell=True)` in a Python helper
+- `element.innerHTML = userData` with a comment saying "// sanitized" (it wasn't)
+- `chmod 777` in a setup script
+- A README that cited a "Stanford 2024 study" that doesn't exist
+- Three different files with `# TODO: implement this` that got merged as "done"
+
+The problem isn't Claude Code. I use it every day and it's incredible. The problem is that nobody is checking its output in real-time. By the time SonarQube or CodeRabbit sees it, you're 5 files deep and the context is gone.
+
+So I built a hook-based plugin that intercepts every operation:
+
+**How it works:**
+- PreToolUse hooks fire before every Write/Edit/Bash call
+- 24 regex rules scan for eval(), hardcoded secrets, SQL injection, innerHTML, rm -rf, chmod 777, curl|bash, TODO placeholders, unsourced stats
+- A Stop hook makes Claude review its own response before delivering — checks code quality, security, research accuracy, and completeness
+- PostToolUse logs everything to JSONL audit trail
+
+The honest part: I benchmarked all 4 cycles in a 45-test A/B study. The regex rules? Near-zero net value — the patterns are real but Claude rarely triggers them in practice. The AI self-review stop-gate? **+31.8% quality improvement on agent tasks.** That one prompt does more than all 24 rules combined.
+
+I published the benchmark anyway because I'd rather be honest than impressive.
+
+Zero dependencies. Fail-open design (if the plugin crashes, Claude keeps working). MIT license.
+
+Install in 30 seconds:
+`npx @customgpt/claude-quadruple-verification`
+
+GitHub: github.com/kirollosatef/customgpt-claude-quadruple-verification
+
+Has anyone else had something like the eval() incident? What's your current workflow for verifying Claude Code output?
+```
+
+**Tips:**
+- r/ClaudeCode is technical — they use Claude Code daily
+- The eval() story is the hook, the benchmark honesty is the trust-builder
+- Different enough from r/ClaudeAI post (story-led vs data-led)
+
+---
+
 ## r/ChatGPTCoding (optional)
 
 **Status:** NOT POSTED
