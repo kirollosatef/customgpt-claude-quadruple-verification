@@ -176,6 +176,28 @@ describe('Cycle 1 — Code Quality Rules', () => {
     });
   });
 
+  describe('no-alert', () => {
+    it('should block alert() in JavaScript', () => {
+      const violations = runCycle1('alert("test");', '.js', 'file-write');
+      assert.ok(violations.some(v => v.ruleId === 'no-alert'));
+    });
+
+    it('should block confirm() in JavaScript', () => {
+      const violations = runCycle1('confirm("Are you sure?");', '.js', 'file-write');
+      assert.ok(violations.some(v => v.ruleId === 'no-alert'));
+    });
+
+    it('should block prompt() in JavaScript', () => {
+      const violations = runCycle1('prompt("Enter name");', '.js', 'file-write');
+      assert.ok(violations.some(v => v.ruleId === 'no-alert'));
+    });
+
+    it('should not trigger for non-JavaScript files', () => {
+      const violations = runCycle1('alert("test")', '.py', 'file-write');
+      assert.ok(!violations.some(v => v.ruleId === 'no-alert'));
+    });
+  });
+
   describe('context filtering', () => {
     it('should not run file-write rules in bash context', () => {
       const violations = runCycle1('TODO: fix this', '.sh', 'bash');

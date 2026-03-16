@@ -86,6 +86,14 @@ const CYCLE1_RULES = [
     message: 'Code contains a Python debug statement (pdb.set_trace or breakpoint). Remove debug statements before committing.'
   },
   {
+    id: 'no-alert',
+    description: 'Block alert/confirm/prompt usage in browser JS',
+    pattern: /\b(alert|confirm|prompt)\s*\(/,
+    appliesTo: 'file-write',
+    fileExtensions: ['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'],
+    message: 'Code uses alert/confirm/prompt. Avoid browser dialogs in production code.'
+  },
+  {
     id: 'no-debugger-rb',
     description: 'Block binding.pry debug statements in Ruby',
     pattern: /\bbinding\.pry\b/,
